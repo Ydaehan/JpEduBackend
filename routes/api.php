@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::controller(AuthController::class)->group(function() {
+    Route::post('/register', 'register');
+    Route::post('/login','login')->name('login');    
+});
+
+Route::get('unauthorized', function(){
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Unauthorized'
+    ], 401);
+})->name('api.jwt.unauthorized');
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::post('user',[AuthController::class, 'user'])->name('api.jwt.user');
+    Route::post('refresh', [AuthController::class, 'refresh'])->name('api.jwt.refresh');
+    Route::post('logout', [AuthController::class, 'logout'])->name('api.jwt.logout');
 });
