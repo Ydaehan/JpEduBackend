@@ -15,13 +15,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refreshToken']);
+Route::middleware('auth:sanctum')->group(function () {
+  Route::post('/logout', [AuthController::class, 'logout']);
+  Route::post('/refresh', [AuthController::class, 'refreshToken']);
 });
 
+Route::group(
+  ['middleware' => ['web']],
+  function () {
+    Route::get('/social/{provider}', ['as' => 'social.login', 'uses' => 'App\Http\Controllers\SocialController@login']);
+    Route::get('/social/callback/{provider}', ['as' => 'social.callback', 'uses' => 'App\Http\Controllers\SocialController@callback']);
+  }
+);
