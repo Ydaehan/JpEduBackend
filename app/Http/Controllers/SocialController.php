@@ -14,7 +14,23 @@ use Carbon\Carbon;
 class SocialController extends Controller
 {
   //
-
+     /**
+     * @OA\Post (
+     *     path="/api/social/{provider}",
+     *     tags={"SocialAuth"},
+     *     summary="소셜 로그인",
+     *     description="소셜 회원 로그인",
+     *     @OA\Parameter(
+     *         name="provider",
+     *         in="path",
+     *         required=true,
+     *         description="kakao, google, naver, github 중 하나의 provider",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="400", description="Fail")
+     * )
+     */
   public function login(string $provider)
   {
     if (!array_key_exists($provider, config('services'))) {
@@ -36,7 +52,7 @@ class SocialController extends Controller
         ->first();
 
       if ($socialAccount) {
-        // 
+        //
         $user = $socialAccount->user;
         Auth::login($user);
 
