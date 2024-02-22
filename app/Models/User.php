@@ -50,4 +50,9 @@ class User extends Authenticatable
   {
     return $this->hasMany(SocialAccount::class);
   }
+
+  public function vocabularyNotes()
+  {
+    return $this->hasMany(VocabularyNote::class);
+  }
 }

@@ -11,16 +11,14 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('social_accounts', function (Blueprint $table) {
+    Schema::create('vocabulary_notes', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-      $table->string('provider_name');
-      $table->string('provider_id');
-
-      $table->string('nickname')->nullable();
-      $table->string('email')->nullable();
-      $table->string('avatar')->nullable();
-
+      $table->string('title');
+      $table->json('gana');
+      $table->json('kanji');
+      $table->json('meaning');
+      $table->boolean('is_public')->default(false);
       $table->timestamps();
     });
   }
@@ -30,6 +28,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('social_accounts');
+    Schema::dropIfExists('vocabulary_notes');
   }
 };

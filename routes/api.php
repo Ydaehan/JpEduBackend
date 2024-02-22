@@ -1,8 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\AuthController;
+
+use App\Http\Controllers\VocabularyNoteController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,7 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::group(
   ['middleware' => ['web']],
   function () {
-    Route::get('/social/{provider}', ['as' => 'social.login', 'uses' => 'App\Http\Controllers\SocialController@login']);
-    Route::get('/social/callback/{provider}', ['as' => 'social.callback', 'uses' => 'App\Http\Controllers\SocialController@callback']);
+    Route::get('/social/{provider}', [SocialController::class, 'login'])->name('social.login');
+    Route::get('/social/callback/{provider}', [SocialController::class, 'callback'])->name('social.callback');
   }
 );
+
+
+Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('products.export');
