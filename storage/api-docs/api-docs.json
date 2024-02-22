@@ -1,0 +1,209 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tamago background",
+        "description": "Tamago API Documentation",
+        "contact": {
+            "name": "Yoo Daehan",
+            "email": "a01068089833@gmail.com"
+        },
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "회원가입",
+                "description": "회원을 등록",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "description": "회원 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nickname": {
+                                        "description": "회원 닉네임",
+                                        "type": "string",
+                                        "example": "testuser1"
+                                    },
+                                    "name": {
+                                        "description": "회원 아이디",
+                                        "type": "string",
+                                        "example": "test1"
+                                    },
+                                    "email": {
+                                        "description": "회원 이메일",
+                                        "type": "email",
+                                        "example": "testuser@naver.com"
+                                    },
+                                    "password": {
+                                        "description": "회원 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "회원 비밀번호 확인",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "phone": {
+                                        "description": "회원 전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "birthday": {
+                                        "description": "회원 생일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "01/01/2000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "로그인",
+                "description": "회원 로그인",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "description": "로그인 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "회원 아이디",
+                                        "type": "string",
+                                        "example": "test1"
+                                    },
+                                    "password": {
+                                        "description": "회원 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "로그아웃",
+                "description": "회원 로그아웃",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "ACCESS_TOKEN 재발급",
+                "description": "회원 ACCESS_TOKEN 재발급",
+                "operationId": "848bfa513130bb2967e5f08edc75ee1e",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {refresh_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/social/{provider}": {
+            "post": {
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "소셜 로그인",
+                "description": "소셜 회원 로그인",
+                "operationId": "2908732faeffbdc261632ef4f48a55e6",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "kakao, google, naver, github 중 하나의 provider",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        }
+    }
+}

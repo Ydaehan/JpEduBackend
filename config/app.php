@@ -168,7 +168,8 @@ return [
     // App\Providers\BroadcastServiceProvider::class,
     App\Providers\EventServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
-    \SocialiteProviders\Manager\ServiceProvider::class
+    \SocialiteProviders\Manager\ServiceProvider::class,
+    \L5Swagger\L5SwaggerServiceProvider::class,
   ])->toArray(),
 
   /*
