@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+  /**
+   * @OA\Post (
+   *     path="/api/register",
+   *     tags={"Auth"},
+   *     summary="회원가입",
+   *     description="회원을 등록",
+   *     @OA\RequestBody(
+   *         description="회원 정보",
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="application/json",
+   *             @OA\Schema (
+   *                 @OA\Property (property="nickname", type="string", description="회원 닉네임", example="testuser1"),
+   *                 @OA\Property (property="name", type="string", description="회원 아이디", example="test1"),
+   *                 @OA\Property (property="email", type="email", description="회원 이메일", example="testuser@naver.com"),
+   *                 @OA\Property (property="password", type="string", description="회원 비밀번호", example="asdf1234"),
+   *                 @OA\Property (property="password_confirmation", type="string", description="회원 비밀번호 확인", example="asdf1234"),
+   *                 @OA\Property (property="phone", type="string", description="회원 전화번호", example="01012345678"),
+   *                 @OA\Property (property="birthday", type="date", description="회원 생일", example="01/01/2000")
+   *             )
+   *         )
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function register(Request $request)
   {
     $validator = Validator::make($request->json()->all(), [
@@ -50,6 +76,27 @@ class AuthController extends Controller
     ]);
   }
 
+  /**
+   * @OA\Post (
+   *     path="/api/login",
+   *     tags={"Auth"},
+   *     summary="로그인",
+   *     description="회원 로그인",
+   *     @OA\RequestBody(
+   *         description="로그인 정보",
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="application/json",
+   *             @OA\Schema (
+   *                 @OA\Property (property="name", type="string", description="회원 아이디", example="test1"),
+   *                 @OA\Property (property="password", type="string", description="회원 비밀번호", example="asdf1234")
+   *             )
+   *         )
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function login(Request $request)
   {
     $validator = Validator::make($request->all(), [
@@ -84,18 +131,51 @@ class AuthController extends Controller
     ]);
   }
 
+  /**
+   * @OA\Post (
+   *     path="/api/logout",
+   *     tags={"Auth"},
+   *     summary="로그아웃",
+   *     description="회원 로그아웃",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function logout()
   {
     auth('sanctum')->user()->tokens()->delete();
     return response()->json([
-      'status' => 'success',
+      'status' => 'Success',
       'message' => 'Logout success'
     ]);
   }
 
+  /**
+   * @OA\Post (
+   *     path="/api/refresh",
+   *     tags={"Auth"},
+   *     summary="ACCESS_TOKEN 재발급",
+   *     description="회원 ACCESS_TOKEN 재발급",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {refresh_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function refreshToken()
   {
-    dd(auth('sanctum')->user());
     $accessToken = auth('sanctum')->user()->createToken('access_token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
     return response(['message' => "Token generate", 'token' => $accessToken->plainTextToken]);
   }
