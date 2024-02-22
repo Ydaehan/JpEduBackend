@@ -45,7 +45,7 @@ class SocialController extends Controller
 
 
         return response()->json([
-          'status' => 'success',
+          'status' => 'Success',
           'user' => $user,
           'access_token' => $accessToken->plainTextToken,
           'refresh_token' => $refreshToken->plainTextToken,
@@ -80,14 +80,14 @@ class SocialController extends Controller
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
       return response()->json([
-        'status' => 'success',
+        'status' => 'Success',
         'user' => $user,
         'access_token' => $accessToken->plainTextToken,
         'refresh_token' => $refreshToken->plainTextToken,
       ], 200);
     } catch (\Exception $e) {
       return response()->json([
-        'status' => 'fail',
+        'status' => 'Fail',
         'message' => 'Social Login Fail' . $e->getMessage(),
       ]);
     }
