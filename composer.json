@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
@@ -17,7 +20,8 @@
         "socialiteproviders/google": "^4.1",
         "socialiteproviders/kakao": "^4.2",
         "socialiteproviders/naver": "^4.1",
-        "socialiteproviders/zoho": "^4.1"
+        "socialiteproviders/zoho": "^4.1",
+        "youaoi/php-mecab": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

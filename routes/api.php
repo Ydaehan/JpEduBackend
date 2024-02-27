@@ -38,5 +38,5 @@ Route::group(
   }
 );
 
-
-Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('products.export');
+Route::post('vocabularyNote/User', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.user');
+Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.export');

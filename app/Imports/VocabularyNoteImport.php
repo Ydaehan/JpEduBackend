@@ -2,10 +2,8 @@
 
 namespace App\Imports;
 
-use App\Models\VocabularyNote;
-use Illuminate\Support\Facades\Log;
+
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToModel;
 use \Illuminate\Support\Collection;
 use Exception;
 
@@ -16,19 +14,16 @@ class VocabularyNoteImport implements ToCollection
    *
    * @return \Illuminate\Database\Eloquent\Model|null
    */
-  private $title;
-  private $is_public;
 
-  public function __construct(string $title, bool $is_public = false)
-  {
-    $this->title = $title;
-    $this->is_public = $is_public;
-  }
+  private $vocabularyNote = array();
+
+
 
   public function collection(Collection $collection)
   {
-    try {
 
+
+    try {
       $meaning = array();
       $gana = array();
       $kanji = array();
@@ -38,32 +33,29 @@ class VocabularyNoteImport implements ToCollection
         $gana[] = $collection[$i][5];
         $kanji[] = $collection[$i][6];
       }
+      // for ($i = 1; $i < $collection->count() - 1; $i++) {
+      //   $kanji[] = $collection[$i][0];
+      //   $gana[] = $collection[$i][1];
+      //   $meaning[] =  $collection[$i][2];
+      // }
 
-      return [
+
+      $this->vocabularyNote = [
         'status' => 'Success',
-        'title' => $this->title,
+        // 'user_id' => auth()->user()->id,
         'user_id' => 1,
-        'is_public' => $this->is_public,
         'gana' => $gana,
         'kanji' => $kanji,
         'meaning' => $meaning
       ];
-
-      // return response()->json([
-      //   'status' => 'Success',
-      //   'title' => $this->title,
-      //   // 'user_id' => auth()->user()->id,
-      //   'user_id' => 1,
-      //   'is_public' => $this->is_public,
-      //   'gana' => $gana,
-      //   'kanji' => $kanji,
-      //   'meaning' => $meaning
-      // ]);
-
-
     } catch (Exception $e) {
-      return response()->json(['status' => 'Fail', 'message' => 'VocabularyNoteImport: ' . $e->getMessage()]);
+      return response()->json(['status' => 'Fail', 'message' => 'VocabularyNoteImport: ' . $e->getMessage()], 400);
     }
     return;
+  }
+
+  public function getVocabularyNote()
+  {
+    return $this->vocabularyNote;
   }
 }

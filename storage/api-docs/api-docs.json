@@ -204,6 +204,56 @@
                     }
                 }
             }
+        },
+        "/api/vocabularyNote/export": {
+            "post": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "Excel 단어장 생성",
+                "description": "Excel 단어장 생성",
+                "operationId": "a87a3696655bb943a9d8c2b9de14d9e5",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "excel": {
+                                        "description": "Excel 파일",
+                                        "type": "file"
+                                    },
+                                    "title": {
+                                        "description": "단어장 제목",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
         }
     }
 }
