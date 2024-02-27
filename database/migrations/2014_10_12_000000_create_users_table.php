@@ -21,7 +21,8 @@ return new class extends Migration
       $table->string('phone')->nullable();
       $table->date('birthday')->nullable();
       $table->string('avatar')->nullable();
-      $table->rememberToken();
+    //   $table->string('verification_code')->nullable(); // 이메일 인증코드
+    //   $table->integer('is_verified')->default(0); // 인증 여부
       $table->timestamps();
     });
   }
