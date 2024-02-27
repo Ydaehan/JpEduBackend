@@ -16,7 +16,8 @@ class AuthController extends Controller
    *     path="/api/register",
    *     tags={"Auth"},
    *     summary="회원가입",
-   *     description="회원을 등록",
+   *     description="회원을 등록
+   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
    *     @OA\RequestBody(
    *         description="회원 정보",
    *         required=true,
@@ -81,7 +82,8 @@ class AuthController extends Controller
    *     path="/api/login",
    *     tags={"Auth"},
    *     summary="로그인",
-   *     description="회원 로그인",
+   *     description="회원 로그인
+   *     Access token 과 refresh token을 반환해주므로 적당히 저장해둔 후 각 요청의 Header부분에 넣어서 사용하시면 됩니다.",
    *     @OA\RequestBody(
    *         description="로그인 정보",
    *         required=true,
@@ -136,7 +138,8 @@ class AuthController extends Controller
    *     path="/api/logout",
    *     tags={"Auth"},
    *     summary="로그아웃",
-   *     description="회원 로그아웃",
+   *     description="회원 로그아웃
+   *     로그아웃 시 해당 로그인 유저와 관련된 토큰이 모두 삭제되므로 가지고 있는 Access token과 refresh token은 폐기하시면 됩니다.",
    *     @OA\Parameter(
    *         name="Authorization",
    *         in="header",
@@ -162,7 +165,9 @@ class AuthController extends Controller
    *     path="/api/refresh",
    *     tags={"Auth"},
    *     summary="ACCESS_TOKEN 재발급",
-   *     description="회원 ACCESS_TOKEN 재발급",
+   *     description="회원 ACCESS_TOKEN 재발급
+   *     회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다.
+   *     front 측에서는 발급된 Access token을 저장해두면 됩니다.",
    *     @OA\Parameter(
    *         name="Authorization",
    *         in="header",
@@ -183,5 +188,35 @@ class AuthController extends Controller
     }
     $accessToken = auth('sanctum')->user()->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
     return response(['message' => "Token generate", 'token' => $accessToken->plainTextToken]);
+  }
+
+  /**
+   * @OA\POST (
+   *     path="/api/signOut",
+   *     tags={"Auth"},
+   *     summary="회원 탈퇴",
+   *     description="회원 탈퇴
+   *     로그인 된 유저와 같은 회원정보를 삭제합니다.",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   *
+   * */
+  public function signOut()
+  {
+    $user = auth('sanctum')->user();
+    $user->tokens()->delete();
+    $user->delete();
+    return response()->json([
+      'status' => 'Success',
+      'message' => 'User delete success'
+    ]);
   }
 }
