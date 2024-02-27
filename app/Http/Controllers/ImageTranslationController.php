@@ -11,6 +11,36 @@ use GuzzleHttp\Psr7\MultipartStream;
 class ImageTranslationController extends Controller
 {
     // 로그인된 상태에서 사용가능하며, OCR -> 형태소분석 -> 명사,동사만 꺼내서 결과값 반환해주기
+    /**
+     * @OA\Post(
+     *     path="/api/image/translate",
+     *     tags={"ImageOCR"},
+     *     summary="이미지를 텍스트로 변환 후 번역",
+     *     description="이미지를 텍스트로 변환 후 번역 반환된 sourceTextArray는 원문 텍스트 targetTextArray는 번역된 텍스트입니다.",
+     *     @OA\Parameter(
+     *         name="Authorization",
+     *         in="header",
+     *         required=true,
+     *         description="Bearer access token",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         description="이미지",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="file",
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     @OA\Response(response="400", description="Fail")
+     * )
+     * */
     public function translateImage(Request $request)
     {
         $source_lang = $request->input('source', 'ja');
@@ -69,7 +99,17 @@ class ImageTranslationController extends Controller
             }
         }
 
+        $uniqueSourceArray = array_unique($filteredSourceTextArray);
+        $uniqueTargetArray = $filteredTargetTextArray;
+
+        foreach ($sourceTextArray as $key => $value) {
+            if(!array_key_exists($key, $uniqueSourceArray)){
+                unset($uniqueTargetArray[$key]);
+            }
+        }
+
         // 일어와 번역된 한국어를 반환
-        return response()->json(['sourceTextArray' => $filteredSourceTextArray, 'targetTextArray' => $filteredTargetTextArray]);
+        return response()->json(['sourceTextArray' => $uniqueSourceArray, 'targetTextArray' => $uniqueTargetArray]);
+        // return response()->json($responseContent);
     }
 }
