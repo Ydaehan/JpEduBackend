@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
             // 로그: 작업 종료
 
             Log::info('Scheduled task completed: Deleted expired tokens.');
-        })->everyThirtyMinutes();
+        })->everyMinute();
     }
 
     /**
