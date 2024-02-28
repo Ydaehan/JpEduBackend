@@ -7,6 +7,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageTranslationController;
 use App\Http\Controllers\VocabularyNoteController;
+use App\Http\Controllers\WordOfWorldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::post('/signOut', [AuthController::class, 'signOut']);
+  Route::resource('/note', WordOfWorldController::class);
 });
-Route::post('/image/translate',[ImageTranslationController::class, 'translateImage']);
+Route::post('/image/translate', [ImageTranslationController::class, 'translateImage']);
 
 Route::group(
   ['middleware' => ['web']],

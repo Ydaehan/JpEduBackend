@@ -182,9 +182,9 @@ class AuthController extends Controller
   public function refreshToken()
   {
     $user = auth('sanctum')->user();
-    $oldAccessToken = $user->tokens->where('name','API Token')->first();
-    if( $user->tokens->where('name', 'API Token')->count() > 0 ){
-        $oldAccessToken->delete();
+    $oldAccessToken = $user->tokens->where('name', 'API Token')->first();
+    if ($user->tokens->where('name', 'API Token')->count() > 0) {
+      $oldAccessToken->delete();
     }
     $accessToken = auth('sanctum')->user()->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
     return response(['message' => "Token generate", 'token' => $accessToken->plainTextToken]);

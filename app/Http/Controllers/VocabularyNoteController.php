@@ -10,6 +10,11 @@ use Exception;
 class VocabularyNoteController extends Controller
 {
   //
+  public function create(Request $request)
+  {
+    $request->validate([]);
+  }
+
   /**
    * @OA\Post (
    *     path="/api/vocabularyNote/export",
@@ -52,7 +57,7 @@ class VocabularyNoteController extends Controller
 
       return response()->json($vocabularyNote->getVocabularyNote(), 200);
     } catch (Exception $e) {
-      return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
+      return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
     }
   }
 
