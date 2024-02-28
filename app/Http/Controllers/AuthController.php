@@ -43,7 +43,6 @@ class AuthController extends Controller
   {
     $validator = Validator::make($request->json()->all(), [
       'nickname' => 'required|string|max:255|unique:users',
-      'name' => 'required|string|max:255|unique:users',
       'email' => 'required|email|max:255|unique:users',
       'password' => 'required|string|min:6|max:255|confirmed',
       'phone' => 'required|string|max:15',
@@ -59,7 +58,6 @@ class AuthController extends Controller
 
     $user = User::create([
       'nickname' => $request->get('nickname'),
-      'name' => $request->get('name'),
       'email' => $request->get('email'),
       'password' => Hash::make($request->get('password')),
       'phone' => $request->get('phone'),
@@ -106,7 +104,7 @@ class AuthController extends Controller
   public function login(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'name' => 'required|string|max:255',
+      'email' => 'required|email|max:255',
       'password' => 'required|string|min:6',
     ]);
 
@@ -116,7 +114,7 @@ class AuthController extends Controller
         'messages' => $validator->messages()
       ], 400);
     }
-    $user = User::where('name', $request->name)->first();
+    $user = User::where('email', $request->email)->first();
 
     if (DB::table('personal_access_tokens')->where('tokenable_id',$user->id)->exists()){
         return response()->json([
@@ -125,7 +123,7 @@ class AuthController extends Controller
         ]);
     }
 
-    if (Auth::attempt(['name' => $request->name, 'password' => $request->password])) {
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
       $user = Auth::user();
 
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
@@ -229,33 +227,6 @@ class AuthController extends Controller
     return response()->json([
       'status' => 'Success',
       'message' => 'User delete success'
-    ]);
-  }
-
-  /**
-   * @OA\Get(
-   *     path="/api/user",
-   *     tags={"Auth"},
-   *     summary="회원 정보",
-   *     description="회원 정보
-   *     로그인 된 유저와 같은 회원정보를 반환합니다.",
-   *     @OA\Parameter(
-   *         name="Authorization",
-   *         in="header",
-   *         required=true,
-   *         description="Bearer {access_token}",
-   *         @OA\Schema(type="string")
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
-  */
-  public function user()
-  {
-    $user = auth('sanctum')->user();
-    return response()->json([
-      'status' => 'Success',
-      'user' => $user
     ]);
   }
 

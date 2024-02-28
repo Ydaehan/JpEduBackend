@@ -30,8 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
+  Route::post('/image/translate',[ImageTranslationController::class, 'translateImage']);
 });
-Route::post('/image/translate',[ImageTranslationController::class, 'translateImage']);
+
 Route::middleware('guest')->group(function () {
     Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
 });
