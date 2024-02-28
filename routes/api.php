@@ -34,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/signOut', [AuthController::class, 'signOut']);
   Route::resource('/note', WordOfWorldController::class);
 });
+
+
 Route::post('/image/translate', [ImageTranslationController::class, 'translateImage']);
 Route::middleware('guest')->group(function () {
   Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);

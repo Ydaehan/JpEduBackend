@@ -49,10 +49,21 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN apt-get update\
+    && apt-get install -y mecab libmecab-dev mecab-ipadic-utf8\
+    && apt-get clean\
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.2
 
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+
+RUN cd /home/sail\
+    && git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git\
+    && ./mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n --asuser -a -y -p /home/sail/dic\
+    && cd ..\
+    && rm -rf mecab-ipadic-neologd
 
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf

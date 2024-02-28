@@ -14,15 +14,16 @@ class WordOfWorldController extends Controller
   public function index(Request $request)
   {
     //
-
-
     $user = Auth::user();
     if (!$user) {
       return response()->json(['message' => 'Unauthorized'], 401);
     }
-    dd($user);
 
-    VocabularyNote::where()->delete();
+    // 관리자 생성 문제 찾아서 같이 넘겨주기
+
+    $notes = VocabularyNote::where('user_id', $user->id)->get();
+
+    return response()->json(["status" => "Success", "data" => $notes], 200);
   }
 
   /**
@@ -30,7 +31,7 @@ class WordOfWorldController extends Controller
    */
   public function create()
   {
-    //
+    // 
   }
 
   /**
@@ -38,7 +39,11 @@ class WordOfWorldController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    // 
+    $user = Auth::user();
+    if (!$user) {
+      return response()->json(['message' => 'Unauthorized'], 401);
+    }
   }
 
   /**
