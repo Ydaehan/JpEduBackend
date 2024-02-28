@@ -205,35 +205,6 @@
                 }
             }
         },
-        "/api/user": {
-            "get": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "회원 정보",
-                "description": "회원 정보\n   *     로그인 된 유저와 같은 회원정보를 반환합니다.",
-                "operationId": "7c1cf647d76fad4b3eb1549fa4fe2f4c",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer {access_token}",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/image/translate": {
             "post": {
                 "tags": [
