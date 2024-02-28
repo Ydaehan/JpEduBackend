@@ -176,14 +176,14 @@
                 }
             }
         },
-        "/api/signOut": {
-            "post": {
+        "/api/sign-out": {
+            "delete": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "회원 탈퇴",
                 "description": "회원 탈퇴\n   *     로그인 된 유저와 같은 회원정보를 삭제합니다.",
-                "operationId": "68a5fb7d93f634c5d814ae8df52bea7c",
+                "operationId": "4e82c795519f2284b6d86ac5d4c3d58f",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -195,6 +195,80 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "회원 정보",
+                "description": "회원 정보\n   *     로그인 된 유저와 같은 회원정보를 반환합니다.",
+                "operationId": "7c1cf647d76fad4b3eb1549fa4fe2f4c",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/image/translate": {
+            "post": {
+                "tags": [
+                    "ImageOCR"
+                ],
+                "summary": "이미지를 텍스트로 변환 후 번역",
+                "description": "이미지를 텍스트로 변환 후 번역 반환된 sourceTextArray는 원문 텍스트 targetTextArray는 번역된 텍스트입니다.",
+                "operationId": "146f73ccacb9c4e5af6b9ecd564fb3ad",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer access token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "이미지",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"

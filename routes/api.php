@@ -23,14 +23,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
 
+Route::get('/verify', [AuthController::class, 'verifyUser'])->name('verify.user');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
-  Route::post('/signOut', [AuthController::class, 'signOut']);
+  Route::delete('/sign-out', [AuthController::class, 'signOut']);
 });
 Route::post('/image/translate',[ImageTranslationController::class, 'translateImage']);
+Route::middleware('guest')->group(function () {
+    Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
+});
 
 Route::group(
   ['middleware' => ['web']],

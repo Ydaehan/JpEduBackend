@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -41,8 +42,8 @@ class AuthController extends Controller
   public function register(Request $request)
   {
     $validator = Validator::make($request->json()->all(), [
-      'nickname' => 'required|string|max:255',
-      'name' => 'required|string|max:255',
+      'nickname' => 'required|string|max:255|unique:users',
+      'name' => 'required|string|max:255|unique:users',
       'email' => 'required|email|max:255|unique:users',
       'password' => 'required|string|min:6|max:255|confirmed',
       'phone' => 'required|string|max:15',
@@ -53,7 +54,7 @@ class AuthController extends Controller
       return response()->json([
         'status' => 'error',
         'messages' => $validator->messages()
-      ], 200);
+      ], 400);
     }
 
     $user = User::create([
@@ -63,11 +64,14 @@ class AuthController extends Controller
       'password' => Hash::make($request->get('password')),
       'phone' => $request->get('phone'),
       'birthday' => $request->get('birthday'),
+    //   'verification_code' => sha1(time())
     ]);
 
     if ($user) {
+        // 이메일 전송
+        // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
       return response()->json([
-        'status' => 'Success',
+        'status' => 'Success.',
         'user' => $user
       ], 200);
     }
@@ -110,7 +114,15 @@ class AuthController extends Controller
       return response()->json([
         'status' => 'error',
         'messages' => $validator->messages()
-      ], 200);
+      ], 400);
+    }
+    $user = User::where('name', $request->name)->first();
+
+    if (DB::table('personal_access_tokens')->where('tokenable_id',$user->id)->exists()){
+        return response()->json([
+            'status' => 'error',
+            'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
+        ]);
     }
 
     if (Auth::attempt(['name' => $request->name, 'password' => $request->password])) {
@@ -191,8 +203,8 @@ class AuthController extends Controller
   }
 
   /**
-   * @OA\POST (
-   *     path="/api/signOut",
+   * @OA\Delete (
+   *     path="/api/sign-out",
    *     tags={"Auth"},
    *     summary="회원 탈퇴",
    *     description="회원 탈퇴
@@ -217,6 +229,53 @@ class AuthController extends Controller
     return response()->json([
       'status' => 'Success',
       'message' => 'User delete success'
+    ]);
+  }
+
+  /**
+   * @OA\Get(
+   *     path="/api/user",
+   *     tags={"Auth"},
+   *     summary="회원 정보",
+   *     description="회원 정보
+   *     로그인 된 유저와 같은 회원정보를 반환합니다.",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+  */
+  public function user()
+  {
+    $user = auth('sanctum')->user();
+    return response()->json([
+      'status' => 'Success',
+      'user' => $user
+    ]);
+  }
+
+  // 이메일 인증때 필요한 코드
+  public function verifyUser(Request $request)
+  {
+    $verification_code = \Illuminate\Support\Facades\Request::get('code');
+    $user = User::where(['verification_code' => $verification_code])->first();
+    if($user != null){
+        $user->is_verified = 1;
+        $user->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'User verify success'
+        ]);
+    }
+
+    return response()->json([
+        'status' => 'Fail',
+        'message' => 'User verify fail'
     ]);
   }
 }
