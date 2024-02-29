@@ -15,7 +15,7 @@ class SocialController extends Controller
 {
   //
   /**
-   * @OA\Post (
+   * @OA\Get (
    *     path="/api/social/{provider}",
    *     tags={"SocialAuth"},
    *     summary="소셜 로그인",
