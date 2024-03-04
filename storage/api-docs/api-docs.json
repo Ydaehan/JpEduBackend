@@ -205,14 +205,14 @@
                 }
             }
         },
-        "/api/image/translate": {
+        "/api/ocr": {
             "post": {
                 "tags": [
                     "ImageOCR"
                 ],
                 "summary": "이미지를 텍스트로 변환 후 번역",
-                "description": "이미지를 텍스트로 변환 후 번역 반환된 sourceTextArray는 원문 텍스트 targetTextArray는 번역된 텍스트입니다.",
-                "operationId": "146f73ccacb9c4e5af6b9ecd564fb3ad",
+                "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
+                "operationId": "0e8fe332e5fd1aa82d8ba208d2e5bd27",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -251,13 +251,13 @@
             }
         },
         "/api/social/{provider}": {
-            "post": {
+            "get": {
                 "tags": [
                     "SocialAuth"
                 ],
                 "summary": "소셜 로그인",
                 "description": "소셜 회원 로그인",
-                "operationId": "2908732faeffbdc261632ef4f48a55e6",
+                "operationId": "fea0986d399381fd7f8ec947d7303d66",
                 "parameters": [
                     {
                         "name": "provider",
@@ -308,10 +308,6 @@
                                     "excel": {
                                         "description": "Excel 파일",
                                         "type": "file"
-                                    },
-                                    "title": {
-                                        "description": "단어장 제목",
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
