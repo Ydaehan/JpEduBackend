@@ -3,6 +3,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Youaoi\MeCab\MeCab;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageTranslationController;
@@ -33,11 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::post('/signOut', [AuthController::class, 'signOut']);
   Route::resource('/note', WordOfWorldController::class);
-  Route::post('/image/translate', [ImageTranslationController::class, 'translateImage']);
+  Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
-
-
-
 
 
 Route::middleware('guest')->group(function () {
