@@ -32,8 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
-  Route::post('/signOut', [AuthController::class, 'signOut']);
-  Route::resource('/note', WordOfWorldController::class);
+  Route::resource('/note', WordOfWorldController::class);// pig
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
 
