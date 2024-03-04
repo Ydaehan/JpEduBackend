@@ -39,11 +39,23 @@ class WordOfWorldController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'score' => 'required|numeric|min:0',
+    ]);
     // 
     $user = Auth::user();
     if (!$user) {
       return response()->json(['message' => 'Unauthorized'], 401);
     }
+
+
+
+
+
+    $vocabularyNote = new VocabularyNote;
+    $vocabularyNote->user_id = $user->id;
+
+    $vocabularyNote->save();
   }
 
   /**

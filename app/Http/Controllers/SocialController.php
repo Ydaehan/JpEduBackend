@@ -9,13 +9,13 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\SocialAccount;
 use App\Models\User;
 use Carbon\Carbon;
-
+use Exception;
 
 class SocialController extends Controller
 {
   //
   /**
-   * @OA\Post (
+   * @OA\Get (
    *     path="/api/social/{provider}",
    *     tags={"SocialAuth"},
    *     summary="소셜 로그인",
@@ -36,16 +36,42 @@ class SocialController extends Controller
     if (!array_key_exists($provider, config('services'))) {
       return redirect('login')->with('error', $provider . ' 지원하지 않는 서비스입니다.');
     }
-    return Socialite::driver($provider)->redirect();
+    return response()->json([
+      'url' => Socialite::driver($provider)
+        ->stateless()
+        ->redirect()
+        ->getTargetUrl(),
+    ]);
   }
 
-
+  /**
+   * @OA\Get (
+   *     path="/api/social/callback/{provider}",
+   *     tags={"SocialAuth"},
+   *     summary="소셜 로그인",
+   *     description="소셜 회원 로그인",
+   *     @OA\Parameter(
+   *         name="provider",
+   *         in="path",
+   *         required=true,
+   *         description="kakao, google, naver, github 중 하나의 provider",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function callback(string $provider)
   {
 
     try {
+      try {
+        $socialUser = Socialite::driver($provider)->stateless()->user();
+      } catch (Exception $e) {
+        return response()->json(['error' => 'Invalid credentials provided.'], 422);
+      }
 
-      $socialUser = Socialite::driver($provider)->user();
+      // $socialUser = Socialite::driver($provider)->user();
 
       $socialAccount = SocialAccount::where('provider_name', $provider)
         ->where('provider_id', $socialUser->getId())
@@ -71,16 +97,20 @@ class SocialController extends Controller
       // Find User
       $user = User::where('email', $socialUser->getEmail())->first();
 
-
-      if (!$user) {
-        $user = User::create([
-          'email' => $socialUser->getEmail(),
-          'name' => $socialUser->getId(),
-          'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
-          // 'profile_image' => $socialUser->getAvatar(),
-          'email_verified_at' => now(),
+      if ($user) {
+        return response()->json([
+          'status' => 'Fail',
+          'message' => 'Email is already taken.',
         ]);
       }
+
+      $user = User::create([
+        'email' => $socialUser->getEmail(),
+        'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
+        // 'profile_image' => $socialUser->getAvatar(),
+        'email_verified_at' => now(),
+      ]);
+
 
       // 소셜 계정 생성
       $user->socialAccounts()->create([
