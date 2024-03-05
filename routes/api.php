@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageTranslationController;
+use App\Http\Controllers\TypingPracticeController;
 use App\Http\Controllers\VocabularyNoteController;
 use App\Http\Controllers\WordOfWorldController;
 
@@ -37,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('vocabularyNote/create', [VocabularyNoteController::class, 'create'])->name('vocabularyNote.create');
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
-
+Route::post('/make', [TypingPracticeController::class, 'fileOpen']);
 
 
 Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.export');

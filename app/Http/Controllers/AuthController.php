@@ -193,7 +193,7 @@ class AuthController extends Controller
   {
     $user = auth('sanctum')->user();
     $oldAccessToken = $user->tokens->where('name', 'API Token')->first();
-    if ($user->tokens->where('name', 'API Token')->count() > 0) {
+    if ($oldAccessToken) {
       $oldAccessToken->delete();
     }
     $accessToken = auth('sanctum')->user()->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
