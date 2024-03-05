@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('vocabularyNote/User', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.user');
   Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.export');
   Route::post('vocabularyNote/create', [VocabularyNoteController::class, 'create'])->name('vocabularyNote.create');
+  Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
 
 
