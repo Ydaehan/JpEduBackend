@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VocabularyNote extends Model
+class ReviewNote extends Model
 {
   use HasFactory;
 
   protected $fillable = [
-    'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public'
+    'user_id', 'meaning', 'gana', 'kanji',
   ];
 
   public function user()

@@ -46,15 +46,22 @@ class SocialController extends Controller
 
   /**
    * @OA\Get (
-   *     path="/api/social/callback/{provider}",
+   *     path="/api/social/callback/{provider}{location.search}",
    *     tags={"SocialAuth"},
-   *     summary="소셜 로그인",
+   *     summary="소셜 로그인 콜백 처리",
    *     description="소셜 회원 로그인",
    *     @OA\Parameter(
    *         name="provider",
    *         in="path",
    *         required=true,
    *         description="kakao, google, naver, github 중 하나의 provider",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Parameter(
+   *         name="location.search",
+   *         in="path",
+   *         required=true,
+   *         description="url",
    *         @OA\Schema(type="string")
    *     ),
    *     @OA\Response(response="200", description="Success"),
@@ -70,8 +77,6 @@ class SocialController extends Controller
       } catch (Exception $e) {
         return response()->json(['error' => 'Invalid credentials provided.'], 422);
       }
-
-      // $socialUser = Socialite::driver($provider)->user();
 
       $socialAccount = SocialAccount::where('provider_name', $provider)
         ->where('provider_id', $socialUser->getId())
@@ -97,20 +102,16 @@ class SocialController extends Controller
       // Find User
       $user = User::where('email', $socialUser->getEmail())->first();
 
-      if ($user) {
-        return response()->json([
-          'status' => 'Fail',
-          'message' => 'Email is already taken.',
+
+      if (!$user) {
+        $user = User::create([
+          'email' => $socialUser->getEmail(),
+          'name' => $socialUser->getId(),
+          'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
+          // 'profile_image' => $socialUser->getAvatar(),
+          'email_verified_at' => now(),
         ]);
       }
-
-      $user = User::create([
-        'email' => $socialUser->getEmail(),
-        'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
-        // 'profile_image' => $socialUser->getAvatar(),
-        'email_verified_at' => now(),
-      ]);
-
 
       // 소셜 계정 생성
       $user->socialAccounts()->create([

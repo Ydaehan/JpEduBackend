@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ReviewNote;
 use App\Models\VocabularyNote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,21 +27,14 @@ class WordOfWorldController extends Controller
     return response()->json(["status" => "Success", "data" => $notes], 200);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    // 
-  }
 
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
+  public function result(Request $request)
   {
     $request->validate([
       'score' => 'required|numeric|min:0',
+      'gana' => 'required|array',
+      'kanji' => 'required|array',
+      'meaning' => 'required|array',
     ]);
     // 
     $user = Auth::user();
@@ -48,45 +42,46 @@ class WordOfWorldController extends Controller
       return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    $reviewNote = ReviewNote::where('user_id', $user->id)->first();
+    if (!$reviewNote) {
+      $reviewNote = new ReviewNote();
+      $reviewNote->user_id = $user->id;
+      $reviewNote->gana = $request->gana;
+      $reviewNote->kanji = $request->kanji;
+      $reviewNote->meaning = $request->meaning;
+      $reviewNote->score = $request->score;
+      $reviewNote->save();
+      return response()->json(["status" => "Success", "message" => "review note created"], 200);
+    }
+    $reviewNoteGana = array_merge($reviewNote->gana, $request->gana);
+    $reviewNoteKanji = array_merge($reviewNote->kanji, $request->kanji);
+    $reviewNoteMeaning = array_merge($reviewNote->meaning, $request->meaning);
 
 
 
-
-    $vocabularyNote = new VocabularyNote;
-    $vocabularyNote->user_id = $user->id;
-
-    $vocabularyNote->save();
+    $reviewNote->gana = $reviewNoteGana;
+    $reviewNote->kanji = $reviewNoteKanji;
+    $reviewNote->meaning = $reviewNoteMeaning;
+    $reviewNote->score = $request->score;
+    $reviewNote->save();
+    return response()->json(["status" => "Success", "message" => "review note updated"], 200);
   }
 
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
+  function removeDuplicates($kanjiArray, $meaningArray)
   {
-    //
-  }
+    $uniqueKanji = array_unique($kanjiArray);
 
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
+    foreach ($uniqueKanji as $kanji) {
+      $kanjiIndexes = array_keys($kanjiArray, $kanji);
+      $meanings = array_intersect_key($meaningArray, array_flip($kanjiIndexes));
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
+      // 한자와 그에 해당하는 뜻이 모두 중복되는 경우 삭제
+      if (count(array_unique($meanings)) === 1 && count($kanjiIndexes) > 1) {
+        foreach ($kanjiIndexes as $index) {
+          unset($meaningArray[$index]);
+        }
+        unset($kanjiArray[array_search($kanji, $kanjiArray)]);
+      }
+    }
   }
 }
