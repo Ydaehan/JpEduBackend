@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ReviewNote;
 use App\Models\VocabularyNote;
+use App\Models\Ranking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +28,6 @@ class WordOfWorldController extends Controller
     return response()->json(["status" => "Success", "data" => $notes], 200);
   }
 
-
   public function result(Request $request)
   {
     $request->validate([
@@ -36,52 +36,37 @@ class WordOfWorldController extends Controller
       'kanji' => 'required|array',
       'meaning' => 'required|array',
     ]);
-    // 
+
     $user = Auth::user();
     if (!$user) {
       return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $reviewNote = ReviewNote::where('user_id', $user->id)->first();
-    if (!$reviewNote) {
-      $reviewNote = new ReviewNote();
-      $reviewNote->user_id = $user->id;
-      $reviewNote->gana = $request->gana;
-      $reviewNote->kanji = $request->kanji;
-      $reviewNote->meaning = $request->meaning;
-      $reviewNote->score = $request->score;
-      $reviewNote->save();
-      return response()->json(["status" => "Success", "message" => "review note created"], 200);
-    }
-    $reviewNoteGana = array_merge($reviewNote->gana, $request->gana);
-    $reviewNoteKanji = array_merge($reviewNote->kanji, $request->kanji);
-    $reviewNoteMeaning = array_merge($reviewNote->meaning, $request->meaning);
+    $reviewNote = ReviewNote::firstOrNew(['user_id' => $user->id]);
+    $reviewNote->kanji = array_merge($reviewNote->kanji, $request->kanji);
+    $reviewNote->gana = array_merge($reviewNote->gana, $request->gana);
+    $reviewNote->meaning = array_merge($reviewNote->meaning, $request->meaning);
 
-
-
-    $reviewNote->gana = $reviewNoteGana;
-    $reviewNote->kanji = $reviewNoteKanji;
-    $reviewNote->meaning = $reviewNoteMeaning;
-    $reviewNote->score = $request->score;
+    $result = duplicateCheck($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning);
+    list($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning) = $result;
     $reviewNote->save();
-    return response()->json(["status" => "Success", "message" => "review note updated"], 200);
-  }
 
-  function removeDuplicates($kanjiArray, $meaningArray)
-  {
-    $uniqueKanji = array_unique($kanjiArray);
-
-    foreach ($uniqueKanji as $kanji) {
-      $kanjiIndexes = array_keys($kanjiArray, $kanji);
-      $meanings = array_intersect_key($meaningArray, array_flip($kanjiIndexes));
-
-      // 한자와 그에 해당하는 뜻이 모두 중복되는 경우 삭제
-      if (count(array_unique($meanings)) === 1 && count($kanjiIndexes) > 1) {
-        foreach ($kanjiIndexes as $index) {
-          unset($meaningArray[$index]);
-        }
-        unset($kanjiArray[array_search($kanji, $kanjiArray)]);
-      }
+    $ranking = Ranking::firstOrNew(
+      [
+        'user_id' => $user->id,
+        'level_id' => 6
+      ],
+      [
+        'user_id' => $user->id,
+        'level_id' => 6
+      ]
+    );
+    if ($ranking->score < $request->score) {
+      $ranking->score = $request->score;
+      $ranking->save();
     }
+
+    $responseMessage = $reviewNote->wasRecentlyCreated ? "review note created" : "review note updated";
+    return response()->json(["status" => "Success", "message" => $responseMessage], 200);
   }
 }

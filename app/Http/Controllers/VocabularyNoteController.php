@@ -49,9 +49,9 @@ class VocabularyNoteController extends Controller
   public function export(Request $request)
   {
     try {
-      $request->validator([
-        'excel' => 'required|file',
-      ]);
+      // $request->validator([
+      //   'excel' => 'required|file',
+      // ]);
 
       $vocabularyNote = new VocabularyNoteImport();
       Excel::import($vocabularyNote, $request->file('excel'));

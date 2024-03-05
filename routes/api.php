@@ -31,21 +31,16 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
-
-  Route::post('/image/translate', [ImageTranslationController::class, 'translateImage']);
-
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
+  Route::post('vocabularyNote/User', [VocabularyNoteController::class, 'user'])->name('vocabularyNote.user');
 
-
-  Route::post('vocabularyNote/User', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.user');
-  Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.export');
   Route::post('vocabularyNote/create', [VocabularyNoteController::class, 'create'])->name('vocabularyNote.create');
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
 
 
 
-
+Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export'])->name('vocabularyNote.export');
 
 Route::middleware('guest')->group(function () {
   Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
@@ -53,3 +48,4 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/social/{provider}', [SocialController::class, 'login'])->name('social.login');
 Route::get('/social/callback/{provider}', [SocialController::class, 'callback'])->name('social.callback');
+Route::get('/social/mobile/{provider}', [SocialController::class, 'mobileCallback'])->name('mobile.callback');
