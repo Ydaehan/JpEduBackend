@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\Psr7\MultipartStream;
-use Youaoi\MeCab\MeCab;
 
 
 class ImageTranslationController extends Controller
@@ -46,9 +45,8 @@ class ImageTranslationController extends Controller
     {
         $source_lang = $request->input('source', 'ja');
         $target_lang = $request->input('target', 'ko');
-        $client_secret = env('APP_PAPAGO_API_CLIENT_SECRET_KEY'); // Replace with your actual client secret
-        $client_id = env('APP_PAPAGO_APIGW_CLIENT_ID'); // Replace with your actual client ID
-
+        $client_secret = env('APP_PAPAGO_API_CLIENT_SECRET_KEY');
+        $client_id = env('APP_PAPAGO_APIGW_CLIENT_ID');
         $uploaded_file = $request->file('image');
 
         // Create a MultipartStream for the data
@@ -88,55 +86,22 @@ class ImageTranslationController extends Controller
         $sourceTextArray = explode("\n", $responseContent['data']['sourceText']);
         $targetTextArray = explode("\n", $responseContent['data']['targetText']);
 
-        // 일본어가 아닌 요소를 삭제하고 해당 인덱스에 맞게 TargetText에서도 삭제
-        $filteredSourceTextArray = [];
-        $filteredTargetTextArray = [];
-
-        foreach ($sourceTextArray as $index => $sourceLine) {
-        // 일본어인지 확인하고 한자 부분에 히라가나만 있거나 한글이 인식되었을 때 해당 인덱스를 기준으로 삭제
-        // 해당 일본어에 한자가 포함되어 있으면 지우지 않기
-            if (preg_match_all('!['
-            .'\x{2E80}-\x{2EFF}'// 한,중,일 부수 보충
-            .'\x{31C0}-\x{31EF}\x{3200}-\x{32FF}'
-            .'\x{3400}-\x{4DBF}\x{4E00}-\x{9FBF}\x{F900}-\x{FAFF}'
-            .'\x{20000}-\x{2A6DF}\x{2F800}-\x{2FA1F}'// 한,중,일 호환한자
-            .']+!u', $sourceLine, $match)) {
-                $filteredSourceTextArray[] = $sourceLine;
-                $filteredTargetTextArray[] = $targetTextArray[$index];
-            }
-        }
-
-
-        $uniqueSourceArray = array_unique($filteredSourceTextArray);
-        $uniqueTargetArray = $filteredTargetTextArray;
+        $getResult = getKanji($sourceTextArray, $targetTextArray);
+        $uniqueSourceArray = array_unique($getResult[0]);
+        $uniqueTargetArray = $getResult[1];
 
         foreach ($sourceTextArray as $key => $value) {
             if(!array_key_exists($key, $uniqueSourceArray)){
                 unset($uniqueTargetArray[$key]);
             }
         }
-        // uniqueSourceArray의 요소들을 형태소분석하여 동사와 명사만 추출 하여 읽는법 까지 3가지로 반환해주기
-        $mecab = new Mecab();
-        $result = [];
-        // $index 정렬
+        // $index 번호 제거
         $uniqueSourceArray = array_values($uniqueSourceArray);
         $uniqueTargetArray = array_values($uniqueTargetArray);
-        foreach ($uniqueSourceArray as $index => $item) {
-            $reading = $mecab->parse($item);
-            if($reading[0]->speech === '動詞' || $reading[0]->speech === '名詞'){
-                $result[$index] = $reading[0]->reading;
-            }
-            else{
-                unset($uniqueSourceArray[$index]);
-                unset($uniqueTargetArray[$index]);
-            }
-        }
-        // index 정렬
-        $uniqueSourceArray = array_values($uniqueSourceArray);
-        $uniqueTargetArray = array_values($uniqueTargetArray);
-        $result = array_values($result);
+
+        $mecabResult = getMecab($uniqueSourceArray, $uniqueTargetArray);
 
         // 일어와 번역된 한국어를 반환
-        return response()->json(['kanji' => $uniqueSourceArray, 'gana' => $result,'meaning' => $uniqueTargetArray]);
+        return response()->json(['kanji' => $mecabResult[0], 'gana' => $mecabResult[1],'meaning' => $mecabResult[2]]);
     }
 }
