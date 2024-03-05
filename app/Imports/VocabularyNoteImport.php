@@ -39,6 +39,11 @@ class VocabularyNoteImport implements ToCollection
       //   $meaning[] =  $collection[$i][2];
       // }
 
+      $result = duplicateCheck($kanji, $gana, $meaning);
+
+      $kanji = $result[0];
+      $gana = $result[1];
+      $meaning = $result[2];
 
       $this->vocabularyNote = [
         'status' => 'Success',
