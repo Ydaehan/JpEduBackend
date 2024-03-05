@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageTranslationController;
+use App\Http\Controllers\TypingPracticeController;
 use App\Http\Controllers\VocabularyNoteController;
 use App\Http\Controllers\WordOfWorldController;
 
@@ -34,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::resource('/note', WordOfWorldController::class);
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
-
+Route::post('/make', [TypingPracticeController::class, 'fileOpen']);
 
 Route::middleware('guest')->group(function () {
   Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
