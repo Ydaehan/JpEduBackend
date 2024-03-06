@@ -60,4 +60,29 @@ class User extends Authenticatable
   {
     return $this->hasOne(ReviewNote::class);
   }
+
+  public function userSetting()
+  {
+    return $this->hasOne(UserSetting::class);
+  }
+
+  public function rankings()
+  {
+    return $this->hasMany(Ranking::class);
+  }
+
+  public function dailyChecks()
+  {
+    return $this->hasMany(DailyCheck::class);
+  }
+
+  public function subscribers()
+  {
+    return $this->hasMany(Subscription::class, 'subscriber_id');
+  }
+
+  public function targets()
+  {
+    return $this->hasMany(Subscription::class, 'target_id');
+  }
 }

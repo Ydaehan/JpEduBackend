@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('levels', function (Blueprint $table) {
+        Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('level')->default(0);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->boolean('review_note_auto_register')->default('false');
+            $table->boolean('rank_auto_register')->default('false');
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('levels');
+        Schema::dropIfExists('user_settings');
     }
 };
