@@ -10,12 +10,7 @@ class VocabularyNote extends Model
   use HasFactory;
 
   protected $fillable = [
-    'title',
-    'user_id',
-    'meaning',
-    'gana',
-    'kanji',
-    'is_public'
+    'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public'
   ];
 
   public function user()

@@ -56,6 +56,10 @@ class User extends Authenticatable
   {
     return $this->hasMany(VocabularyNote::class);
   }
+  public function reviewNote()
+  {
+    return $this->hasOne(ReviewNote::class);
+  }
 
   public function userSetting()
   {
@@ -70,11 +74,6 @@ class User extends Authenticatable
   public function dailyChecks()
   {
     return $this->hasMany(DailyCheck::class);
-  }
-
-  public function reviewNote()
-  {
-    return $this->hasOne(ReviewNote::class);
   }
 
   public function subscribers()

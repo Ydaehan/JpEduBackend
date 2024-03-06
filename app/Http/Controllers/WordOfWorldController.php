@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ReviewNote;
 use App\Models\VocabularyNote;
+use App\Models\Ranking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,67 +28,45 @@ class WordOfWorldController extends Controller
     return response()->json(["status" => "Success", "data" => $notes], 200);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    // 
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
+  public function result(Request $request)
   {
     $request->validate([
       'score' => 'required|numeric|min:0',
+      'gana' => 'required|array',
+      'kanji' => 'required|array',
+      'meaning' => 'required|array',
     ]);
-    // 
+
     $user = Auth::user();
     if (!$user) {
       return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    $reviewNote = ReviewNote::firstOrNew(['user_id' => $user->id]);
+    $reviewNote->kanji = array_merge($reviewNote->kanji, $request->kanji);
+    $reviewNote->gana = array_merge($reviewNote->gana, $request->gana);
+    $reviewNote->meaning = array_merge($reviewNote->meaning, $request->meaning);
 
+    $result = duplicateCheck($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning);
+    list($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning) = $result;
+    $reviewNote->save();
 
+    $ranking = Ranking::firstOrNew(
+      [
+        'user_id' => $user->id,
+        'level_id' => 6
+      ],
+      [
+        'user_id' => $user->id,
+        'level_id' => 6
+      ]
+    );
+    if ($ranking->score < $request->score) {
+      $ranking->score = $request->score;
+      $ranking->save();
+    }
 
-
-    $vocabularyNote = new VocabularyNote;
-    $vocabularyNote->user_id = $user->id;
-
-    $vocabularyNote->save();
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
+    $responseMessage = $reviewNote->wasRecentlyCreated ? "review note created" : "review note updated";
+    return response()->json(["status" => "Success", "message" => $responseMessage], 200);
   }
 }

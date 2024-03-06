@@ -279,6 +279,44 @@
                 }
             }
         },
+        "/api/social/callback/{provider}{location.search}": {
+            "get": {
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "소셜 로그인 콜백 처리",
+                "description": "소셜 회원 로그인",
+                "operationId": "4a8ed4d84c22798f5ff584499a64ae3f",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "kakao, google, naver, github 중 하나의 provider",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location.search",
+                        "in": "path",
+                        "description": "url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/vocabularyNote/export": {
             "post": {
                 "tags": [
