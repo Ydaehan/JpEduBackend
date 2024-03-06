@@ -5,18 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReviewNote extends Model
+class Ranking extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'kanji',
-        'gana',
-        'meaning'
+        'category_id',
+        'score',
+        'solution_time',
+        'level_id',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function level()
+    {
+        return $this->hasOne(Level::class);
     }
 }
