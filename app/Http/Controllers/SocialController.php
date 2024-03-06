@@ -105,9 +105,9 @@ class SocialController extends Controller
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'name' => $socialUser->getId(),
-          'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
-          // 'profile_image' => $socialUser->getAvatar(),
+          'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
+          'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
+          'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
           'email_verified_at' => now(),
         ]);
       }
@@ -116,8 +116,6 @@ class SocialController extends Controller
       $user->socialAccounts()->create([
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
-        'nickname' => $socialUser->getNickname(),
-        'email' => $socialUser->getEmail(),
       ]);
 
       // 토큰 발행 후 로그인
@@ -203,9 +201,9 @@ class SocialController extends Controller
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'name' => $socialUser->getId(),
-          'nickname' => $socialUser->getName() ? $socialUser->getName() : $socialUser->getNickname(),
-          // 'profile_image' => $socialUser->getAvatar(),
+          'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
+          'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
+          'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
           'email_verified_at' => now(),
         ]);
       }
@@ -214,8 +212,6 @@ class SocialController extends Controller
       $user->socialAccounts()->create([
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
-        'nickname' => $socialUser->getNickname(),
-        'email' => $socialUser->getEmail(),
       ]);
 
       // 토큰 발행 후 로그인

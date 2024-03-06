@@ -13,6 +13,8 @@ class VocabularyNote extends Model
     'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public'
   ];
 
+  protected $attributes = [];
+
   public function user()
   {
     return $this->belongsTo(User::class);

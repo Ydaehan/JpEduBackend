@@ -16,11 +16,6 @@ return new class extends Migration
       $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
       $table->string('provider_name');
       $table->string('provider_id');
-
-      $table->string('nickname')->nullable();
-      $table->string('email')->nullable();
-      $table->string('avatar')->nullable();
-
       $table->timestamps();
     });
   }

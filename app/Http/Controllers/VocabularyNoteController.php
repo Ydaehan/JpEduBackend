@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Imports\VocabularyNoteImport;
+use App\Models\VocabularyNote;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class VocabularyNoteController extends Controller
 {
   //
-  public function create(Request $request)
-  {
-    $request->validate([]);
-  }
 
   /**
    * @OA\Post (
@@ -50,8 +48,14 @@ class VocabularyNoteController extends Controller
   {
     try {
       // $request->validator([
-      //   'excel' => 'required|file',
+      //   'excel' => 'required',
       // ]);
+
+
+      $user = Auth::user();
+      if (!$user) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+      }
 
       $vocabularyNote = new VocabularyNoteImport();
       Excel::import($vocabularyNote, $request->file('excel'));
@@ -62,7 +66,28 @@ class VocabularyNoteController extends Controller
     }
   }
 
-  public function user(Request $request)
+  public function userCreate(Request $request)
   {
+    $request->validate([
+      'title' => 'required|string|max:255',
+      'kanji' => 'required|array',
+      'gana' => 'required|array',
+      'meaning' => 'required|array',
+    ]);
+    $result = duplicateCheck($request->kanji, $request->gana, $request->meaning);
+    list($kanji, $gana, $meaning) = $result;
+    $user = Auth::user();
+    if (!$user) {
+      return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $note = VocabularyNote::create([
+      'user_id' => $user->id,
+      'title' => $request->title,
+      'kanji' => json_encode($kanji),
+      'gana' => json_encode($gana),
+      'meaning' => json_encode($meaning),
+      'is_public' => false, // 임시 하드 코딩, 세팅에서 들고 올 것
+    ]);
   }
 }
