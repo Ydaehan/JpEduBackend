@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('rankings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('category_id')->constrained('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('score');
+            $table->integer('solution_time')->nullable();
+            $table->foreignId('level_id')->constrained('id')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
