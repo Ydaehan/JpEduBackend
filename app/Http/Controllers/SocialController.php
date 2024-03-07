@@ -84,7 +84,7 @@ class SocialController extends Controller
       if ($socialAccount) {
         //
         $user = $socialAccount->user;
-
+        Auth::login($user);
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -113,7 +113,8 @@ class SocialController extends Controller
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
       ]);
-
+        
+      Auth::login($user);
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
