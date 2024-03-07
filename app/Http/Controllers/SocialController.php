@@ -84,11 +84,9 @@ class SocialController extends Controller
       if ($socialAccount) {
         //
         $user = $socialAccount->user;
-        Auth::login($user);
 
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
 
         return response()->json([
           'status' => 'Success',
@@ -101,14 +99,12 @@ class SocialController extends Controller
       // Find User
       $user = User::where('email', $socialUser->getEmail())->first();
 
-
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
           'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
           'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
           'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
-          'email_verified_at' => now(),
         ]);
       }
 
@@ -118,8 +114,6 @@ class SocialController extends Controller
         'provider_id' => $socialUser->getId(),
       ]);
 
-      // 토큰 발행 후 로그인
-      Auth::login($user);
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -167,8 +161,12 @@ class SocialController extends Controller
   public function mobileCallback(string $provider, Request $request)
   {
     try {
+      $token = $request->bearerToken();
+      if (!$token) {
+        return response()->json(['error' => 'Invalid credentials provided.'], 422);
+      }
       try {
-        $socialUser = Socialite::driver($provider)->userFromToken($request->token);
+        $socialUser = Socialite::driver($provider)->userFromToken($token);
       } catch (Exception $e) {
         return response()->json(['error' => 'Invalid credentials provided.'], 422);
       }
@@ -180,8 +178,8 @@ class SocialController extends Controller
       if ($socialAccount) {
         //
         $user = $socialAccount->user;
-        Auth::login($user);
 
+        Auth::login($user);
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -204,7 +202,6 @@ class SocialController extends Controller
           'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
           'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
           'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
-          'email_verified_at' => now(),
         ]);
       }
 

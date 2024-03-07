@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\VocabularyNoteImport;
 use App\Models\VocabularyNote;
+use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
@@ -74,20 +75,28 @@ class VocabularyNoteController extends Controller
       'gana' => 'required|array',
       'meaning' => 'required|array',
     ]);
-    $result = duplicateCheck($request->kanji, $request->gana, $request->meaning);
-    list($kanji, $gana, $meaning) = $result;
     $user = Auth::user();
     if (!$user) {
       return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
+    list($kanji, $gana, $meaning) = $duplicateResult;
+    $setting = UserSetting::find('user_id', $user->id);
     $note = VocabularyNote::create([
-      'user_id' => $user->id,
       'title' => $request->title,
       'kanji' => json_encode($kanji),
       'gana' => json_encode($gana),
       'meaning' => json_encode($meaning),
-      'is_public' => false, // 임시 하드 코딩, 세팅에서 들고 올 것
+      'is_public' => $setting->is_public, // 임시 하드 코딩, 세팅에서 들고 올 것
     ]);
+
+    return response()->json(
+      [
+        'message' => 'VocabularyNote created successfully',
+        'note' => $note
+      ],
+      200
+    );
   }
 }

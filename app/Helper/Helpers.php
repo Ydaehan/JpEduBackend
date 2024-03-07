@@ -68,3 +68,19 @@ function duplicateCheck($kanji, $gana, $meaning)
 
   return [$resultKanji, $resultGana, $resultMeaning];
 }
+
+function getSocialUserLogin($socialAccount)
+{
+
+  $user = $socialAccount->user;
+
+  $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+  $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
+
+  return response()->json([
+    'status' => 'Success',
+    'user' => $user,
+    'access_token' => $accessToken->plainTextToken,
+    'refresh_token' => $refreshToken->plainTextToken,
+  ], 200);
+}
