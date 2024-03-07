@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Sentence;
 
 class TypingPracticeController extends Controller
 {
@@ -21,10 +22,13 @@ class TypingPracticeController extends Controller
             // 배열의 각 원소를 순회하며 처리
             foreach ($lines as $line) {
                 if($line != ''){
-                    echo $line . "\n"; // 출력 테스트 -> 추후 DB에 저장하는 로직으로 변경예정
+                    $existingSentence = Sentence::where('sentence', $line)->first();
+                    //똑같은 문장이면 들어가지 않게 처리
+                    if(!$existingSentence){
+                        Sentence::create(['sentence' => $line]);
+                    }
                 }
             }
-            // echo $contents;
         } else {
             echo "파일이 없습니다.";
         }
