@@ -45,7 +45,7 @@ class AuthController extends Controller
       'nickname' => 'required|string|max:255|unique:users',
       'email' => 'required|email|max:255|unique:users',
       'password' => 'required|string|min:6|max:255|confirmed',
-      'phone' => 'required|string|max:15',
+      'phone' => 'required|numeric|digits_between:11,15',
       'birthday' => 'required|date',
     ]);
 
@@ -68,6 +68,7 @@ class AuthController extends Controller
     if ($user) {
         // 이메일 전송
         // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
+      $user->userSetting()->create();
       return response()->json([
         'status' => 'Success.',
         'user' => $user
@@ -115,7 +116,7 @@ class AuthController extends Controller
       ], 400);
     }
     $user = User::where('email', $request->email)->first();
-
+    $user->tokens()->delete();
     if (DB::table('personal_access_tokens')->where('tokenable_id',$user->id)->exists()){
         return response()->json([
             'status' => 'error',
@@ -126,7 +127,7 @@ class AuthController extends Controller
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
       $user = Auth::user();
 
-      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+      $accessToken = $user->createToken('Access Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
       return response()->json([
