@@ -21,8 +21,6 @@ class VocabularyNoteImport implements ToCollection
 
   public function collection(Collection $collection)
   {
-
-
     try {
       $meaning = array();
       $gana = array();
@@ -40,10 +38,7 @@ class VocabularyNoteImport implements ToCollection
       // }
 
       $result = duplicateCheck($kanji, $gana, $meaning);
-
-      $kanji = $result[0];
-      $gana = $result[1];
-      $meaning = $result[2];
+      list($kanji, $gana, $meaning) = $result;
 
       $this->vocabularyNote = [
         'status' => 'Success',
