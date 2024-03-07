@@ -62,12 +62,12 @@ class AuthController extends Controller
       'password' => Hash::make($request->get('password')),
       'phone' => $request->get('phone'),
       'birthday' => $request->get('birthday'),
-    //   'verification_code' => sha1(time())
+      //   'verification_code' => sha1(time())
     ]);
 
     if ($user) {
-        // 이메일 전송
-        // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
+      // 이메일 전송
+      // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
       $user->userSetting()->create();
       return response()->json([
         'status' => 'Success.',
@@ -117,11 +117,11 @@ class AuthController extends Controller
     }
     $user = User::where('email', $request->email)->first();
     $user->tokens()->delete();
-    if (DB::table('personal_access_tokens')->where('tokenable_id',$user->id)->exists()){
-        return response()->json([
-            'status' => 'error',
-            'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
-        ]);
+    if (DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->exists()) {
+      return response()->json([
+        'status' => 'error',
+        'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
+      ]);
     }
 
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -236,18 +236,18 @@ class AuthController extends Controller
   {
     $verification_code = \Illuminate\Support\Facades\Request::get('code');
     $user = User::where(['verification_code' => $verification_code])->first();
-    if($user != null){
-        $user->is_verified = 1;
-        $user->save();
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'User verify success'
-        ]);
+    if ($user != null) {
+      $user->is_verified = 1;
+      $user->save();
+      return response()->json([
+        'status' => 'Success',
+        'message' => 'User verify success'
+      ]);
     }
 
     return response()->json([
-        'status' => 'Fail',
-        'message' => 'User verify fail'
+      'status' => 'Fail',
+      'message' => 'User verify fail'
     ]);
   }
 }

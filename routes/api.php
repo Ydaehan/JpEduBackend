@@ -22,28 +22,28 @@ use App\Http\Controllers\WordOfWorldController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-  return $request->user();
+	return $request->user();
 });
 
 Route::get('/verify', [AuthController::class, 'verifyUser'])->name('verify.user');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
-  Route::post('/logout', [AuthController::class, 'logout']);
-  Route::post('/refresh', [AuthController::class, 'refreshToken']);
-  Route::delete('/sign-out', [AuthController::class, 'signOut']);
-  Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
-  Route::post('vocabularyNote/userCreate', [VocabularyNoteController::class, 'userCreate']);
-  Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
+	Route::post('/logout', [AuthController::class, 'logout']);
+	Route::post('/refresh', [AuthController::class, 'refreshToken']);
+	Route::delete('/sign-out', [AuthController::class, 'signOut']);
+	Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
+	Route::post('vocabularyNote/userCreate', [VocabularyNoteController::class, 'userCreate']);
+	Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
 });
 
-Route::post('/make', [TypingPracticeController::class, 'fileOpen']);
+Route::post('/file-open', [TypingPracticeController::class, 'fileOpen']);
 
 
 Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export']);
 
 Route::middleware('guest')->group(function () {
-  Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
+	Route::post('/auth-reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::get('/social/{provider}', [SocialController::class, 'login']);
