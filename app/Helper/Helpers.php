@@ -21,6 +21,7 @@ function getMecab($sourceArray, $targetArray)
   // index 번호 제거
   $sourceArray = array_values($sourceArray);
   $targetArray = array_values($targetArray);
+  $gana = array_values($gana);
   $result = [$sourceArray, $gana, $targetArray];
   return $result;
 }

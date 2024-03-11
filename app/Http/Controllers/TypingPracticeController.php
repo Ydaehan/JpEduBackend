@@ -8,9 +8,9 @@ use App\Models\Sentence;
 /**
  * @OA\Post (
  *     path="/api/open-file",
- *     tags={"Test"},
- *     summary="타자연습 테스트",
- *     description="타자연습 테스트
+ *     tags={"TypingPractice"},
+ *     summary="타자연습 파일 등록",
+ *     description="타자연습용 문장 생성
  *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
  *     @OA\RequestBody(
  *         description="txt 파일",
@@ -31,7 +31,7 @@ use App\Models\Sentence;
  */
 class TypingPracticeController extends Controller
 {
-  public function fileOpen(Request $request)
+  public function makeSentences(Request $request)
   {
     if ($request->hasFile('file')) {
       $file = $request->file('file');
@@ -57,5 +57,29 @@ class TypingPracticeController extends Controller
     } else {
       echo "파일이 없습니다.";
     }
+  }
+
+  /**
+   * @OA\Get (
+   *     path="/api/typing/getSentences",
+   *     tags={"TypingPractice"},
+   *     summary="타자연습용 문장 조회",
+   *     description="타자연습용 문장을 조회합니다.
+   *     DB의 모든 문장을 들고옵니다.",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer access token",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
+  public function getSentences()
+  {
+    $sentences = Sentence::all();
+    return $sentences;
   }
 }
