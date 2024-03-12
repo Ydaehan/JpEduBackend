@@ -44,7 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 
-Route::post('/typing/makeSentences', [TypingPracticeController::class, 'makeSentences']);
+Route::prefix('/typing')->group(function () {
+  Route::post('/store', [TypingPracticeController::class, 'store']);
+  Route::patch('/update/{id}', [TypingPracticeController::class, 'update']);
+  Route::delete('/delete/{id}', [TypingPracticeController::class, 'destroy']);
+});
 
 
 
