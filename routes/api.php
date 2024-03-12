@@ -35,10 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
   Route::post('vocabularyNote/userCreate', [VocabularyNoteController::class, 'userCreate']);
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
+  Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 
-Route::post('/make', [TypingPracticeController::class, 'fileOpen']);
-
+Route::post('/typing/makeSentences', [TypingPracticeController::class, 'makeSentences']);
 
 Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export']);
 

@@ -45,7 +45,7 @@ class AuthController extends Controller
       'nickname' => 'required|string|max:255|unique:users',
       'email' => 'required|email|max:255|unique:users',
       'password' => 'required|string|min:6|max:255|confirmed',
-      'phone' => 'required|string|max:15',
+      'phone' => 'required|numeric|digits_between:11,15',
       'birthday' => 'required|date',
     ]);
 
@@ -62,12 +62,13 @@ class AuthController extends Controller
       'password' => Hash::make($request->get('password')),
       'phone' => $request->get('phone'),
       'birthday' => $request->get('birthday'),
-    //   'verification_code' => sha1(time())
+      //   'verification_code' => sha1(time())
     ]);
 
     if ($user) {
-        // 이메일 전송
-        // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
+      // 이메일 전송
+      // MailController::sendRegisterEmail($user->name, $user->email, $user->verification_code);
+      $user->userSetting()->create();
       return response()->json([
         'status' => 'Success.',
         'user' => $user
@@ -115,18 +116,18 @@ class AuthController extends Controller
       ], 400);
     }
     $user = User::where('email', $request->email)->first();
-
-    if (DB::table('personal_access_tokens')->where('tokenable_id',$user->id)->exists()){
-        return response()->json([
-            'status' => 'error',
-            'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
-        ]);
+    $user->tokens()->delete();
+    if (DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->exists()) {
+      return response()->json([
+        'status' => 'error',
+        'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
+      ]);
     }
 
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
       $user = Auth::user();
 
-      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+      $accessToken = $user->createToken('Access Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
       return response()->json([
@@ -235,18 +236,18 @@ class AuthController extends Controller
   {
     $verification_code = \Illuminate\Support\Facades\Request::get('code');
     $user = User::where(['verification_code' => $verification_code])->first();
-    if($user != null){
-        $user->is_verified = 1;
-        $user->save();
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'User verify success'
-        ]);
+    if ($user != null) {
+      $user->is_verified = 1;
+      $user->save();
+      return response()->json([
+        'status' => 'Success',
+        'message' => 'User verify success'
+      ]);
     }
 
     return response()->json([
-        'status' => 'Fail',
-        'message' => 'User verify fail'
+      'status' => 'Fail',
+      'message' => 'User verify fail'
     ]);
   }
 }

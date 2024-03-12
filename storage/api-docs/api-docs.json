@@ -317,6 +317,87 @@
                 }
             }
         },
+        "/api/social/mobile/{provider}": {
+            "get": {
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "소셜 로그인 콜백 처리",
+                "description": "소셜 회원 로그인",
+                "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "kakao, google, naver, github 중 하나의 provider",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "provider access_token",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "token": {
+                                        "description": "provider access_token",
+                                        "type": "string",
+                                        "example": "access_token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/open-file": {
+            "post": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "타자연습 테스트",
+                "description": "타자연습 테스트\n *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
+                "operationId": "cd748f8d54771ee115cc26a904112499",
+                "requestBody": {
+                    "description": "txt 파일",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/vocabularyNote/export": {
             "post": {
                 "tags": [
