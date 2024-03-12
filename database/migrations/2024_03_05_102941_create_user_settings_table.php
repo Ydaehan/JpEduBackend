@@ -14,7 +14,9 @@ return new class extends Migration
     Schema::create('user_settings', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-      $table->boolean('review_note_auto_register')->default(false);
+      $table->boolean('review_note_auto_register')->default(true);
+      $table->boolean('score_auto_register')->default(true);
+      $table->boolean('vocabulary_note_auto_visibility')->default(false);
       $table->string('avatar')->default('default_avatar');
       $table->timestamps();
     });

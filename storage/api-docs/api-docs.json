@@ -317,6 +317,44 @@
                 }
             }
         },
+        "/api/social/mobile/{provider}": {
+            "get": {
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "소셜 로그인 콜백 처리",
+                "description": "소셜 회원 로그인",
+                "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "kakao, google, naver, github 중 하나의 provider",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer provider token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/vocabularyNote/export": {
             "post": {
                 "tags": [
@@ -346,6 +384,64 @@
                                     "excel": {
                                         "description": "Excel 파일",
                                         "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/userCreate": {
+            "post": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 생성",
+                "description": "단어장 생성",
+                "operationId": "6586a5ec2227afa9f4f5b3f6d0b2b36d",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "단어장 이름",
+                                        "type": "string"
+                                    },
+                                    "kanji": {
+                                        "description": "한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "의미 리스트",
+                                        "type": "json"
                                     }
                                 },
                                 "type": "object"

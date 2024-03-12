@@ -13,7 +13,7 @@ use Exception;
 
 class SocialController extends Controller
 {
-  //
+
   /**
    * @OA\Get (
    *     path="/api/social/{provider}",
@@ -44,6 +44,8 @@ class SocialController extends Controller
     ]);
   }
 
+
+
   /**
    * @OA\Get (
    *     path="/api/social/callback/{provider}{location.search}",
@@ -71,20 +73,16 @@ class SocialController extends Controller
   public function callback(string $provider)
   {
     try {
-      try {
-        $socialUser = Socialite::driver($provider)->stateless()->user();
-      } catch (Exception $e) {
-        return response()->json(['error' => 'Invalid credentials provided.'], 422);
-      }
-
+      $socialUser = Socialite::driver($provider)->stateless()->user();
       $socialAccount = SocialAccount::where('provider_name', $provider)
         ->where('provider_id', $socialUser->getId())
         ->first();
 
       if ($socialAccount) {
-        //
         $user = $socialAccount->user;
+        Auth::login($user);
 
+        $user->tokens()->delete();
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -96,24 +94,26 @@ class SocialController extends Controller
         ], 200);
       }
 
-      // Find User
       $user = User::where('email', $socialUser->getEmail())->first();
 
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
-          'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
-          'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
+          'birthday' => $socialUser->birthday,
+          'phone' => $socialUser->phoneNumber,
+          'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
         ]);
+        $user->userSetting()->create();
       }
 
-      // 소셜 계정 생성
       $user->socialAccounts()->create([
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
       ]);
 
+      Auth::login($user);
+
+      $user->tokens()->delete();
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -123,13 +123,15 @@ class SocialController extends Controller
         'access_token' => $accessToken->plainTextToken,
         'refresh_token' => $refreshToken->plainTextToken,
       ], 200);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail: ' . $e->getMessage(),
+        'message' => 'Social Login Fail',
       ], 400);
     }
   }
+
+
 
   /**
    * @OA\Get (
@@ -144,15 +146,12 @@ class SocialController extends Controller
    *         description="kakao, google, naver, github 중 하나의 provider",
    *         @OA\Schema(type="string")
    *     ),
-   *     @OA\RequestBody(
-   *         description="provider access_token",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
    *         required=true,
-   *         @OA\MediaType(
-   *             mediaType="application/json",
-   *             @OA\Schema (
-   *                 @OA\Property (property="token", type="string", description="provider access_token", example="access_token")
-   *             )
-   *         )
+   *         description="Bearer provider token",
+   *         @OA\Schema(type="string")
    *     ),
    *     @OA\Response(response="200", description="Success"),
    *     @OA\Response(response="400", description="Fail")
@@ -165,24 +164,19 @@ class SocialController extends Controller
       if (!$token) {
         return response()->json(['error' => 'Invalid credentials provided.'], 422);
       }
-      try {
-        $socialUser = Socialite::driver($provider)->userFromToken($token);
-      } catch (Exception $e) {
-        return response()->json(['error' => 'Invalid credentials provided.'], 422);
-      }
+      $socialUser = Socialite::driver($provider)->userFromToken($token);
 
       $socialAccount = SocialAccount::where('provider_name', $provider)
         ->where('provider_id', $socialUser->getId())
         ->first();
 
       if ($socialAccount) {
-        //
         $user = $socialAccount->user;
-
         Auth::login($user);
+
+        $user->tokens()->delete();
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
 
         return response()->json([
           'status' => 'Success',
@@ -192,27 +186,26 @@ class SocialController extends Controller
         ], 200);
       }
 
-      // Find User
       $user = User::where('email', $socialUser->getEmail())->first();
-
 
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'birthday' => $socialUser->birthday ? $socialUser->birthday : null,
-          'phone' => $socialUser->phoneNumber ? $socialUser->phoneNumber : null,
-          'nickname' => $socialUser->getNickname() ? $socialUser->getNickname() : $socialUser->getName(),
+          'birthday' => $socialUser->birthday,
+          'phone' => $socialUser->phoneNumber,
+          'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
         ]);
+        $user->userSetting()->create();
       }
 
-      // 소셜 계정 생성
       $user->socialAccounts()->create([
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
       ]);
 
-      // 토큰 발행 후 로그인
       Auth::login($user);
+
+      $user->tokens()->delete();
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -222,10 +215,10 @@ class SocialController extends Controller
         'access_token' => $accessToken->plainTextToken,
         'refresh_token' => $refreshToken->plainTextToken,
       ], 200);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail: ' . $e->getMessage(),
+        'message' => 'Social Login Fail',
       ], 400);
     }
   }
