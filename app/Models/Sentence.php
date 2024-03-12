@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sentence extends Model
 {
-	use HasFactory;
-	protected $fillable = [
-		'sentence',
-	];
+  use HasFactory;
+  protected $fillable = [
+    'sentence',
+  ];
 }
