@@ -364,14 +364,14 @@
                 }
             }
         },
-        "/api/open-file": {
+        "/api/typing/store": {
             "post": {
                 "tags": [
-                    "Test"
+                    "TypingPractice"
                 ],
-                "summary": "타자연습 테스트",
-                "description": "타자연습 테스트\n *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
-                "operationId": "cd748f8d54771ee115cc26a904112499",
+                "summary": "관리자의 타자연습 파일 등록",
+                "description": "관리자가 타자연습용 문장을 생성\n   *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
+                "operationId": "10f13dc91d3ae3d241910de1a0ab9d35",
                 "requestBody": {
                     "description": "txt 파일",
                     "required": true,
@@ -388,6 +388,109 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/typing/getSentences": {
+            "get": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "타자연습용 문장 조회",
+                "description": "타자연습용 문장을 조회합니다.\n   *     DB의 모든 문장을 들고옵니다.",
+                "operationId": "78976ac7bee812e3d0a2d04f76cf6974",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer access token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/typing/update/{id}": {
+            "patch": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "관리자의 타자연습용 문장 수정",
+                "description": "관리자가 타자연습용 문장을 수정합니다.",
+                "operationId": "e9a529d4c56d59332455b929ee55ffe3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "문장의 id 값",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "변경할 문자열",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "sentence": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/typing/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "관리자의 타자연습용 문장 삭제",
+                "description": "관리자가 타자연습용 문장을 삭제합니다.",
+                "operationId": "93c135d4fc34076550c5cb07a3ddd053",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "문장의 id 값",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
