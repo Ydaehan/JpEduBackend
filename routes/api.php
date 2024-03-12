@@ -41,10 +41,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delete', [VocabularyNoteController::class, 'destroy']);
   });
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
+  Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 
-Route::post('/make', [TypingPracticeController::class, 'fileOpen']);
-
+Route::post('/typing/makeSentences', [TypingPracticeController::class, 'makeSentences']);
 
 
 

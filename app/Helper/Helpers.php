@@ -21,6 +21,7 @@ function getMecab($sourceArray, $targetArray)
   // index 번호 제거
   $sourceArray = array_values($sourceArray);
   $targetArray = array_values($targetArray);
+  $gana = array_values($gana);
   $result = [$sourceArray, $gana, $targetArray];
   return $result;
 }
@@ -67,20 +68,4 @@ function duplicateCheck($kanji, $gana, $meaning)
   }
 
   return [$resultKanji, $resultGana, $resultMeaning];
-}
-
-function getSocialUserLogin($socialAccount)
-{
-
-  $user = $socialAccount->user;
-
-  $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-  $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-  return response()->json([
-    'status' => 'Success',
-    'user' => $user,
-    'access_token' => $accessToken->plainTextToken,
-    'refresh_token' => $refreshToken->plainTextToken,
-  ], 200);
 }

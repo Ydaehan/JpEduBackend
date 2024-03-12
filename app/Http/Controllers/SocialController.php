@@ -81,7 +81,7 @@ class SocialController extends Controller
       if ($socialAccount) {
         $user = $socialAccount->user;
         Auth::login($user);
-
+        Auth::login($user);
         $user->tokens()->delete();
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
@@ -114,6 +114,7 @@ class SocialController extends Controller
       Auth::login($user);
 
       $user->tokens()->delete();
+      Auth::login($user);
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
