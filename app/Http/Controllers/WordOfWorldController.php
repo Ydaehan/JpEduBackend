@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserSetting;
 use App\Models\ReviewNote;
 use App\Models\VocabularyNote;
 use App\Models\Ranking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class WordOfWorldController extends Controller
 {
@@ -30,7 +32,7 @@ class WordOfWorldController extends Controller
 
   public function result(Request $request)
   {
-    $request->validate([
+    $validator = Validator::make($request->json()->all(), [
       'score' => 'required|numeric|min:0',
       'gana' => 'required|array',
       'kanji' => 'required|array',
@@ -38,32 +40,35 @@ class WordOfWorldController extends Controller
     ]);
 
     $user = Auth::user();
-    if (!$user) {
-      return response()->json(['message' => 'Unauthorized'], 401);
+
+    $setting = $user->userSetting;
+    if ($setting->review_note_auto_register) {
+      $reviewNote = ReviewNote::firstOrNew(['user_id' => $user->id]);
+      $reviewNote->kanji = array_merge($reviewNote->kanji, $request->kanji);
+      $reviewNote->gana = array_merge($reviewNote->gana, $request->gana);
+      $reviewNote->meaning = array_merge($reviewNote->meaning, $request->meaning);
+
+      $result = duplicateCheck($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning);
+      list($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning) = $result;
+      $reviewNote->save();
     }
 
-    $reviewNote = ReviewNote::firstOrNew(['user_id' => $user->id]);
-    $reviewNote->kanji = array_merge($reviewNote->kanji, $request->kanji);
-    $reviewNote->gana = array_merge($reviewNote->gana, $request->gana);
-    $reviewNote->meaning = array_merge($reviewNote->meaning, $request->meaning);
 
-    $result = duplicateCheck($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning);
-    list($reviewNote->kanji, $reviewNote->gana, $reviewNote->meaning) = $result;
-    $reviewNote->save();
-
-    $ranking = Ranking::firstOrNew(
-      [
-        'user_id' => $user->id,
-        'level_id' => 6
-      ],
-      [
-        'user_id' => $user->id,
-        'level_id' => 6
-      ]
-    );
-    if ($ranking->score < $request->score) {
-      $ranking->score = $request->score;
-      $ranking->save();
+    if ($setting->score_auto_register) {
+      $ranking = Ranking::firstOrNew(
+        [
+          'user_id' => $user->id,
+          'level_id' => 6
+        ],
+        [
+          'user_id' => $user->id,
+          'level_id' => 6
+        ]
+      );
+      if ($ranking->score < $request->score) {
+        $ranking->score = $request->score;
+        $ranking->save();
+      }
     }
 
     $responseMessage = $reviewNote->wasRecentlyCreated ? "review note created" : "review note updated";
