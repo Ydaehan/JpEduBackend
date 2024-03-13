@@ -12,7 +12,9 @@
     "paths": {
         "/api/register": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원가입",
                 "description": "회원을 등록\n   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
                 "operationId": "8a56853624e025573120a09a4c75d468",
@@ -77,7 +79,9 @@
         },
         "/api/login": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그인",
                 "description": "회원 로그인\n   *     Access token 과 refresh token을 반환해주므로 적당히 저장해둔 후 각 요청의 Header부분에 넣어서 사용하시면 됩니다.",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
@@ -116,7 +120,9 @@
         },
         "/api/logout": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그아웃",
                 "description": "회원 로그아웃\n   *     로그아웃 시 해당 로그인 유저와 관련된 토큰이 모두 삭제되므로 가지고 있는 Access token과 refresh token은 폐기하시면 됩니다.",
                 "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
@@ -143,7 +149,9 @@
         },
         "/api/refresh": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "ACCESS_TOKEN 재발급",
                 "description": "회원 ACCESS_TOKEN 재발급\n   *     회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다.\n   *     front 측에서는 발급된 Access token을 저장해두면 됩니다.",
                 "operationId": "848bfa513130bb2967e5f08edc75ee1e",
@@ -170,7 +178,9 @@
         },
         "/api/sign-out": {
             "delete": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원 탈퇴",
                 "description": "회원 탈퇴\n   *     로그인 된 유저와 같은 회원정보를 삭제합니다.",
                 "operationId": "4e82c795519f2284b6d86ac5d4c3d58f",
@@ -197,7 +207,9 @@
         },
         "/api/ocr": {
             "post": {
-                "tags": ["ImageOCR"],
+                "tags": [
+                    "ImageOCR"
+                ],
                 "summary": "이미지를 텍스트로 변환 후 번역",
                 "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
                 "operationId": "0e8fe332e5fd1aa82d8ba208d2e5bd27",
@@ -238,9 +250,220 @@
                 }
             }
         },
+        "/api/mail/applyToManager": {
+            "post": {
+                "tags": [
+                    "Manager"
+                ],
+                "summary": "매니저 지원",
+                "description": "매니저 지원자가\n   *     이메일과 지원사유를 적어 보내면 지원신청이 됩니다.",
+                "operationId": "679aa427b46ebb929472626529ca0ee1",
+                "requestBody": {
+                    "description": "매니저 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "신청자 이메일",
+                                        "type": "string",
+                                        "example": "testuser1"
+                                    },
+                                    "content": {
+                                        "description": "지원 사유",
+                                        "type": "string",
+                                        "example": "{{ 설명글 }}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/mail/sendSignUpEmail/{email}": {
+            "post": {
+                "tags": [
+                    "Manager"
+                ],
+                "summary": "매니저 지원 대기자 이메일 발송",
+                "description": "관리자가\n   *     지원 대기자를 승인할 경우 해당 지원내용의 id와 함께 요청을 보내면\n   *     해당 지원자에게 메일을 발송합니다.",
+                "operationId": "da6a1788cbfea65030b2a63ed56dccad",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "매니저 지원자의 email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "매니저 지원자의 이메일 및 지원 사유",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "신청자 이메일",
+                                        "type": "string",
+                                        "example": "testuser1"
+                                    },
+                                    "content": {
+                                        "description": "지원 사유",
+                                        "type": "string",
+                                        "example": "{{ 지원 사유 }}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/manager/register": {
+            "post": {
+                "tags": [
+                    "Manager"
+                ],
+                "summary": "매니저 회원가입",
+                "description": "매니저를 등록\n   *     URL에 토큰과 email이 넣어져 있기 때문에 회원가입창의 email 부분을 해당 이메일로 넣어주기\n   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
+                "operationId": "143b6830155c62f677039ccd18300f4e",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "매니저 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nickname": {
+                                        "description": "매니저 닉네임",
+                                        "type": "string",
+                                        "example": "testuser1"
+                                    },
+                                    "name": {
+                                        "description": "매니저 아이디",
+                                        "type": "string",
+                                        "example": "test1"
+                                    },
+                                    "email": {
+                                        "description": "매니저 이메일",
+                                        "type": "email",
+                                        "example": "testuser@naver.com"
+                                    },
+                                    "password": {
+                                        "description": "매니저 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "매니저 비밀번호 확인",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "phone": {
+                                        "description": "매니저 전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "birthday": {
+                                        "description": "매니저 생일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "01/01/2000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/manager/deleteManagerWaitList/{email}": {
+            "delete": {
+                "tags": [
+                    "Manager"
+                ],
+                "summary": "매니저 대기 명단 거부 및 DB에서 삭제",
+                "description": "관리자가 매니저 대기 명단을 거부 했을 경우\n   *     해당 지원자의 이메일을 함께 보내면 삭제됩니다.\n   *     아직 미완성 입니다.",
+                "operationId": "63e895f5221bedb683b0ae5ee9d76572",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "applicantEmail@gmail.com",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/social/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인",
                 "description": "소셜 회원 로그인",
                 "operationId": "fea0986d399381fd7f8ec947d7303d66",
@@ -267,7 +490,9 @@
         },
         "/api/social/callback/{provider}{location.search}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 콜백 처리",
                 "description": "소셜 회원 로그인",
                 "operationId": "4a8ed4d84c22798f5ff584499a64ae3f",
@@ -303,7 +528,9 @@
         },
         "/api/social/mobile/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 콜백 처리",
                 "description": "소셜 회원 로그인",
                 "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
@@ -316,26 +543,17 @@
                         "schema": {
                             "type": "string"
                         }
-                    }
-                ],
-                "requestBody": {
-                    "description": "provider access_token",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "token": {
-                                        "description": "provider access_token",
-                                        "type": "string",
-                                        "example": "access_token"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer provider token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -380,28 +598,6 @@
                 }
             }
         },
-<<<<<<< HEAD
-        "/api/social/mobile/{provider}": {
-            "get": {
-                "tags": ["SocialAuth"],
-                "summary": "소셜 로그인 콜백 처리",
-                "description": "소셜 회원 로그인",
-                "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
-                "parameters": [
-                    {
-                        "name": "provider",
-                        "in": "path",
-                        "description": "kakao, google, naver, github 중 하나의 provider",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer provider token",
-=======
         "/api/typing/getSentences": {
             "get": {
                 "tags": [
@@ -489,7 +685,6 @@
                         "name": "id",
                         "in": "path",
                         "description": "문장의 id 값",
->>>>>>> 26ded7f (✨ feat : 타자연습 백엔드 구축 + swagger API 작업, 타자연습 route주소 변경)
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -508,7 +703,9 @@
         },
         "/api/vocabularyNote/export": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "Excel 단어장 생성",
                 "description": "Excel 단어장 생성",
                 "operationId": "a87a3696655bb943a9d8c2b9de14d9e5",
@@ -552,7 +749,9 @@
         },
         "/api/vocabularyNote/userCreate": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 생성",
                 "description": "단어장 생성",
                 "operationId": "6586a5ec2227afa9f4f5b3f6d0b2b36d",
@@ -589,6 +788,118 @@
                                     "meaning": {
                                         "description": "의미 리스트",
                                         "type": "json"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/update": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 수정",
+                "description": "단어장 수정",
+                "operationId": "cd37628ac3e2c2feead68fead984b7fb",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "단어장 아이디",
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "description": "단어장 이름",
+                                        "type": "string"
+                                    },
+                                    "kanji": {
+                                        "description": "한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "의미 리스트",
+                                        "type": "json"
+                                    },
+                                    "is_public": {
+                                        "description": "단어장 공유 여부",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/delete": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 삭제",
+                "description": "단어장 삭제",
+                "operationId": "1737ecfea15a9002a6ef9e05f8705ce8",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "단어장 아이디",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
