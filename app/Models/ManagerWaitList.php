@@ -3,25 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Model;
 
-class Manager extends Model
+class ManagerWaitList extends Model
 {
     use HasFactory, HasApiTokens, Notifiable;
 
     protected $fillable = [
-        'nickname',
-        'password',
         'email',
-        'phone',
-        'birthday',
-        'role'
+        'content',
     ];
-
-    public function jlptQuestions()
-    {
-        return $this->hasMany(JlptQuestion::class);
-    }
 }
