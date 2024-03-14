@@ -12,7 +12,9 @@
     "paths": {
         "/api/register": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원가입",
                 "description": "회원을 등록\n   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
                 "operationId": "8a56853624e025573120a09a4c75d468",
@@ -77,7 +79,9 @@
         },
         "/api/login": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그인",
                 "description": "회원 로그인\n   *     Access token 과 refresh token을 반환해주므로 적당히 저장해둔 후 각 요청의 Header부분에 넣어서 사용하시면 됩니다.",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
@@ -116,7 +120,9 @@
         },
         "/api/logout": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그아웃",
                 "description": "회원 로그아웃\n   *     로그아웃 시 해당 로그인 유저와 관련된 토큰이 모두 삭제되므로 가지고 있는 Access token과 refresh token은 폐기하시면 됩니다.",
                 "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
@@ -143,7 +149,9 @@
         },
         "/api/refresh": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "ACCESS_TOKEN 재발급",
                 "description": "회원 ACCESS_TOKEN 재발급\n   *     회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다.\n   *     front 측에서는 발급된 Access token을 저장해두면 됩니다.",
                 "operationId": "848bfa513130bb2967e5f08edc75ee1e",
@@ -170,7 +178,9 @@
         },
         "/api/sign-out": {
             "delete": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원 탈퇴",
                 "description": "회원 탈퇴\n   *     로그인 된 유저와 같은 회원정보를 삭제합니다.",
                 "operationId": "4e82c795519f2284b6d86ac5d4c3d58f",
@@ -197,7 +207,9 @@
         },
         "/api/ocr": {
             "post": {
-                "tags": ["ImageOCR"],
+                "tags": [
+                    "ImageOCR"
+                ],
                 "summary": "이미지를 텍스트로 변환 후 번역",
                 "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
                 "operationId": "0e8fe332e5fd1aa82d8ba208d2e5bd27",
@@ -240,7 +252,9 @@
         },
         "/api/social/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인",
                 "description": "소셜 회원 로그인",
                 "operationId": "fea0986d399381fd7f8ec947d7303d66",
@@ -267,7 +281,9 @@
         },
         "/api/social/callback/{provider}{location.search}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 콜백 처리",
                 "description": "소셜 회원 로그인",
                 "operationId": "4a8ed4d84c22798f5ff584499a64ae3f",
@@ -303,84 +319,9 @@
         },
         "/api/social/mobile/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
-                "summary": "소셜 로그인 콜백 처리",
-                "description": "소셜 회원 로그인",
-                "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
-                "parameters": [
-                    {
-                        "name": "provider",
-                        "in": "path",
-                        "description": "kakao, google, naver, github 중 하나의 provider",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
+                "tags": [
+                    "SocialAuth"
                 ],
-                "requestBody": {
-                    "description": "provider access_token",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "token": {
-                                        "description": "provider access_token",
-                                        "type": "string",
-                                        "example": "access_token"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/open-file": {
-            "post": {
-                "tags": ["Test"],
-                "summary": "타자연습 테스트",
-                "description": "타자연습 테스트\n *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
-                "operationId": "cd748f8d54771ee115cc26a904112499",
-                "requestBody": {
-                    "description": "txt 파일",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "file": {
-                                        "type": "file"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/social/mobile/{provider}": {
-            "get": {
-                "tags": ["SocialAuth"],
                 "summary": "소셜 로그인 콜백 처리",
                 "description": "소셜 회원 로그인",
                 "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
@@ -414,9 +355,74 @@
                 }
             }
         },
+        "/api/open-file": {
+            "post": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "타자연습 파일 등록",
+                "description": "타자연습용 문장 생성\n *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
+                "operationId": "cd748f8d54771ee115cc26a904112499",
+                "requestBody": {
+                    "description": "txt 파일",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/typing/getSentences": {
+            "get": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "타자연습용 문장 조회",
+                "description": "타자연습용 문장을 조회합니다.\n   *     DB의 모든 문장을 들고옵니다.",
+                "operationId": "78976ac7bee812e3d0a2d04f76cf6974",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer access token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/vocabularyNote/export": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "Excel 단어장 생성",
                 "description": "Excel 단어장 생성",
                 "operationId": "a87a3696655bb943a9d8c2b9de14d9e5",
@@ -460,7 +466,9 @@
         },
         "/api/vocabularyNote/userCreate": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 생성",
                 "description": "단어장 생성",
                 "operationId": "6586a5ec2227afa9f4f5b3f6d0b2b36d",
@@ -504,6 +512,115 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/update/{noteId}": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 수정",
+                "description": "단어장 수정",
+                "operationId": "dc40fa1f5722739f55f7a0006296584a",
+                "parameters": [
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "단어장 이름",
+                                        "type": "string"
+                                    },
+                                    "kanji": {
+                                        "description": "한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "의미 리스트",
+                                        "type": "json"
+                                    },
+                                    "is_public": {
+                                        "description": "단어장 공유 여부",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/delete/{noteId}": {
+            "delete": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 삭제",
+                "description": "단어장 삭제",
+                "operationId": "0f6b8c09173ec5f2c5587e9c15bd6de5",
+                "parameters": [
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"

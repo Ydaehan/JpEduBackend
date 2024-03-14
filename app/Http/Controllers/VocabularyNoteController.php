@@ -16,11 +16,11 @@ class VocabularyNoteController extends Controller
   public function index()
   {
     $user = Auth::user();
-    $note = $user->vocabularyNotes()->get();
+    $notes = $user->vocabularyNotes()->get();
 
     // 관리자 생성 문제 찾아서 같이 넘겨주기
 
-    return response()->json(["status" =>   "Success", "data" => $note], 200);
+    return response()->json(["status" =>   "Success", "data" => $notes], 200);
   }
   /**
    * @OA\Post (
@@ -134,10 +134,11 @@ class VocabularyNoteController extends Controller
     $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
     list($kanji, $gana, $meaning) = $duplicateResult;
 
-    $setting = UserSetting::find('user_id', $user->id);
+    $setting = $user->userSetting;
 
     $note = VocabularyNote::create([
       'title' => $request->title,
+      'user_id' => $user->id,
       'kanji' => json_encode($kanji),
       'gana' => json_encode($gana),
       'meaning' => json_encode($meaning),
@@ -156,10 +157,17 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Patch (
-   *     path="/api/vocabularyNote/update",
+   *     path="/api/vocabularyNote/update/{noteId}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 수정",
    *     description="단어장 수정",
+   *     @OA\Parameter(
+   *         name="noteId",
+   *         in="path",
+   *         required=true,
+   *         description="단어장 노트의 id",
+   *         @OA\Schema(type="string")
+   *     ),
    *     @OA\Parameter(
    *         name="Authorization",
    *         in="header",
@@ -173,11 +181,6 @@ class VocabularyNoteController extends Controller
    *         @OA\MediaType(
    *             mediaType="multipart/form-data",
    *             @OA\Schema(
-   *                  @OA\Property(
-   *                     property="id",
-   *                     type="integer",
-   *                     description="단어장 아이디",
-   *                 ),
    *                 @OA\Property(
    *                     property="title",
    *                     type="string",
@@ -212,8 +215,17 @@ class VocabularyNoteController extends Controller
    */
   public function update(Request $request)
   {
-
     try {
+
+      $validator = Validator::make($request->json()->all(), [
+        'title' => 'required|string|max:255',
+        'kanji' => 'required|json',
+        'gana' => 'required|json',
+        'meaning' => 'required|json',
+        'is_public' => 'boolean'
+      ]);
+
+
       $user = Auth::user();
 
       $note = VocabularyNote::where('id', $request->id)->where('user_id', $user->id)->first();
@@ -223,6 +235,7 @@ class VocabularyNoteController extends Controller
 
       if ($note) {
         $note->title = $request->title;
+        $note->user_id = $user->id;
         $note->kanji = $kanji;
         $note->gana = $gana;
         $note->meaning = $meaning;
@@ -242,11 +255,18 @@ class VocabularyNoteController extends Controller
 
 
   /**
-   * @OA\Patch (
-   *     path="/api/vocabularyNote/delete",
+   * @OA\Delete (
+   *     path="/api/vocabularyNote/delete/{noteId}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 삭제",
    *     description="단어장 삭제",
+   *     @OA\Parameter(
+   *         name="noteId",
+   *         in="path",
+   *         required=true,
+   *         description="단어장 노트의 id",
+   *         @OA\Schema(type="string")
+   *     ),
    *     @OA\Parameter(
    *         name="Authorization",
    *         in="header",
@@ -254,30 +274,16 @@ class VocabularyNoteController extends Controller
    *         description="Bearer {access_token}",
    *         @OA\Schema(type="string")
    *     ),
-   *     @OA\RequestBody(
-   *         description="단어장 정보",
-   *         required=true,
-   *         @OA\MediaType(
-   *             mediaType="multipart/form-data",
-   *             @OA\Schema(
-   *                  @OA\Property(
-   *                     property="id",
-   *                     type="integer",
-   *                     description="단어장 아이디",
-   *                 ), 
-   *             ),
-   *         ),
-   *     ),
    *     @OA\Response(response="200", description="Success"),
    *     @OA\Response(response="400", description="Fail")
    * )
    */
-  public function destroy(Request $request)
+  public function destroy($id)
   {
     try {
       $user = Auth::user();
 
-      $note = VocabularyNote::where('id', $request->id)->where('user_id', $user->id)->first();
+      $note = VocabularyNote::where('id', $id)->where('user_id', $user->id)->first();
       if ($note) {
         $note->delete();
         return response()->json(["status" => "Success", "message" => "VocabularyNoteController: VocabularyNote Deleted"], 200);

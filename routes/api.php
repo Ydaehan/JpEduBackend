@@ -37,8 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/userCreate', [VocabularyNoteController::class, 'userCreate']);
-    Route::patch('/update', [VocabularyNoteController::class, 'update']);
-    Route::delete('/delete', [VocabularyNoteController::class, 'destroy']);
+    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
+    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
   });
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);

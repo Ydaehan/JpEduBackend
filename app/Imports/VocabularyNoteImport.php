@@ -41,12 +41,9 @@ class VocabularyNoteImport implements ToCollection
       list($kanji, $gana, $meaning) = $result;
 
       $this->vocabularyNote = [
-        'status' => 'Success',
-        // 'user_id' => auth()->user()->id,
-        'user_id' => 1,
-        'gana' => json_encode($gana),
-        'kanji' => json_encode($kanji),
-        'meaning' => json_encode($meaning)
+        'gana' => $gana,
+        'kanji' => $kanji,
+        'meaning' => $meaning
       ];
     } catch (Exception $e) {
       return response()->json(['status' => 'Fail', 'message' => 'VocabularyNoteImport: ' . $e->getMessage()], 400);

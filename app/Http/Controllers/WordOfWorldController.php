@@ -12,17 +12,10 @@ use Illuminate\Support\Facades\Validator;
 
 class WordOfWorldController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
   public function index(Request $request)
   {
     //
     $user = Auth::user();
-    if (!$user) {
-      return response()->json(['message' => 'Unauthorized'], 401);
-    }
-
     // 관리자 생성 문제 찾아서 같이 넘겨주기
 
     $notes = VocabularyNote::where('user_id', $user->id)->get();
@@ -30,13 +23,61 @@ class WordOfWorldController extends Controller
     return response()->json(["status" => "Success", "data" => $notes], 200);
   }
 
+
+  /**
+   * @OA\Post (
+   *     path="/api/wordOfWorld",
+   *     tags={"Game"},
+   *     summary="게임 결과 저장",
+   *     description="게임 결과 저장",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="액세스 토큰",
+   *         example="Bearer access_token",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\RequestBody(
+   *         description="단어장 정보",
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     property="score",
+   *                     type="integer",
+   *                     description="게임 점수",
+   *                 ),
+   *                @OA\Property(
+   *                     property="kanji",
+   *                     type="json",
+   *                     description="오답 한자 리스트",
+   *                 ),
+   *                @OA\Property(
+   *                     property="gana",
+   *                     type="json",
+   *                     description="오답 히라가나/카타카나 리스트",
+   *                 ),
+   *                @OA\Property(
+   *                     property="meaning",
+   *                     type="json",
+   *                     description="오답 의미 리스트",
+   *                 ),
+   *             ),
+   *         ),
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function result(Request $request)
   {
     $validator = Validator::make($request->json()->all(), [
       'score' => 'required|numeric|min:0',
-      'gana' => 'required|array',
-      'kanji' => 'required|array',
-      'meaning' => 'required|array',
+      'gana' => 'required|json',
+      'kanji' => 'required|json',
+      'meaning' => 'required|json',
     ]);
 
     $user = Auth::user();
