@@ -80,15 +80,9 @@ class VocabularyNoteController extends Controller
       ]);
 
       $user = auth('sanctum')->user();
-      if (!$user) {
-        return response()->json(['message' => 'Unauthorized'], 401);
-      }
 
       $vocabularyNote = new VocabularyNoteImport();
       Excel::import($vocabularyNote, $request->file('excel'));
-
-
-
       return response()->json($vocabularyNote->getVocabularyNote(), 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);

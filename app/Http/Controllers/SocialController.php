@@ -10,10 +10,52 @@ use App\Models\SocialAccount;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
-use Laravel\Socialite\Contracts\Provider;
 
 class SocialController extends Controller
 {
+
+  private function createTokensAndRespond(User $user)
+  {
+    $user->tokens()->delete();
+    $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+    $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
+    return response()->json([
+      'status' => 'Success',
+      'user' => $user,
+      'access_token' => $accessToken->plainTextToken,
+      'refresh_token' => $refreshToken->plainTextToken,
+    ], 200);
+  }
+
+  private function getBirthday(string $provider, $socialUser)
+  {
+    if ($provider === 'kakao') {
+
+      $birthday = $socialUser->user['kakao_account']['birthday'];
+      return $birthday;
+    } else if ($provider === 'naver') {
+      $birthday = $socialUser->user['response']['birthday'];
+      return $birthday;
+    } else {
+      $birthday = $socialUser->user['birthday'];
+      return $birthday;
+    }
+  }
+
+  private function getPhoneNumber(string $provider, $socialUser)
+  {
+    if ($provider === 'kakao') {
+
+      $phoneNumber = $socialUser->user['kakao_account']['phone_number'];
+      return $phoneNumber;
+    } else if ($provider === 'naver') {
+      $phoneNumber = $socialUser->user['response']['mobile'];
+      return $phoneNumber;
+    } else {
+      $phoneNumber = $socialUser->user['phone'];
+      return $phoneNumber;
+    }
+  }
 
   /**
    * @OA\Get (
@@ -81,26 +123,19 @@ class SocialController extends Controller
         ->first();
 
       if ($socialAccount) {
-        $user = $socialAccount->user;
-
-        $user->tokens()->delete();
-        $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-        $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-        return response()->json([
-          'status' => 'Success',
-          'user' => $user,
-          'access_token' => $accessToken->plainTextToken,
-          'refresh_token' => $refreshToken->plainTextToken,
-        ], 200);
+        // 로그인 성공
+        return $this->createTokensAndRespond($socialAccount->user);
       }
 
       $user = User::where('email', $socialUser->getEmail())->first();
 
       if (!$user) {
+
         $user = User::create([
           'email' => $socialUser->getEmail(),
           'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
+          'birthday' => $this->getBirthday($provider, $socialUser),
+          'phone' => $this->getPhoneNumber($provider, $socialUser),
         ]);
         $user->userSetting()->create();
       }
@@ -109,18 +144,7 @@ class SocialController extends Controller
         'provider_name' => $provider,
         'provider_id' => $socialUser->getId(),
       ]);
-
-      $user->tokens()->delete();
-
-      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-      $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-      return response()->json([
-        'status' => 'Success',
-        'user' => $user,
-        'access_token' => $accessToken->plainTextToken,
-        'refresh_token' => $refreshToken->plainTextToken,
-      ], 200);
+      return $this->createTokensAndRespond($user);
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
@@ -170,19 +194,7 @@ class SocialController extends Controller
         ->first();
 
       if ($socialAccount) {
-        $user = $socialAccount->user;
-
-
-        $user->tokens()->delete();
-        $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-        $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-        return response()->json([
-          'status' => 'Success',
-          'user' => $user,
-          'access_token' => $accessToken->plainTextToken,
-          'refresh_token' => $refreshToken->plainTextToken,
-        ], 200);
+        return $this->createTokensAndRespond($socialAccount->user);
       }
 
       $user = User::where('email', $socialUser->getEmail())->first();
@@ -191,9 +203,9 @@ class SocialController extends Controller
 
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'birthday' => $socialUser->getBirthday(),
-          'phone' => $socialUser->getPhoneNumber(),
           'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
+          'birthday' => $this->getBirthday($provider, $socialUser),
+          'phone' => $this->getPhoneNumber($provider, $socialUser),
         ]);
         $user->userSetting()->create();
       }
@@ -203,18 +215,7 @@ class SocialController extends Controller
         'provider_id' => $socialUser->getId(),
       ]);
 
-
-
-      $user->tokens()->delete();
-      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-      $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-      return response()->json([
-        'status' => 'Success',
-        'user' => $user,
-        'access_token' => $accessToken->plainTextToken,
-        'refresh_token' => $refreshToken->plainTextToken,
-      ], 200);
+      return $this->createTokensAndRespond($user);
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
