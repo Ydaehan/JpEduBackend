@@ -13,9 +13,28 @@ use Illuminate\Support\Facades\Validator;
 
 class VocabularyNoteController extends Controller
 {
+  /**
+   * @OA\Get (
+   *     path="/api/vocabularyNote/export",
+   *     tags={"VocabularyNote"},
+   *     summary="단어장 리스트",
+   *     description="단어장 리스트 리턴",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
   public function index()
   {
-    $user = Auth::user();
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
+
     $notes = $user->vocabularyNotes()->get();
 
     // 관리자 생성 문제 찾아서 같이 넘겨주기
@@ -60,13 +79,15 @@ class VocabularyNoteController extends Controller
         'excel' => 'required|file',
       ]);
 
-      $user = Auth::user();
+      $user = auth('sanctum')->user();
       if (!$user) {
         return response()->json(['message' => 'Unauthorized'], 401);
       }
 
       $vocabularyNote = new VocabularyNoteImport();
       Excel::import($vocabularyNote, $request->file('excel'));
+
+
 
       return response()->json($vocabularyNote->getVocabularyNote(), 200);
     } catch (Exception $e) {
@@ -128,8 +149,8 @@ class VocabularyNoteController extends Controller
       'gana' => 'required|json',
       'meaning' => 'required|json',
     ]);
-
-    $user = Auth::user();
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
 
     $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
     list($kanji, $gana, $meaning) = $duplicateResult;
@@ -225,14 +246,13 @@ class VocabularyNoteController extends Controller
         'is_public' => 'boolean'
       ]);
 
+      /** @var \App\Models\User $user **/
+      $user = auth('sanctum')->user();
 
-      $user = Auth::user();
-
-      $note = VocabularyNote::where('id', $request->id)->where('user_id', $user->id)->first();
+      $note = $user->vocabularyNotes()->where('id', $request->id)->first();
 
       $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
       list($kanji, $gana, $meaning) = $duplicateResult;
-
       if ($note) {
         $note->title = $request->title;
         $note->user_id = $user->id;
@@ -281,14 +301,11 @@ class VocabularyNoteController extends Controller
   public function destroy($id)
   {
     try {
-      $user = Auth::user();
+      /** @var \App\Models\User $user **/
+      $user = auth('sanctum')->user();
 
-      $note = VocabularyNote::where('id', $id)->where('user_id', $user->id)->first();
-      if ($note) {
-        $note->delete();
-        return response()->json(["status" => "Success", "message" => "VocabularyNoteController: VocabularyNote Deleted"], 200);
-      }
-      return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: Not Found VocabularyNote"], 400);
+      $user->vocabularyNotes()->where('id', $id)->delete();
+      return response()->json(["status" => "Success", "message" => "VocabularyNoteController: VocabularyNote Deleted"], 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
     }

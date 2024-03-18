@@ -1,6 +1,9 @@
 <?php
 
 use Youaoi\MeCab\MeCab;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 function getMecab($sourceArray, $targetArray)
 {
@@ -68,4 +71,38 @@ function duplicateCheck($kanji, $gana, $meaning)
   }
 
   return [$resultKanji, $resultGana, $resultMeaning];
+}
+
+function dailyCheck()
+{
+  $user = auth('sanctum')->user();
+  $now = now();
+  $today = $now->startOfDay();
+  $yesterday = $now->copy()->subDay()->startOfDay();
+  $lastCheck = $user->dailyChecks()->latest('checked_at')->first();
+
+  if (!$lastCheck) {
+    $user->dailyChecks()->create([
+      'checked_at' => $today
+    ]);
+    return ['message' => 'daily check success', 'streak' => 1];
+  }
+
+  if ($lastCheck->checked_at->eq($today)) {
+    return ['message' => 'already checked today', 'streak' => $user->userSetting->streak];
+  }
+
+  if ($lastCheck->checked_at->eq($yesterday)) {
+    $user->userSetting->streak += 1;
+    $user->userSetting->save();
+  } else {
+    $user->userSetting->streak = 1;
+    $user->userSetting->save();
+  }
+
+  $user->dailyChecks()->create([
+    'checked_at' => $today
+  ]);
+
+  return ['message' => 'daily check success', 'streak' => $user->userSetting->streak];
 }

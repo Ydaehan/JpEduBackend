@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
-
+  // 단어장
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/userCreate', [VocabularyNoteController::class, 'userCreate']);

@@ -10,6 +10,7 @@ use App\Models\SocialAccount;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Laravel\Socialite\Contracts\Provider;
 
 class SocialController extends Controller
 {
@@ -18,12 +19,12 @@ class SocialController extends Controller
    * @OA\Get (
    *     path="/api/social/{provider}",
    *     tags={"SocialAuth"},
-   *     summary="소셜 로그인",
-   *     description="소셜 회원 로그인",
+   *     summary="소셜 로그인 URL 생성",
+   *     description="소셜 로그인 URL을 생성합니다.",
    *     @OA\Parameter(
    *         name="provider",
    *         in="path",
-   *         required=true,
+   *         required=true, 
    *         description="kakao, google, naver, github 중 하나의 provider",
    *         @OA\Schema(type="string")
    *     ),
@@ -36,6 +37,7 @@ class SocialController extends Controller
     if (!array_key_exists($provider, config('services'))) {
       return redirect('login')->with('error', $provider . ' 지원하지 않는 서비스입니다.');
     }
+
     return response()->json([
       'url' => Socialite::driver($provider)
         ->stateless()
@@ -80,8 +82,7 @@ class SocialController extends Controller
 
       if ($socialAccount) {
         $user = $socialAccount->user;
-        Auth::login($user);
-        Auth::login($user);
+
         $user->tokens()->delete();
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
@@ -99,8 +100,6 @@ class SocialController extends Controller
       if (!$user) {
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'birthday' => $socialUser->birthday,
-          'phone' => $socialUser->phoneNumber,
           'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
         ]);
         $user->userSetting()->create();
@@ -111,10 +110,8 @@ class SocialController extends Controller
         'provider_id' => $socialUser->getId(),
       ]);
 
-      Auth::login($user);
-
       $user->tokens()->delete();
-      Auth::login($user);
+
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -165,6 +162,7 @@ class SocialController extends Controller
       if (!$token) {
         return response()->json(['error' => 'Invalid credentials provided.'], 422);
       }
+
       $socialUser = Socialite::driver($provider)->userFromToken($token);
 
       $socialAccount = SocialAccount::where('provider_name', $provider)
@@ -173,7 +171,7 @@ class SocialController extends Controller
 
       if ($socialAccount) {
         $user = $socialAccount->user;
-        Auth::login($user);
+
 
         $user->tokens()->delete();
         $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
@@ -190,10 +188,11 @@ class SocialController extends Controller
       $user = User::where('email', $socialUser->getEmail())->first();
 
       if (!$user) {
+
         $user = User::create([
           'email' => $socialUser->getEmail(),
-          'birthday' => $socialUser->birthday,
-          'phone' => $socialUser->phoneNumber,
+          'birthday' => $socialUser->getBirthday(),
+          'phone' => $socialUser->getPhoneNumber(),
           'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
         ]);
         $user->userSetting()->create();
@@ -204,7 +203,7 @@ class SocialController extends Controller
         'provider_id' => $socialUser->getId(),
       ]);
 
-      Auth::login($user);
+
 
       $user->tokens()->delete();
       $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
