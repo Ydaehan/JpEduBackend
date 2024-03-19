@@ -12,7 +12,9 @@
     "paths": {
         "/api/register": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원가입",
                 "description": "회원을 등록\n   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
                 "operationId": "8a56853624e025573120a09a4c75d468",
@@ -77,7 +79,9 @@
         },
         "/api/login": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그인",
                 "description": "회원 로그인\n   *     Access token 과 refresh token을 반환해주므로 적당히 저장해둔 후 각 요청의 Header부분에 넣어서 사용하시면 됩니다.",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
@@ -116,7 +120,9 @@
         },
         "/api/logout": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "로그아웃",
                 "description": "회원 로그아웃\n   *     로그아웃 시 해당 로그인 유저와 관련된 토큰이 모두 삭제되므로 가지고 있는 Access token과 refresh token은 폐기하시면 됩니다.",
                 "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
@@ -143,7 +149,9 @@
         },
         "/api/refresh": {
             "post": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "ACCESS_TOKEN 재발급",
                 "description": "회원 ACCESS_TOKEN 재발급\n   *     회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다.\n   *     front 측에서는 발급된 Access token을 저장해두면 됩니다.",
                 "operationId": "848bfa513130bb2967e5f08edc75ee1e",
@@ -170,7 +178,9 @@
         },
         "/api/sign-out": {
             "delete": {
-                "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "회원 탈퇴",
                 "description": "회원 탈퇴\n   *     로그인 된 유저와 같은 회원정보를 삭제합니다.",
                 "operationId": "4e82c795519f2284b6d86ac5d4c3d58f",
@@ -197,7 +207,9 @@
         },
         "/api/ocr": {
             "post": {
-                "tags": ["ImageOCR"],
+                "tags": [
+                    "ImageOCR"
+                ],
                 "summary": "이미지를 텍스트로 변환 후 번역",
                 "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
                 "operationId": "0e8fe332e5fd1aa82d8ba208d2e5bd27",
@@ -240,7 +252,9 @@
         },
         "/api/mail/applyToManager": {
             "post": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 지원",
                 "description": "매니저 지원자가\n   *     이메일과 지원사유를 적어 보내면 지원신청이 됩니다.",
                 "operationId": "679aa427b46ebb929472626529ca0ee1",
@@ -279,7 +293,9 @@
         },
         "/api/mail/sendSignUpEmail/{email}": {
             "post": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 지원 대기자 이메일 발송",
                 "description": "관리자가\n   *     지원 대기자를 승인할 경우 해당 지원내용의 id와 함께 요청을 보내면\n   *     해당 지원자에게 메일을 발송합니다.",
                 "operationId": "da6a1788cbfea65030b2a63ed56dccad",
@@ -329,7 +345,9 @@
         },
         "/api/manager/register": {
             "post": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 회원가입",
                 "description": "매니저를 등록\n   *     URL에 토큰과 email이 넣어져 있기 때문에 회원가입창의 email 부분을 해당 이메일로 넣어주기\n   *     따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
                 "operationId": "143b6830155c62f677039ccd18300f4e",
@@ -405,7 +423,9 @@
         },
         "/api/manager/deleteManagerWaitList/{email}": {
             "delete": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 대기 명단 거부 및 DB에서 삭제",
                 "description": "관리자가 매니저 대기 명단을 거부 했을 경우\n   *     해당 지원자의 이메일을 함께 보내면 삭제됩니다.\n   *     아직 미완성 입니다.",
                 "operationId": "63e895f5221bedb683b0ae5ee9d76572",
@@ -441,9 +461,11 @@
         },
         "/api/social/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
-                "summary": "소셜 로그인",
-                "description": "소셜 회원 로그인",
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "소셜 로그인 URL 생성",
+                "description": "소셜 로그인 URL을 생성합니다.",
                 "operationId": "fea0986d399381fd7f8ec947d7303d66",
                 "parameters": [
                     {
@@ -468,9 +490,11 @@
         },
         "/api/social/callback/{provider}{location.search}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 콜백 처리",
-                "description": "소셜 회원 로그인",
+                "description": "소셜 로그인 콜백 처리",
                 "operationId": "4a8ed4d84c22798f5ff584499a64ae3f",
                 "parameters": [
                     {
@@ -504,9 +528,11 @@
         },
         "/api/social/mobile/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
-                "summary": "소셜 로그인 콜백 처리",
-                "description": "소셜 회원 로그인",
+                "tags": [
+                    "SocialAuth"
+                ],
+                "summary": "모바일 소셜 로그인 콜백 처리",
+                "description": "모바일 소셜 로그인 콜백 처리",
                 "operationId": "4c0be3e30c2624a0569b598a2a89b60a",
                 "parameters": [
                     {
@@ -540,7 +566,9 @@
         },
         "/api/typing/store": {
             "post": {
-                "tags": ["TypingPractice"],
+                "tags": [
+                    "TypingPractice"
+                ],
                 "summary": "관리자의 타자연습 파일 등록",
                 "description": "관리자가 타자연습용 문장을 생성\n   *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
                 "operationId": "10f13dc91d3ae3d241910de1a0ab9d35",
@@ -572,7 +600,9 @@
         },
         "/api/typing/getSentences": {
             "get": {
-                "tags": ["TypingPractice"],
+                "tags": [
+                    "TypingPractice"
+                ],
                 "summary": "타자연습용 문장 조회",
                 "description": "타자연습용 문장을 조회합니다.\n   *     DB의 모든 문장을 들고옵니다.",
                 "operationId": "78976ac7bee812e3d0a2d04f76cf6974",
@@ -599,14 +629,12 @@
         },
         "/api/typing/update/{id}": {
             "patch": {
-                "tags": ["TypingPractice"],
+                "tags": [
+                    "TypingPractice"
+                ],
                 "summary": "관리자의 타자연습용 문장 수정",
                 "description": "관리자가 타자연습용 문장을 수정합니다.",
                 "operationId": "e9a529d4c56d59332455b929ee55ffe3",
-                "tags": ["TypingPractice"],
-                "summary": "타자연습용 문장 조회",
-                "description": "타자연습용 문장을 조회합니다.\n   *     DB의 모든 문장을 들고옵니다.",
-                "operationId": "78976ac7bee812e3d0a2d04f76cf6974",
                 "parameters": [
                     {
                         "name": "id",
@@ -646,7 +674,9 @@
         },
         "/api/typing/delete/{id}": {
             "delete": {
-                "tags": ["TypingPractice"],
+                "tags": [
+                    "TypingPractice"
+                ],
                 "summary": "관리자의 타자연습용 문장 삭제",
                 "description": "관리자가 타자연습용 문장을 삭제합니다.",
                 "operationId": "93c135d4fc34076550c5cb07a3ddd053",
@@ -671,9 +701,245 @@
                 }
             }
         },
+        "/api/vocabularyNote/index": {
+            "get": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 리스트",
+                "description": "단어장 리스트 리턴",
+                "operationId": "15ce3ca2c7fc9e89b3fbe93a77d22597",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/store": {
+            "post": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 생성",
+                "description": "단어장 생성",
+                "operationId": "ac42429bd21dc8a5f7d9ba0b73dcbc2a",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "단어장 이름",
+                                        "type": "string"
+                                    },
+                                    "kanji": {
+                                        "description": "한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "의미 리스트",
+                                        "type": "json"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/show/{id}": {
+            "get": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 리스트",
+                "description": "단어장 리스트 리턴",
+                "operationId": "47fd46424ea2c138418d20d713232d5b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/update/{id}": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 수정",
+                "description": "단어장 수정",
+                "operationId": "abddf681fee49ed067daa4019bffa8c7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "단어장 이름",
+                                        "type": "string"
+                                    },
+                                    "kanji": {
+                                        "description": "한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "의미 리스트",
+                                        "type": "json"
+                                    },
+                                    "is_public": {
+                                        "description": "단어장 공유 여부",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 삭제",
+                "description": "단어장 삭제",
+                "operationId": "886ebd5bf8eaecb63e1d0145286a9251",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/vocabularyNote/export": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "Excel 단어장 생성",
                 "description": "Excel 단어장 생성",
                 "operationId": "a87a3696655bb943a9d8c2b9de14d9e5",
@@ -715,21 +981,24 @@
                 }
             }
         },
-        "/api/vocabularyNote/userCreate": {
+        "/api/wordOfWorld": {
             "post": {
-                "tags": ["VocabularyNote"],
-                "summary": "단어장 생성",
-                "description": "단어장 생성",
-                "operationId": "6586a5ec2227afa9f4f5b3f6d0b2b36d",
+                "tags": [
+                    "Game"
+                ],
+                "summary": "게임 결과 저장",
+                "description": "게임 결과 저장",
+                "operationId": "60bc2442bc14f20ce2ca37524d2ce702",
                 "parameters": [
                     {
                         "name": "Authorization",
                         "in": "header",
-                        "description": "Bearer {access_token}",
+                        "description": "액세스 토큰",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "example": "Bearer access_token"
                     }
                 ],
                 "requestBody": {
@@ -739,129 +1008,21 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "title": {
-                                        "description": "단어장 이름",
-                                        "type": "string"
+                                    "score": {
+                                        "description": "게임 점수",
+                                        "type": "integer"
                                     },
                                     "kanji": {
-                                        "description": "한자 리스트",
+                                        "description": "오답 한자 리스트",
                                         "type": "json"
                                     },
                                     "gana": {
-                                        "description": "히라가나/카타카나 리스트",
+                                        "description": "오답 히라가나/카타카나 리스트",
                                         "type": "json"
                                     },
                                     "meaning": {
-                                        "description": "의미 리스트",
+                                        "description": "오답 의미 리스트",
                                         "type": "json"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/vocabularyNote/update": {
-            "patch": {
-                "tags": ["VocabularyNote"],
-                "summary": "단어장 수정",
-                "description": "단어장 수정",
-                "operationId": "cd37628ac3e2c2feead68fead984b7fb",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer {access_token}",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "단어장 정보",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "단어장 아이디",
-                                        "type": "integer"
-                                    },
-                                    "title": {
-                                        "description": "단어장 이름",
-                                        "type": "string"
-                                    },
-                                    "kanji": {
-                                        "description": "한자 리스트",
-                                        "type": "json"
-                                    },
-                                    "gana": {
-                                        "description": "히라가나/카타카나 리스트",
-                                        "type": "json"
-                                    },
-                                    "meaning": {
-                                        "description": "의미 리스트",
-                                        "type": "json"
-                                    },
-                                    "is_public": {
-                                        "description": "단어장 공유 여부",
-                                        "type": "boolean"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/vocabularyNote/delete": {
-            "patch": {
-                "tags": ["VocabularyNote"],
-                "summary": "단어장 삭제",
-                "description": "단어장 삭제",
-                "operationId": "1737ecfea15a9002a6ef9e05f8705ce8",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer {access_token}",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "단어장 정보",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "id": {
-                                        "description": "단어장 아이디",
-                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
