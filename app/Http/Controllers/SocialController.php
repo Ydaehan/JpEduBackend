@@ -10,10 +10,12 @@ use App\Models\SocialAccount;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class SocialController extends Controller
 {
 
+  // 사용자 토큰을 생성, 응답을 반환하는 메서드
   private function createTokensAndRespond(User $user)
   {
     $user->tokens()->delete();
@@ -27,10 +29,10 @@ class SocialController extends Controller
     ], 200);
   }
 
+  // 사용자의 생일을 반환하는 메서드
   private function getBirthday(string $provider, $socialUser)
   {
     if ($provider === 'kakao') {
-
       $birthday = $socialUser->user['kakao_account']['birthday'];
       return $birthday;
     } else if ($provider === 'naver') {
@@ -41,7 +43,7 @@ class SocialController extends Controller
       return $birthday;
     }
   }
-
+  // 사용자의 전화번호를 반환하는 메서드
   private function getPhoneNumber(string $provider, $socialUser)
   {
     if ($provider === 'kakao') {
@@ -56,6 +58,38 @@ class SocialController extends Controller
       return $phoneNumber;
     }
   }
+
+  // 소셜 로그인 처리 메서드
+  private function handleSocialUser(string $provider, $socialUser)
+  {
+    $socialAccount = SocialAccount::where('provider_name', $provider)
+      ->where('provider_id', $socialUser->getId())
+      ->first();
+
+    if ($socialAccount) {
+      return $this->createTokensAndRespond($socialAccount->user);
+    }
+
+    $user = User::where('email', $socialUser->getEmail())->first();
+
+    if (!$user) {
+      $user = User::create([
+        'email' => $socialUser->getEmail(),
+        'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
+        'birthday' => $this->getBirthday($provider, $socialUser),
+        'phone' => $this->getPhoneNumber($provider, $socialUser),
+      ]);
+      $user->userSetting()->create();
+    }
+
+    $user->socialAccounts()->create([
+      'provider_name' => $provider,
+      'provider_id' => $socialUser->getId(),
+    ]);
+
+    return $this->createTokensAndRespond($user);
+  }
+
 
   /**
    * @OA\Get (
@@ -95,7 +129,7 @@ class SocialController extends Controller
    *     path="/api/social/callback/{provider}{location.search}",
    *     tags={"SocialAuth"},
    *     summary="소셜 로그인 콜백 처리",
-   *     description="소셜 회원 로그인",
+   *     description="소셜 로그인 콜백 처리",
    *     @OA\Parameter(
    *         name="provider",
    *         in="path",
@@ -118,37 +152,11 @@ class SocialController extends Controller
   {
     try {
       $socialUser = Socialite::driver($provider)->stateless()->user();
-      $socialAccount = SocialAccount::where('provider_name', $provider)
-        ->where('provider_id', $socialUser->getId())
-        ->first();
-
-      if ($socialAccount) {
-        // 로그인 성공
-        return $this->createTokensAndRespond($socialAccount->user);
-      }
-
-      $user = User::where('email', $socialUser->getEmail())->first();
-
-      if (!$user) {
-
-        $user = User::create([
-          'email' => $socialUser->getEmail(),
-          'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
-          'birthday' => $this->getBirthday($provider, $socialUser),
-          'phone' => $this->getPhoneNumber($provider, $socialUser),
-        ]);
-        $user->userSetting()->create();
-      }
-
-      $user->socialAccounts()->create([
-        'provider_name' => $provider,
-        'provider_id' => $socialUser->getId(),
-      ]);
-      return $this->createTokensAndRespond($user);
+      return $this->handleSocialUser($provider, $socialUser);
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail',
+        'message' => 'Social Login Fail: ' . $e->getMessage(),
       ], 400);
     }
   }
@@ -159,8 +167,8 @@ class SocialController extends Controller
    * @OA\Get (
    *     path="/api/social/mobile/{provider}",
    *     tags={"SocialAuth"},
-   *     summary="소셜 로그인 콜백 처리",
-   *     description="소셜 회원 로그인",
+   *     summary="모바일 소셜 로그인 콜백 처리",
+   *     description="모바일 소셜 로그인 콜백 처리",
    *     @OA\Parameter(
    *         name="provider",
    *         in="path",
@@ -182,44 +190,17 @@ class SocialController extends Controller
   public function mobileCallback(string $provider, Request $request)
   {
     try {
+      $validator = Validator::make($request->json()->all(), [
+        'token' => 'required|string',
+      ]);
       $token = $request->bearerToken();
-      if (!$token) {
-        return response()->json(['error' => 'Invalid credentials provided.'], 422);
-      }
-
       $socialUser = Socialite::driver($provider)->userFromToken($token);
 
-      $socialAccount = SocialAccount::where('provider_name', $provider)
-        ->where('provider_id', $socialUser->getId())
-        ->first();
-
-      if ($socialAccount) {
-        return $this->createTokensAndRespond($socialAccount->user);
-      }
-
-      $user = User::where('email', $socialUser->getEmail())->first();
-
-      if (!$user) {
-
-        $user = User::create([
-          'email' => $socialUser->getEmail(),
-          'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
-          'birthday' => $this->getBirthday($provider, $socialUser),
-          'phone' => $this->getPhoneNumber($provider, $socialUser),
-        ]);
-        $user->userSetting()->create();
-      }
-
-      $user->socialAccounts()->create([
-        'provider_name' => $provider,
-        'provider_id' => $socialUser->getId(),
-      ]);
-
-      return $this->createTokensAndRespond($user);
+      return $this->handleSocialUser($provider, $socialUser);
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail',
+        'message' => 'Social Login Fail: ' . $e->getMessage(),
       ], 400);
     }
   }

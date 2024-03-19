@@ -19,26 +19,41 @@ class VocabularyNoteImport implements ToCollection
 
 
 
+  // public function collection(Collection $collection)
+  // {
+  //   try {
+  //     list($kanji, $gana, $meaning) = array_map(null, ...$collection->slice(1, -1)->values());
+
+  //     for ($i = 1; $i < $collection->count() - 1; $i++) {
+  //       $meaning[] =  $collection[$i][2];
+  //       $gana[] = $collection[$i][5];
+  //       $kanji[] = $collection[$i][6];
+  //     }
+  //     // for ($i = 1; $i < $collection->count() - 1; $i++) {
+  //     //   $kanji[] = $collection[$i][0];
+  //     //   $gana[] = $collection[$i][1];
+  //     //   $meaning[] =  $collection[$i][2];
+  //     // }
+
+  //     $result = duplicateCheck($kanji, $gana, $meaning);
+  //     list($kanji, $gana, $meaning) = $result;
+
+  //     $this->vocabularyNote = [
+  //       'gana' => $gana,
+  //       'kanji' => $kanji,
+  //       'meaning' => $meaning
+  //     ];
+  //   } catch (Exception $e) {
+  //     return response()->json(['status' => 'Fail', 'message' => 'VocabularyNoteImport: ' . $e->getMessage()], 400);
+  //   }
+  //   return;
+  // }
   public function collection(Collection $collection)
   {
     try {
-      $meaning = array();
-      $gana = array();
-      $kanji = array();
+      list($kanji, $gana, $meaning) = array_map(null, ...$collection->slice(1, -1)->values()->toArray());
 
-      for ($i = 1; $i < $collection->count() - 1; $i++) {
-        $meaning[] =  $collection[$i][2];
-        $gana[] = $collection[$i][5];
-        $kanji[] = $collection[$i][6];
-      }
-      // for ($i = 1; $i < $collection->count() - 1; $i++) {
-      //   $kanji[] = $collection[$i][0];
-      //   $gana[] = $collection[$i][1];
-      //   $meaning[] =  $collection[$i][2];
-      // }
-
-      $result = duplicateCheck($kanji, $gana, $meaning);
-      list($kanji, $gana, $meaning) = $result;
+      list($kanji, $gana, $meaning) = duplicateCheck($kanji, $gana, $meaning);
 
       $this->vocabularyNote = [
         'gana' => $gana,
@@ -46,9 +61,8 @@ class VocabularyNoteImport implements ToCollection
         'meaning' => $meaning
       ];
     } catch (Exception $e) {
-      return response()->json(['status' => 'Fail', 'message' => 'VocabularyNoteImport: ' . $e->getMessage()], 400);
+      throw new Exception('VocabularyNoteImport: ' . $e->getMessage(), 400);
     }
-    return;
   }
 
   public function getVocabularyNote()

@@ -15,7 +15,7 @@ class VocabularyNoteController extends Controller
 {
   /**
    * @OA\Get (
-   *     path="/api/vocabularyNote/export",
+   *     path="/api/vocabularyNote/index",
    *     tags={"VocabularyNote"},
    *     summary="단어장 리스트",
    *     description="단어장 리스트 리턴",
@@ -41,57 +41,10 @@ class VocabularyNoteController extends Controller
 
     return response()->json(["status" =>   "Success", "data" => $notes], 200);
   }
-  /**
-   * @OA\Post (
-   *     path="/api/vocabularyNote/export",
-   *     tags={"VocabularyNote"},
-   *     summary="Excel 단어장 생성",
-   *     description="Excel 단어장 생성",
-   *     @OA\Parameter(
-   *         name="Authorization",
-   *         in="header",
-   *         required=true,
-   *         description="Bearer {access_token}",
-   *         @OA\Schema(type="string")
-   *     ),
-   *     @OA\RequestBody(
-   *         description="단어장 정보",
-   *         required=true,
-   *         @OA\MediaType(
-   *             mediaType="multipart/form-data",
-   *             @OA\Schema(
-   *                 @OA\Property(
-   *                     property="excel",
-   *                     type="file",
-   *                     description="Excel 파일",
-   *                 ),
-   *             ),
-   *         ),
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
-   */
-  public function export(Request $request)
-  {
-    try {
-      $validator = Validator::make($request->json()->all(), [
-        'excel' => 'required|file',
-      ]);
-
-      $user = auth('sanctum')->user();
-
-      $vocabularyNote = new VocabularyNoteImport();
-      Excel::import($vocabularyNote, $request->file('excel'));
-      return response()->json($vocabularyNote->getVocabularyNote(), 200);
-    } catch (Exception $e) {
-      return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
-    }
-  }
 
   /**
    * @OA\Post (
-   *     path="/api/vocabularyNote/userCreate",
+   *     path="/api/vocabularyNote/store",
    *     tags={"VocabularyNote"},
    *     summary="단어장 생성",
    *     description="단어장 생성",
@@ -135,7 +88,7 @@ class VocabularyNoteController extends Controller
    *     @OA\Response(response="400", description="Fail")
    * )
    */
-  public function userCreate(Request $request)
+  public function store(Request $request)
   {
     $validator = Validator::make($request->json()->all(), [
       'title' => 'required|string|max:255',
@@ -171,13 +124,51 @@ class VocabularyNoteController extends Controller
   }
 
   /**
+   * @OA\Get (
+   *     path="/api/vocabularyNote/show/{id}",
+   *     tags={"VocabularyNote"},
+   *     summary="단어장 리스트",
+   *     description="단어장 리스트 리턴",
+   *      @OA\Parameter(
+   *         name="id",
+   *         in="path",
+   *         required=true,
+   *         description="단어장 노트의 id",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
+  public function show(string $id)
+  {
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
+
+    $note = $user->vocabularyNotes()->where('id', $id)->first();
+
+    if ($note) {
+      return response()->json(["status" => "Success", "data" => $note], 200);
+    }
+    return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: Not Found VocabularyNote"], 400);
+  }
+
+
+  /**
    * @OA\Patch (
-   *     path="/api/vocabularyNote/update/{noteId}",
+   *     path="/api/vocabularyNote/update/{id}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 수정",
    *     description="단어장 수정",
    *     @OA\Parameter(
-   *         name="noteId",
+   *         name="id",
    *         in="path",
    *         required=true,
    *         description="단어장 노트의 id",
@@ -231,7 +222,6 @@ class VocabularyNoteController extends Controller
   public function update(Request $request)
   {
     try {
-
       $validator = Validator::make($request->json()->all(), [
         'title' => 'required|string|max:255',
         'kanji' => 'required|json',
@@ -270,12 +260,12 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Delete (
-   *     path="/api/vocabularyNote/delete/{noteId}",
+   *     path="/api/vocabularyNote/delete/{id}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 삭제",
    *     description="단어장 삭제",
    *     @OA\Parameter(
-   *         name="noteId",
+   *         name="id",
    *         in="path",
    *         required=true,
    *         description="단어장 노트의 id",
@@ -302,6 +292,52 @@ class VocabularyNoteController extends Controller
       return response()->json(["status" => "Success", "message" => "VocabularyNoteController: VocabularyNote Deleted"], 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
+    }
+  }
+
+  /**
+   * @OA\Post (
+   *     path="/api/vocabularyNote/export",
+   *     tags={"VocabularyNote"},
+   *     summary="Excel 단어장 생성",
+   *     description="Excel 단어장 생성",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\RequestBody(
+   *         description="단어장 정보",
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     property="excel",
+   *                     type="file",
+   *                     description="Excel 파일",
+   *                 ),
+   *             ),
+   *         ),
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
+  public function export(Request $request)
+  {
+    try {
+      $validator = Validator::make($request->json()->all(), [
+        'excel' => 'required|file',
+      ]);
+
+      $vocabularyNote = new VocabularyNoteImport();
+      Excel::import($vocabularyNote, $request->file('excel'));
+      return response()->json($vocabularyNote->getVocabularyNote(), 200);
+    } catch (Exception $e) {
+      return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
     }
   }
 }

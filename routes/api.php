@@ -44,7 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
   // 단어장
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
-    Route::post('/userCreate', [VocabularyNoteController::class, 'userCreate']);
+    Route::post('/store', [VocabularyNoteController::class, 'store']);
+    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
     Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
     Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
   });
