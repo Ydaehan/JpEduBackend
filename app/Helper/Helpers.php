@@ -1,10 +1,11 @@
 <?php
 
 use Youaoi\MeCab\MeCab;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
 
 function getMecab($sourceArray, $targetArray)
 {
-  // sourceArray의 요소들을 형태소분석하여 동사와 명사만 추출 하여 읽는법 까지 3가지로 반환해주기
   $mecab = new Mecab();
   $gana = [];
 
@@ -13,7 +14,7 @@ function getMecab($sourceArray, $targetArray)
     if ($reading[0]->speech === '動詞' || $reading[0]->speech === '名詞') {
       $gana[$index] = $reading[0]->reading;
     } else {
-      unset($sourceArray[$index]); // unset 시 index 번호가 붙음
+      unset($sourceArray[$index]);
       unset($targetArray[$index]);
     }
   }
@@ -68,63 +69,75 @@ function getKanji($sourceTextArray, $targetTextArray)
   return $result;
 }
 
-function setImageSize($file)
-{
-  $ext = getimagesize($file->path());
-  $originWidth = $ext[0];
-  $originHeight = $ext[1];
+// function duplicateCheck($kanji, $gana, $meaning)
+// {
+//   for ($i = 0; $i < count($meaning); $i++) {
+//     $isDuplicate = false;
 
-  // 비율 수정
-  // 최대 비율은 1960 * 1960
-  if ($originWidth > 3000 || $originHeight > 3000) {
-    $s = 0.4;
-  } else if ($originWidth > 1960 || $originHeight > 1960) {
-    $s = 0.7;
-  } else {
-    $s = 1;
-  }
+//     for ($j = 0; $j < $i; $j++) {
+//       if ($meaning[$i] === $meaning[$j] && $gana[$i] === $gana[$j]) {
+//         $isDuplicate = true;
+//         break;
+//       }
+//     }
 
-  $newWidth = $originWidth * $s;
-  $newHeight = $originHeight * $s;
+//     if (!$isDuplicate) {
+//       $resultMeaning[] = $meaning[$i];
+//       $resultGana[] = $gana[$i];
+//       $resultKanji[] = $kanji[$i];
+//     }
+//   }
 
-  switch ($ext['mime']) {
-    case 'image/jpeg':
-      $image = imagecreatefromjpeg($file->path());
-      break;
-    case 'image/png':
-      $image = imagecreatefrompng($file->path());
-      break;
-  }
-
-  // resize 대상 image 생성
-  $reImage = imagecreatetruecolor($newWidth, $newHeight);
-  imagecopyresampled($reImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $originWidth, $originHeight);
-
-  // 새 이미지 파일로 저장
-  $newImagePath = $file->path() . '_resized.jpg';
-  imagejpeg($reImage, $newImagePath);
-
-  return $newImagePath;
-}
+//   return [$resultKanji, $resultGana, $resultMeaning];
+// }
 
 function duplicateCheck($kanji, $gana, $meaning)
 {
+  $unique = [];
+  $resultKanji = [];
+  $resultGana = [];
+  $resultMeaning = [];
+
   for ($i = 0; $i < count($meaning); $i++) {
-    $isDuplicate = false;
+    $key = $meaning[$i] . '|' . $gana[$i];
 
-    for ($j = 0; $j < $i; $j++) {
-      if ($meaning[$i] === $meaning[$j] && $gana[$i] === $gana[$j]) {
-        $isDuplicate = true;
-        break;
-      }
-    }
-
-    if (!$isDuplicate) {
+    if (!isset($unique[$key])) {
+      $unique[$key] = true;
       $resultMeaning[] = $meaning[$i];
       $resultGana[] = $gana[$i];
       $resultKanji[] = $kanji[$i];
     }
   }
 
-  return [$resultKanji, $resultGana, $resultMeaning];
+  return [
+    $resultKanji, $resultGana, $resultMeaning
+  ];
+}
+
+function dailyCheck()
+{
+  /** @var \App\Models\User $user **/
+  $user = auth('sanctum')->user();
+  $userSetting = $user->userSetting;
+
+  $now = now();
+  $today = $now->startOfDay();
+  $yesterday = $now->copy()->subDay()->startOfDay();
+  $lastCheck = $user->dailyChecks()->latest('checked_at')->first();
+
+  if (!$lastCheck || !$lastCheck->checked_at->eq($today)) {
+    $user->dailyChecks()->create([
+      'checked_at' => $today
+    ]);
+
+    if ($lastCheck && $lastCheck->checked_at->eq($yesterday)) {
+      $userSetting->streak += 1;
+    } else {
+      $userSetting->streak = 1;
+    }
+    $userSetting->save();
+    return ['message' => 'daily check success', 'streak' => $userSetting->streak];
+  }
+
+  return ['message' => 'already checked today', 'streak' => $userSetting->streak];
 }

@@ -11,9 +11,7 @@ class CardController extends Controller
 {
   //
 
-  public function index()
+  public function index(Request $request)
   {
-    $user = Auth::user();
-    $note = $user->vocabularyNotes()->get();
   }
 }
