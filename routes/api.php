@@ -41,12 +41,13 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
-
+  // 단어장
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
-    Route::post('/userCreate', [VocabularyNoteController::class, 'userCreate']);
-    Route::patch('/update', [VocabularyNoteController::class, 'update']);
-    Route::delete('/delete', [VocabularyNoteController::class, 'destroy']);
+    Route::post('/store', [VocabularyNoteController::class, 'store']);
+    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
+    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
+    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
   });
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);

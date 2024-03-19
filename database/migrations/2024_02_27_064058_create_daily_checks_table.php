@@ -14,8 +14,7 @@ return new class extends Migration
     Schema::create('daily_checks', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-      $table->date('check_date');
-      $table->timestamps();
+      $table->date('checked_at');
     });
   }
 
