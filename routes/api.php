@@ -11,6 +11,7 @@ use App\Http\Controllers\VocabularyNoteController;
 use App\Http\Controllers\WordOfWorldController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\PronunciationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
   });
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
+});
+
+Route::prefix('/pronunciation')->group(function () {
+  Route::post('/textToSpeech', [PronunciationController::class, 'textToSpeech']);
 });
 
 // 매니저, 관리자

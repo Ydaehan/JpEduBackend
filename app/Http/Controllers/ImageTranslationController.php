@@ -87,6 +87,7 @@ class ImageTranslationController extends Controller
 
     // Return the response from the Naver API
     $responseContent = json_decode($response->getBody()->getContents(), true);
+    // dd($responseContent);
 
     // sourceText와 targetText를 배열로 변환
     $sourceTextArray = explode("\n", $responseContent['data']['sourceText']);
@@ -101,6 +102,7 @@ class ImageTranslationController extends Controller
         unset($uniqueTargetArray[$key]);
       }
     }
+
     // $index 번호 제거
     $uniqueSourceArray = array_values($uniqueSourceArray);
     $uniqueTargetArray = array_values($uniqueTargetArray);
@@ -110,4 +112,6 @@ class ImageTranslationController extends Controller
     // 일어와 번역된 한국어를 반환
     return response()->json(['kanji' => $mecabResult[0], 'gana' => $mecabResult[1], 'meaning' => $mecabResult[2]]);
   }
+  // ocr , papago 분리
+  // 단어장 생성의 정확도 향상
 }
