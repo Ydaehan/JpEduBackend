@@ -11,6 +11,8 @@ use App\Http\Controllers\VocabularyNoteController;
 use App\Http\Controllers\WordOfWorldController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\PronunciationController;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,9 +47,18 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
+<<<<<<< HEAD
   });
 
   Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
+=======
+    Route::post('/store', [VocabularyNoteController::class, 'store']);
+    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
+    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
+    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
+    Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
+  });
+>>>>>>> 834fe57c3835c8355f007cac699616fc577f379b
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 

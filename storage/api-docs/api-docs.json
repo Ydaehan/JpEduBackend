@@ -205,51 +205,6 @@
                 }
             }
         },
-        "/api/ocr": {
-            "post": {
-                "tags": [
-                    "ImageOCR"
-                ],
-                "summary": "이미지를 텍스트로 변환 후 번역",
-                "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
-                "operationId": "0e8fe332e5fd1aa82d8ba208d2e5bd27",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer access token",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "이미지",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "image": {
-                                        "type": "file"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
         "/api/mail/applyToManager": {
             "post": {
                 "tags": [
@@ -963,6 +918,51 @@
                                 "properties": {
                                     "excel": {
                                         "description": "Excel 파일",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/vocabularyNote/ocr": {
+            "post": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "이미지를 텍스트로 변환 후 번역",
+                "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
+                "operationId": "024a14f00957d0e918632ed9974328ff",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer access token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "이미지",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
                                         "type": "file"
                                     }
                                 },
