@@ -125,8 +125,8 @@ class AuthController extends Controller
     }
 
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+      /** @var \App\Models\User $user **/
       $user = Auth::user();
-
       $accessToken = $user->createToken('Access Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
       $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
 
@@ -192,12 +192,13 @@ class AuthController extends Controller
    */
   public function refreshToken()
   {
+    /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
     $oldAccessToken = $user->tokens->where('name', 'API Token')->first();
     if ($oldAccessToken) {
       $oldAccessToken->delete();
     }
-    $accessToken = auth('sanctum')->user()->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+    $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
     return response(['message' => "Token generate", 'token' => $accessToken->plainTextToken]);
   }
 
@@ -222,6 +223,7 @@ class AuthController extends Controller
    * */
   public function signOut()
   {
+    /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
     $user->tokens()->delete();
     $user->delete();

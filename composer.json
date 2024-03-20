@@ -12,6 +12,8 @@
         "darkaonline/l5-swagger": "^8.5",
         "google/cloud-text-to-speech": "^1.8",
         "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle-services": "^1.4",
+        "guzzlehttp/promises": "^2.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.12",
