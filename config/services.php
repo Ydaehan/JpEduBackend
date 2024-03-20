@@ -55,4 +55,9 @@ return [
     'redirect' => env('GITHUB_REDIRECT_URI')
   ],
 
+  'azureSpeech' => [
+    'key' => env('AZURE_SPEECH_KEY'),
+    'region' => env('AZURE_SPEECH_REGION'),
+  ],
+
 ];

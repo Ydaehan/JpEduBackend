@@ -222,6 +222,7 @@ class AuthController extends Controller
    * */
   public function signOut()
   {
+    /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
     $user->tokens()->delete();
     $user->delete();

@@ -15,20 +15,6 @@ use Illuminate\Support\Facades\Validator;
 class SocialController extends Controller
 {
 
-  // 사용자 토큰을 생성, 응답을 반환하는 메서드
-  private function createTokensAndRespond(User $user)
-  {
-    $user->tokens()->delete();
-    $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-    $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-    return response()->json([
-      'status' => 'Success',
-      'user' => $user,
-      'access_token' => $accessToken->plainTextToken,
-      'refresh_token' => $refreshToken->plainTextToken,
-    ], 200);
-  }
-
   // 사용자의 생일을 반환하는 메서드
   private function getBirthday(string $provider, $socialUser)
   {
@@ -67,7 +53,7 @@ class SocialController extends Controller
       ->first();
 
     if ($socialAccount) {
-      return $this->createTokensAndRespond($socialAccount->user);
+      return createTokensAndRespond($socialAccount->user);
     }
 
     $user = User::where('email', $socialUser->getEmail())->first();
@@ -87,7 +73,7 @@ class SocialController extends Controller
       'provider_id' => $socialUser->getId(),
     ]);
 
-    return $this->createTokensAndRespond($user);
+    return createTokensAndRespond($user);
   }
 
 
