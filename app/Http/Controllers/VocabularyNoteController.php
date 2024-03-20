@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class VocabularyNoteController extends Controller
 {
@@ -211,7 +212,7 @@ class VocabularyNoteController extends Controller
    *                      property="is_public",
    *                       type="boolean",
    *                       description="단어장 공유 여부",
-   *                 ), 
+   *                 ),
    *             ),
    *         ),
    *     ),
@@ -338,6 +339,91 @@ class VocabularyNoteController extends Controller
       return response()->json($vocabularyNote->getVocabularyNote(), 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
+    }
+  }
+
+  // 로그인된 상태에서 사용가능하며, OCR -> 형태소분석 -> 명사,동사만 꺼내서 결과값 반환해주기
+  /**
+   * @OA\Post(
+   *     path="/api/vocabularyNote/ocr",
+   *     tags={"VocabularyNote"},
+   *     summary="이미지를 텍스트로 변환 후 번역",
+   *     description="이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer access token",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\RequestBody(
+   *         description="이미지",
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     property="image",
+   *                     type="file",
+   *                 ),
+   *             ),
+   *         ),
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   * */
+  public function textOcr(Request $request)
+  {
+    $client_secret = env("APP_NAVER_CLOVA_OCR_SECRET_KEY");
+    $url = env("APP_NAVER_APIGW_INVOKE_URL");
+    $image_file = $request->file('image');
+
+    $params = [
+      'version' => 'V2',
+      'requestId' => uniqid(),
+      'timestamp' => time(),
+      'images' => [
+        [
+          'format' => "jpg",
+          'name' => "demo"
+        ]
+      ]
+    ];
+    // JSON 인코딩
+    $json = json_encode($params);
+
+    $response = Http::withHeaders([
+      'X-OCR-SECRET' => $client_secret
+    ])->attach('file', file_get_contents($image_file), 'image.jpg')->post($url, [
+      'message' => $json
+    ]);
+
+    $status_code = $response->status();
+    $data = json_decode($response, true);
+
+    $inferTexts = array();
+    foreach ($data['images'] as $image) {
+      foreach ($image['fields'] as $field) {
+        $inferTexts[] = $field['inferText'];
+      }
+    }
+
+    // 인식된 문자열에서 일본어만 들고옴
+    $kanji = getKanji($inferTexts);
+    // 형태소 분석
+    $mecabResult = getMecab($kanji);
+    // 파파고 번역
+    $meaning = papagoTranslation("ja", "ko", $mecabResult[0]);
+    // 히라가나, 가타카나 필터링 -> null
+    $filteredKanji = kanjiFilter($mecabResult[0]);
+    // 중복 체크
+    $result = duplicateCheck($filteredKanji, $mecabResult[1], $meaning);
+
+    if ($status_code == 200) {
+      return response()->json(['kanji' => array_values($result[0]), 'gana' => array_values($result[1]), 'meaning' => array_values($result[2]), 200]);
+    } else {
+      return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $data['errorMessage']], 400);
     }
   }
 }
