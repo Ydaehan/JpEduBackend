@@ -50,7 +50,8 @@ class TypingPracticeController extends Controller
         if ($line != '') {
           $existingSentence = Sentence::where('sentence', $line)->first();
           //똑같은 문장이면 들어가지 않게 처리
-          if (!$existingSentence) {
+          // 문장의 길이 제한을 두어야 할것 같음
+          if (!$existingSentence && mb_strlen($line, 'utf-8') < 37) {
             Sentence::create(['sentence' => $line]);
           }
         }
