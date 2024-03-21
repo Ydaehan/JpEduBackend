@@ -164,7 +164,9 @@ class AuthController extends Controller
    */
   public function logout()
   {
-    auth('sanctum')->user()->tokens()->delete();
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
+    $user->tokens()->delete();
     return response()->json([
       'status' => 'Success',
       'message' => 'Logout success'
