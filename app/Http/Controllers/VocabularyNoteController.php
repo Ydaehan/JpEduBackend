@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Imports\VocabularyNoteImport;
 use App\Models\VocabularyNote;
-use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 
@@ -16,7 +14,7 @@ class VocabularyNoteController extends Controller
 {
   /**
    * @OA\Get (
-   *     path="/api/vocabularyNote/index",
+   *     path="/api/vocabularyNote",
    *     tags={"VocabularyNote"},
    *     summary="단어장 리스트",
    *     description="단어장 리스트 리턴",
@@ -45,7 +43,7 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Post (
-   *     path="/api/vocabularyNote/store",
+   *     path="/api/vocabularyNote",
    *     tags={"VocabularyNote"},
    *     summary="단어장 생성",
    *     description="단어장 생성",
@@ -126,10 +124,10 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Get (
-   *     path="/api/vocabularyNote/show/{id}",
+   *     path="/api/vocabularyNote/{id}",
    *     tags={"VocabularyNote"},
-   *     summary="단어장 리스트",
-   *     description="단어장 리스트 리턴",
+   *     summary="단어장 상세 정보",
+   *     description="단어장 상세 정보",
    *      @OA\Parameter(
    *         name="id",
    *         in="path",
@@ -164,7 +162,7 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Patch (
-   *     path="/api/vocabularyNote/update/{id}",
+   *     path="/api/vocabularyNote/{id}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 수정",
    *     description="단어장 수정",
@@ -261,7 +259,7 @@ class VocabularyNoteController extends Controller
 
   /**
    * @OA\Delete (
-   *     path="/api/vocabularyNote/delete/{id}",
+   *     path="/api/vocabularyNote/{id}",
    *     tags={"VocabularyNote"},
    *     summary="단어장 삭제",
    *     description="단어장 삭제",

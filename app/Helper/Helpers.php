@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Carbon\Carbon;
 use Youaoi\MeCab\MeCab;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
@@ -183,7 +185,7 @@ function duplicateCheck($kanji, $gana, $meaning)
   $resultMeaning = [];
 
   for ($i = 0; $i < count($meaning); $i++) {
-    $key = $meaning[$i] . '|' . $gana[$i];
+    $key = $kanji[$i] . '|' . $gana[$i] . '|' . $meaning[$i];
 
     if (!isset($unique[$key])) {
       $unique[$key] = true;
@@ -224,4 +226,19 @@ function dailyCheck()
   }
 
   return ['message' => 'already checked today', 'streak' => $userSetting->streak];
+}
+
+// 사용자 토큰을 생성, 응답을 반환하는 메서드
+function createTokensAndRespond(User $user)
+{
+  dailyCheck(); // 출석 체크
+  $user->tokens()->delete();
+  $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+  $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
+  return response()->json([
+    'status' => 'Success',
+    'user' => $user,
+    'access_token' => $accessToken->plainTextToken,
+    'refresh_token' => $refreshToken->plainTextToken,
+  ], 200);
 }
