@@ -55,4 +55,13 @@ return [
     'redirect' => env('GITHUB_REDIRECT_URI')
   ],
 
+  'papago' => [
+    'client_id' => env('APP_NAVER_PAPAGO_TEXT_TRANSLATION_CLIENT_ID'),
+    'client_secret' => env('APP_NAVER_PAPAGO_TEXT_TRANSLATION_CLIENT_SECRET_KEY')
+  ],
+
+  'naver_ocr' => [
+    'client_secret' => env('APP_NAVER_CLOVA_OCR_SECRET_KEY'),
+    'url' => env('APP_NAVER_APIGW_INVOKE_URL')
+  ],
 ];

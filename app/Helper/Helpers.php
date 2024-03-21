@@ -133,48 +133,6 @@ function setImageSize($file)
   return $newImagePath;
 }
 
-// 파파고 번역 ja -> ko
-function papagoTranslation($source_lang, $target_lang, $texts)
-{
-  $client_id = env('APP_NAVER_PAPAGO_TEXT_TRANSLATION_CLIENT_ID');
-  $client_secret = env('APP_NAVER_PAPAGO_TEXT_TRANSLATION_CLIENT_SECRET_KEY');
-  $client = new Client();
-  $promises = [];
-
-  foreach ($texts as $text) {
-    $postvars = [
-      "source" => $source_lang,
-      "target" => $target_lang,
-      "text" => $text,
-    ];
-    $headers = [
-      "X-NCP-APIGW-API-KEY-ID" => $client_id,
-      "X-NCP-APIGW-API-KEY" => $client_secret,
-    ];
-    $promises[] = $client->requestAsync('POST', 'https://naveropenapi.apigw.ntruss.com/nmt/v1/translation', [
-      'headers' => $headers,
-      'form_params' => $postvars,
-    ]);
-  }
-
-  $results = Utils::settle($promises)->wait();
-
-  $translations = [];
-  foreach ($results as $result) {
-    if ($result['state'] === 'fulfilled') {
-      $response = $result['value'];
-      $body = $response->getBody();
-      $json = json_decode($body, true);
-      $translations[] = $json['message']['result']['translatedText'];
-    } else {
-      echo 'Error: ', $result['reason']->getMessage(), "\n";
-      $translations[] = null;
-    }
-  }
-
-  return $translations;
-}
-
 function duplicateCheck($kanji, $gana, $meaning)
 {
   $unique = [];
@@ -224,4 +182,34 @@ function dailyCheck()
   }
 
   return ['message' => 'already checked today', 'streak' => $userSetting->streak];
+}
+
+function papagoTranslation($text)
+{
+  $client_id = config('services.papago.client_id');
+  $client_secret = config('services.papago.client_secret');
+  $encText = urlencode($text);
+  $postvars = "source=ja&target=ko&text=" . $encText;
+  $url = "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation";
+  $is_post = true;
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_POST, $is_post);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
+  $headers = array();
+  $headers[] = "X-NCP-APIGW-API-KEY-ID: " . $client_id;
+  $headers[] = "X-NCP-APIGW-API-KEY: " . $client_secret;
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  $response = curl_exec($ch);
+  $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  echo "status_code:" . $status_code . "<br />";
+  curl_close($ch);
+  $response = json_decode($response, true);
+  if ($status_code == 200) {
+    return $response['message']['result']['translatedText'];
+  } else {
+    return ['message' => 'failed'];
+  }
 }
