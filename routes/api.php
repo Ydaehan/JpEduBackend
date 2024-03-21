@@ -44,12 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
   // 단어장
+  Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
-    Route::post('/store', [VocabularyNoteController::class, 'store']);
-    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
-    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
-    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
   });
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
