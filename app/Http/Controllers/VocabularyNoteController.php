@@ -375,8 +375,8 @@ class VocabularyNoteController extends Controller
    * */
   public function textOcr(Request $request)
   {
-    $client_secret = env("APP_NAVER_CLOVA_OCR_SECRET_KEY");
-    $url = env("APP_NAVER_APIGW_INVOKE_URL");
+    $client_secret = config('services.naver_ocr.client_secret');
+    $url = config('services.naver_ocr.url');
     $image_file = $request->file('image');
 
     $params = [
@@ -386,7 +386,8 @@ class VocabularyNoteController extends Controller
       'images' => [
         [
           'format' => "jpg",
-          'name' => "demo"
+          'name' => "ocrResult",
+          'lang' => 'ja',
         ]
       ]
     ];
@@ -401,11 +402,12 @@ class VocabularyNoteController extends Controller
 
     $status_code = $response->status();
     $data = json_decode($response, true);
-
     $inferTexts = array();
     foreach ($data['images'] as $image) {
       foreach ($image['fields'] as $field) {
-        $inferTexts[] = $field['inferText'];
+        if ($field['inferConfidence'] > 0.8) {
+          $inferTexts[] = $field['inferText'];
+        }
       }
     }
 
@@ -414,11 +416,13 @@ class VocabularyNoteController extends Controller
     // 형태소 분석
     $mecabResult = getMecab($kanji);
     // 파파고 번역
-    $meaning = papagoTranslation("ja", "ko", $mecabResult[0]);
+    $text = implode("\n", $mecabResult[0]);
+    $meaning = papagoTranslation($text);
+    $translateResult = explode("\n", $meaning);
     // 히라가나, 가타카나 필터링 -> null
     $filteredKanji = kanjiFilter($mecabResult[0]);
     // 중복 체크
-    $result = duplicateCheck($filteredKanji, $mecabResult[1], $meaning);
+    $result = duplicateCheck($filteredKanji, $mecabResult[1], $translateResult);
 
     if ($status_code == 200) {
       return response()->json(['kanji' => array_values($result[0]), 'gana' => array_values($result[1]), 'meaning' => array_values($result[2]), 200]);
