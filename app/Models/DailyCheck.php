@@ -9,12 +9,14 @@ class DailyCheck extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $fillable = [
         'user_id',
-        'check_date'
+        'checked_at'
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }
