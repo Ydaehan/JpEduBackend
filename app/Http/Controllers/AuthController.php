@@ -246,4 +246,43 @@ class AuthController extends Controller
       'message' => 'User verify fail'
     ]);
   }
+
+  protected function createTestToken(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'email' => 'required|email|max:255',
+      'password' => 'required|string|min:6',
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json([
+        'status' => 'error',
+        'messages' => $validator->messages()
+      ], 400);
+    }
+    $user = User::where('email', $request->email)->first();
+    $user->tokens()->delete();
+    if (DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->exists()) {
+      return response()->json([
+        'status' => 'error',
+        'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
+      ]);
+    }
+
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+      /** @var \App\Models\User $user **/
+      $user = Auth::user();
+      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.test_expiration')));
+      return response()->json([
+        'status' => 'Success',
+        'user' => $user,
+        'access_token' => $accessToken->plainTextToken,
+      ]);
+    }
+
+    return response()->json([
+      'status' => 'error',
+      'messages' => 'invalid credentials'
+    ]);
+  }
 }
