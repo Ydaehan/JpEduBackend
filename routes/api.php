@@ -47,18 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
-<<<<<<< HEAD
-  });
-
-  Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
-=======
-    Route::post('/store', [VocabularyNoteController::class, 'store']);
-    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
-    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
-    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
   });
->>>>>>> 834fe57c3835c8355f007cac699616fc577f379b
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 
@@ -92,3 +82,8 @@ Route::prefix('/social')->group(function () {
   Route::get('/callback/{provider}', [SocialController::class, 'callback']);
   Route::get('/mobile/{provider}', [SocialController::class, 'mobileCallback']);
 });
+
+
+// test token 생성
+Route::post('/test-token', [AuthController::class, 'createTestToken']);
+Route::get('/test-limelight', [VocabularyNoteController::class, 'testMecab']);
