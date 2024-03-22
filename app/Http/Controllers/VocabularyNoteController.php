@@ -411,7 +411,7 @@ class VocabularyNoteController extends Controller
 
     // 인식된 문자열에서 일본어만 들고옴
     $kanji = getKanji($inferTexts);
-    // 형태소 분석
+    // 형태소 분석 => limemecab 으로 변경 작업
     $mecabResult = getMecab($kanji);
     // 파파고 번역
     $text = implode("\n", $mecabResult[0]);

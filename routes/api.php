@@ -82,3 +82,8 @@ Route::prefix('/social')->group(function () {
   Route::get('/callback/{provider}', [SocialController::class, 'callback']);
   Route::get('/mobile/{provider}', [SocialController::class, 'mobileCallback']);
 });
+
+
+// test token 생성
+Route::post('/test-token', [AuthController::class, 'createTestToken']);
+Route::get('/test-limelight', [VocabularyNoteController::class, 'testMecab']);
