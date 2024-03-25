@@ -142,7 +142,7 @@ class SocialController extends Controller
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail: ' . $e->getMessage(),
+        'message' => 'SocialController: ' . $e->getMessage(),
       ], 400);
     }
   }
@@ -186,7 +186,7 @@ class SocialController extends Controller
     } catch (Exception $e) {
       return response()->json([
         'status' => 'Fail',
-        'message' => 'Social Login Fail: ' . $e->getMessage(),
+        'message' => 'SocialController: ' . $e->getMessage(),
       ], 400);
     }
   }

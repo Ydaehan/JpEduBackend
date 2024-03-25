@@ -47,18 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
-<<<<<<< HEAD
-  });
-
-  Route::post('/ocr', [ImageTranslationController::class, 'translateImage']);
-=======
-    Route::post('/store', [VocabularyNoteController::class, 'store']);
-    Route::get('/show/{id}', [VocabularyNoteController::class, 'show']);
-    Route::patch('/update/{id}', [VocabularyNoteController::class, 'update']);
-    Route::delete('/delete/{id}', [VocabularyNoteController::class, 'destroy']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
   });
->>>>>>> 834fe57c3835c8355f007cac699616fc577f379b
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
 });
 
@@ -82,9 +72,6 @@ Route::prefix('mail')->group(function () {
   Route::post('/applyToManager', [MailController::class, 'applyToManager']);
   Route::post('/sendSignUpEmail/{email}', [MailController::class, 'sendSignUpEmail']);
 });
-
-// 단어장
-Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export']);
 
 // 소셜로그인
 Route::prefix('/social')->group(function () {

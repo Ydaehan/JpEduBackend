@@ -127,15 +127,7 @@ class AuthController extends Controller
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
       /** @var \App\Models\User $user **/
       $user = Auth::user();
-      $accessToken = $user->createToken('Access Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
-      $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
-
-      return response()->json([
-        'status' => 'Success',
-        'user' => $user,
-        'access_token' => $accessToken->plainTextToken,
-        'refresh_token' => $refreshToken->plainTextToken,
-      ], 200);
+      return createTokensAndRespond($user);
     }
 
     return response()->json([

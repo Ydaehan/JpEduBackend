@@ -211,21 +211,32 @@ function dailyCheck()
   $yesterday = $now->copy()->subDay()->startOfDay();
   $lastCheck = $user->dailyChecks()->latest('checked_at')->first();
 
-  if (!$lastCheck || !$lastCheck->checked_at->eq($today)) {
+  if (!$lastCheck) {
     $user->dailyChecks()->create([
       'checked_at' => $today
     ]);
-
-    if ($lastCheck && $lastCheck->checked_at->eq($yesterday)) {
-      $userSetting->streak += 1;
-    } else {
-      $userSetting->streak = 1;
-    }
+    $userSetting->streak = 1;
     $userSetting->save();
     return ['message' => 'daily check success', 'streak' => $userSetting->streak];
   }
 
-  return ['message' => 'already checked today', 'streak' => $userSetting->streak];
+  $lastCheckDate = Carbon::parse($lastCheck->checked_at);
+
+  if ($lastCheckDate->eq($today)) {
+    return ['message' => 'already checked today', 'streak' => $userSetting->streak];
+  }
+
+  $user->dailyChecks()->create([
+    'checked_at' => $today
+  ]);
+
+  if ($lastCheckDate->eq($yesterday)) {
+    $userSetting->streak += 1;
+  } else {
+    $userSetting->streak = 1;
+  }
+  $userSetting->save();
+  return ['message' => 'daily check success', 'streak' => $userSetting->streak];
 }
 
 // 사용자 토큰을 생성, 응답을 반환하는 메서드
