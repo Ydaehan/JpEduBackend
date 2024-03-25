@@ -73,9 +73,6 @@ Route::prefix('mail')->group(function () {
   Route::post('/sendSignUpEmail/{email}', [MailController::class, 'sendSignUpEmail']);
 });
 
-// 단어장
-Route::post('vocabularyNote/export', [VocabularyNoteController::class, 'export']);
-
 // 소셜로그인
 Route::prefix('/social')->group(function () {
   Route::get('/{provider}', [SocialController::class, 'login']);
