@@ -205,6 +205,90 @@
                 }
             }
         },
+        "/api/jlpt/grammar/{tier}": {
+            "get": {
+                "tags": [
+                    "JLPT Grammar"
+                ],
+                "summary": "JLPT 문법 등급별 조회",
+                "description": "JLPT 문법을 등급별 조회 합니다.",
+                "operationId": "3b0436cae6b44a13a379e11ae97a820b",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tier",
+                        "in": "path",
+                        "description": "N1, N2, N3, N4, N5",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
+        "/api/jlpt/grammar": {
+            "post": {
+                "tags": [
+                    "JLPT Grammar"
+                ],
+                "summary": "JLPT 문법 생성",
+                "description": "관리자가 문법을 생성 할 수 있습니다. (현재는 관리자가 미구현 상태라 필요없음 - json 파일로 한번에 생성)",
+                "operationId": "c4a4519af2bbc32e61bf632c5f28204b",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {관리자 access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "JLPT 등급별 문제 생성을 위한 json 파일",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "json 파일",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/mail/applyToManager": {
             "post": {
                 "tags": [
@@ -656,14 +740,14 @@
                 }
             }
         },
-        "/api/vocabularyNote/index": {
+        "/api/vocabularyNote": {
             "get": {
                 "tags": [
                     "VocabularyNote"
                 ],
                 "summary": "단어장 리스트",
                 "description": "단어장 리스트 리턴",
-                "operationId": "15ce3ca2c7fc9e89b3fbe93a77d22597",
+                "operationId": "e8c646d345c388978828758ede975cf2",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -683,16 +767,14 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/vocabularyNote/store": {
+            },
             "post": {
                 "tags": [
                     "VocabularyNote"
                 ],
                 "summary": "단어장 생성",
                 "description": "단어장 생성",
-                "operationId": "ac42429bd21dc8a5f7d9ba0b73dcbc2a",
+                "operationId": "218f5124d99cd5bdc023f98be45467fd",
                 "parameters": [
                     {
                         "name": "Authorization",
@@ -743,14 +825,14 @@
                 }
             }
         },
-        "/api/vocabularyNote/show/{id}": {
+        "/api/vocabularyNote/{id}": {
             "get": {
                 "tags": [
                     "VocabularyNote"
                 ],
-                "summary": "단어장 리스트",
-                "description": "단어장 리스트 리턴",
-                "operationId": "47fd46424ea2c138418d20d713232d5b",
+                "summary": "단어장 상세 정보",
+                "description": "단어장 상세 정보",
+                "operationId": "583ce2e21662f548028ba46622895da3",
                 "parameters": [
                     {
                         "name": "id",
@@ -779,16 +861,50 @@
                         "description": "Fail"
                     }
                 }
-            }
-        },
-        "/api/vocabularyNote/update/{id}": {
+            },
+            "delete": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 삭제",
+                "description": "단어장 삭제",
+                "operationId": "fe66178294de63f02608ca2197d1214e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "단어장 노트의 id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "VocabularyNote"
                 ],
                 "summary": "단어장 수정",
                 "description": "단어장 수정",
-                "operationId": "abddf681fee49ed067daa4019bffa8c7",
+                "operationId": "6bbde7dda98ec1e9100694d78a85f4e6",
                 "parameters": [
                     {
                         "name": "id",
@@ -842,44 +958,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/vocabularyNote/delete/{id}": {
-            "delete": {
-                "tags": [
-                    "VocabularyNote"
-                ],
-                "summary": "단어장 삭제",
-                "description": "단어장 삭제",
-                "operationId": "886ebd5bf8eaecb63e1d0145286a9251",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "단어장 노트의 id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Bearer {access_token}",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success"
