@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class DailyCheck extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  
+  public $timestamps = false;
 
-    public $timestamps = false;
-    protected $fillable = [
-        'user_id',
-        'checked_at'
-    ];
+  protected $fillable = [
+    'user_id',
+    'checked_at'
+  ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }
