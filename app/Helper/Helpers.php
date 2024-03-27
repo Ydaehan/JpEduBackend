@@ -242,14 +242,17 @@ function dailyCheck()
 // 사용자 토큰을 생성, 응답을 반환하는 메서드
 function createTokensAndRespond(User $user)
 {
-  dailyCheck(); // 출석 체크
+  $dailyCheck = dailyCheck(); // 출석 체크
   $user->tokens()->delete();
   $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
   $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
   return response()->json([
     'status' => 'Success',
-    'user' => $user,
-    'access_token' => $accessToken->plainTextToken,
-    'refresh_token' => $refreshToken->plainTextToken,
+    'data' => [ // 사용자 정보와 토큰을 반환
+      'user' => $user,
+      'access_token' => $accessToken->plainTextToken,
+      'refresh_token' => $refreshToken->plainTextToken,
+      'streak' => $dailyCheck['streak']
+    ]
   ], 200);
 }
