@@ -38,7 +38,12 @@ class VocabularyNoteController extends Controller
 
     // 관리자 생성 문제 찾아서 같이 넘겨주기
 
-    return response()->json(["status" =>   "Success", "data" => $notes], 200);
+    return response()->json([
+      "status" =>   "Success",
+      "data" => [
+        "notes" => $notes
+      ]
+    ], 200);
   }
 
   /**
@@ -115,8 +120,10 @@ class VocabularyNoteController extends Controller
 
     return response()->json(
       [
-        'message' => 'VocabularyNote created successfully',
-        'data' => $note
+        "message" => 'VocabularyNote created successfully',
+        "data" => [
+          "note" => $note
+        ]
       ],
       200
     );
@@ -218,7 +225,7 @@ class VocabularyNoteController extends Controller
    *     @OA\Response(response="400", description="Fail")
    * )
    */
-  public function update(Request $request)
+  public function update(Request $request, string $id)
   {
     try {
       $validator = Validator::make($request->json()->all(), [
@@ -232,11 +239,12 @@ class VocabularyNoteController extends Controller
       /** @var \App\Models\User $user **/
       $user = auth('sanctum')->user();
 
-      $note = $user->vocabularyNotes()->where('id', $request->id)->first();
+      $note = $user->vocabularyNotes()->where('id', $id)->first();
 
       $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
       list($kanji, $gana, $meaning) = $duplicateResult;
       if ($note) {
+        /** @var \App\Models\Note $note **/
         $note->title = $request->title;
         $note->user_id = $user->id;
         $note->kanji = $kanji;

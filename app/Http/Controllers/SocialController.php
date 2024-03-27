@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 use App\Models\SocialAccount;
 use App\Models\User;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,31 +15,28 @@ class SocialController extends Controller
   // 사용자의 생일을 반환하는 메서드
   private function getBirthday(string $provider, $socialUser)
   {
+    $birthday = null;
     if ($provider === 'kakao') {
-      $birthday = $socialUser->user['kakao_account']['birthday'];
-      return $birthday;
+      $birthday = $socialUser['kakao_account']['birthday'];
     } else if ($provider === 'naver') {
-      $birthday = $socialUser->user['response']['birthday'];
-      return $birthday;
+      $birthday = $socialUser['response']['birthday'];
     } else {
-      $birthday = $socialUser->user['birthday'];
-      return $birthday;
+      $birthday = $socialUser->birthday;
     }
+    return $birthday;
   }
   // 사용자의 전화번호를 반환하는 메서드
   private function getPhoneNumber(string $provider, $socialUser)
   {
+    $phoneNumber = null;
     if ($provider === 'kakao') {
-
-      $phoneNumber = $socialUser->user['kakao_account']['phone_number'];
-      return $phoneNumber;
+      $phoneNumber = $socialUser['kakao_account']['phone_number'];
     } else if ($provider === 'naver') {
-      $phoneNumber = $socialUser->user['response']['mobile'];
-      return $phoneNumber;
+      $phoneNumber = $socialUser['response']['mobile'];
     } else {
-      $phoneNumber = $socialUser->user['phone'];
-      return $phoneNumber;
+      $phoneNumber = $socialUser->phone;
     }
+    return $phoneNumber;
   }
 
   // 소셜 로그인 처리 메서드
@@ -58,12 +52,14 @@ class SocialController extends Controller
 
     $user = User::where('email', $socialUser->getEmail())->first();
 
+    $birthday = $this->getBirthday($provider, $socialUser);
+    $phoneNumber = $this->getPhoneNumber($provider, $socialUser);
     if (!$user) {
       $user = User::create([
         'email' => $socialUser->getEmail(),
         'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
-        'birthday' => $this->getBirthday($provider, $socialUser),
-        'phone' => $this->getPhoneNumber($provider, $socialUser),
+        'birthday' => $socialUser->$birthday,
+        'phone' => $socialUser->$phoneNumber,
       ]);
       $user->userSetting()->create();
     }
