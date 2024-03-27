@@ -113,4 +113,39 @@ class GrammarController extends Controller
 			return response()->json(['error' => $e->getMessage()], 500);
 		}
 	}
+
+	/**
+	 * @OA\Delete (
+	 *     path="/api/jlpt/grammar",
+	 *     tags={"JLPT Grammar"},
+	 *     summary="JLPT 문법 삭제",
+	 *     description="관리자가 문법을 삭제 할 수 있습니다. (현재는 관리자가 미구현 상태라 필요없음)",
+	 *     @OA\Parameter(
+	 *         name="Authorization",
+	 *         in="header",
+	 *         required=true,
+	 *         description="Bearer {관리자 access_token}",
+	 *         @OA\Schema(type="string")
+	 *     ),
+	 * 	 @OA\Parameter(
+	 * 		 name="id",
+	 * 		 in="query",
+	 * 		 required=true,
+	 * 		 description="문법 id",
+	 * 		 @OA\Schema(type="integer")
+	 * 	 ),
+	 * 	 @OA\Response(response="200", description="Success"),
+	 * 	 @OA\Response(response="404", description="Not Found")
+	 * )
+	 */
+	public function delete($id)
+	{
+		$grammar = Grammar::find($id);
+		if ($grammar) {
+			$grammar->delete();
+			return response()->json(['message' => 'success']);
+		} else {
+			return response()->json(['error' => 'not found'], 404);
+		}
+	}
 }

@@ -287,6 +287,42 @@
                         "description": "Fail"
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "JLPT Grammar"
+                ],
+                "summary": "JLPT 문법 삭제",
+                "description": "관리자가 문법을 삭제 할 수 있습니다. (현재는 관리자가 미구현 상태라 필요없음)",
+                "operationId": "10ad28f3b89dd4e5b16b6152346cfe5e",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {관리자 access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "문법 id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
             }
         },
         "/api/mail/applyToManager": {
