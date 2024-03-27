@@ -415,7 +415,9 @@ class VocabularyNoteController extends Controller
     $mecabResult = getMecab($kanji);
     // 파파고 번역
     $text = implode("\n", $mecabResult[0]);
-    $meaning = papagoTranslation($text);
+    $source = "ja";
+    $target = "ko";
+    $meaning = papagoTranslation($source, $target, $text);
     $translateResult = explode("\n", $meaning);
     // 히라가나, 가타카나 필터링 -> null
     $filteredKanji = kanjiFilter($mecabResult[0]);

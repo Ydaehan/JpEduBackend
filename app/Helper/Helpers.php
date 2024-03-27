@@ -211,12 +211,12 @@ function createTokensAndRespond(User $user)
   ], 200);
 }
 
-function papagoTranslation($text)
+function papagoTranslation($source, $target, $text)
 {
   $client_id = config('services.papago.client_id');
   $client_secret = config('services.papago.client_secret');
   $encText = urlencode($text);
-  $postvars = "source=ja&target=ko&text=" . $encText;
+  $postvars = "source=" . $source . "&target=" . $target . "&text=" . $encText;
   $url = "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation";
   $is_post = true;
   $ch = curl_init();
