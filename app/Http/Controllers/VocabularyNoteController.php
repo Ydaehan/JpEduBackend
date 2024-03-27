@@ -40,9 +40,7 @@ class VocabularyNoteController extends Controller
 
     return response()->json([
       "status" =>   "Success",
-      "data" => [
-        "notes" => $notes
-      ]
+      "notes" => $notes
     ], 200);
   }
 
@@ -120,10 +118,8 @@ class VocabularyNoteController extends Controller
 
     return response()->json(
       [
-        "message" => 'VocabularyNote created successfully',
-        "data" => [
-          "note" => $note
-        ]
+        "message" => "VocabularyNote created successfully",
+        "note" => $note
       ],
       200
     );
@@ -161,7 +157,7 @@ class VocabularyNoteController extends Controller
     $note = $user->vocabularyNotes()->where('id', $id)->first();
 
     if ($note) {
-      return response()->json(["status" => "Success", "data" => $note], 200);
+      return response()->json(["status" => "Success", "note" => $note], 200);
     }
     return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: Not Found VocabularyNote"], 400);
   }
@@ -177,7 +173,7 @@ class VocabularyNoteController extends Controller
    *         name="id",
    *         in="path",
    *         required=true,
-   *         description="단어장 노트의 id",
+   *         description="단어장의 id",
    *         @OA\Schema(type="string")
    *     ),
    *     @OA\Parameter(
@@ -196,26 +192,31 @@ class VocabularyNoteController extends Controller
    *                 @OA\Property(
    *                     property="title",
    *                     type="string",
+   *                     required=true,
    *                     description="단어장 이름",
    *                 ),
    *                @OA\Property(
    *                     property="kanji",
    *                     type="json",
+   *                     required=true,
    *                     description="한자 리스트",
    *                 ),
    *                @OA\Property(
    *                     property="gana",
    *                     type="json",
+   *                     required=true,
    *                     description="히라가나/카타카나 리스트",
    *                 ),
    *                @OA\Property(
    *                     property="meaning",
    *                     type="json",
+   *                     required=true,
    *                     description="의미 리스트",
    *                 ),
    *                @OA\Property(
    *                      property="is_public",
    *                       type="boolean",
+   *                       required=true,         
    *                       description="단어장 공유 여부",
    *                 ),
    *             ),
@@ -233,32 +234,34 @@ class VocabularyNoteController extends Controller
         'kanji' => 'required|json',
         'gana' => 'required|json',
         'meaning' => 'required|json',
-        'is_public' => 'boolean'
+        'is_public' => 'required|boolean'
       ]);
 
       /** @var \App\Models\User $user **/
       $user = auth('sanctum')->user();
 
+      /** @var \App\Models\VocabularyNote $note **/
       $note = $user->vocabularyNotes()->where('id', $id)->first();
 
-      $duplicateResult = duplicateCheck($request->kanji, $request->gana, $request->meaning);
-      list($kanji, $gana, $meaning) = $duplicateResult;
-      if ($note) {
-        /** @var \App\Models\Note $note **/
-        $note->title = $request->title;
-        $note->user_id = $user->id;
-        $note->kanji = $kanji;
-        $note->gana = $gana;
-        $note->meaning = $meaning;
-        $note->is_public = $request->is_public;
-        $note->save();
-        return response()->json([
-          "status" => "Success",
-          "message" => "VocabularyNoteController: Updated VocabularyNote",
-          "data" => $note
-        ], 200);
+      if (!$note) {
+        return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: Not Found VocabularyNote"], 400);
       }
-      return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: Not Found VocabularyNote"], 400);
+
+      list($kanji, $gana, $meaning) = duplicateCheck($request->kanji, $request->gana, $request->meaning);
+
+      $note->update([
+        'title' => $request->title,
+        'kanji' => json_encode($kanji),
+        'gana' => json_encode($gana),
+        'meaning' => json_encode($meaning),
+        'is_public' => $request->is_public,
+      ]);
+
+      return response()->json([
+        "status" => "Success",
+        "message" => "VocabularyNoteController: Updated VocabularyNote",
+        "note" => $note
+      ], 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Fail", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
     }
@@ -342,7 +345,11 @@ class VocabularyNoteController extends Controller
 
       $vocabularyNote = new VocabularyNoteImport();
       Excel::import($vocabularyNote, $request->file('excel'));
-      return response()->json($vocabularyNote->getVocabularyNote(), 200);
+      return response()->json([
+        "status" => "Success",
+        "message" => "VocabularyNoteController: Excel VocabularyNote",
+        "note" => $vocabularyNote->getVocabularyNote()
+      ], 200);
     } catch (Exception $e) {
       return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $e->getMessage()], 400);
     }

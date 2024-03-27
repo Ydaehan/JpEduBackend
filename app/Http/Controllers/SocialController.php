@@ -2,42 +2,18 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 use App\Models\SocialAccount;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class SocialController extends Controller
 {
-
-  // 사용자의 생일을 반환하는 메서드
-  private function getBirthday(string $provider, $socialUser)
-  {
-    $birthday = null;
-    if ($provider === 'kakao') {
-      $birthday = $socialUser['kakao_account']['birthday'];
-    } else if ($provider === 'naver') {
-      $birthday = $socialUser['response']['birthday'];
-    } else {
-      $birthday = $socialUser->birthday;
-    }
-    return $birthday;
-  }
-  // 사용자의 전화번호를 반환하는 메서드
-  private function getPhoneNumber(string $provider, $socialUser)
-  {
-    $phoneNumber = null;
-    if ($provider === 'kakao') {
-      $phoneNumber = $socialUser['kakao_account']['phone_number'];
-    } else if ($provider === 'naver') {
-      $phoneNumber = $socialUser['response']['mobile'];
-    } else {
-      $phoneNumber = $socialUser->phone;
-    }
-    return $phoneNumber;
-  }
 
   // 소셜 로그인 처리 메서드
   private function handleSocialUser(string $provider, $socialUser)
@@ -47,28 +23,29 @@ class SocialController extends Controller
       ->first();
 
     if ($socialAccount) {
+      Auth::login($socialAccount->user);
       return createTokensAndRespond($socialAccount->user);
     }
 
     $user = User::where('email', $socialUser->getEmail())->first();
 
-    $birthday = $this->getBirthday($provider, $socialUser);
-    $phoneNumber = $this->getPhoneNumber($provider, $socialUser);
+
     if (!$user) {
       $user = User::create([
         'email' => $socialUser->getEmail(),
         'nickname' => $socialUser->getNickname() ?? $socialUser->getName(),
-        'birthday' => $socialUser->$birthday,
-        'phone' => $socialUser->$phoneNumber,
+        // 'birthday' => ,
+        // 'phone' => 
       ]);
       $user->userSetting()->create();
     }
+
 
     $user->socialAccounts()->create([
       'provider_name' => $provider,
       'provider_id' => $socialUser->getId(),
     ]);
-
+    Auth::login($user);
     return createTokensAndRespond($user);
   }
 
