@@ -135,6 +135,11 @@ function setImageSize($file)
 
 function duplicateCheck($kanji, $gana, $meaning)
 {
+  $kanji = is_array($kanji) ? $kanji : json_decode($kanji, true);
+  $gana = is_array($gana) ? $gana : json_decode($gana, true);
+  $meaning = is_array($meaning) ? $meaning : json_decode($meaning, true);
+
+
   $unique = [];
   $resultKanji = [];
   $resultGana = [];
@@ -199,15 +204,18 @@ function dailyCheck()
 // 사용자 토큰을 생성, 응답을 반환하는 메서드
 function createTokensAndRespond(User $user)
 {
-  dailyCheck(); // 출석 체크
+  $user = Auth::login($user);
+  $dailyCheck = dailyCheck(); // 출석 체크
   $user->tokens()->delete();
   $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
   $refreshToken = $user->createToken('Refresh Token', ['*'], Carbon::now()->addMinutes(config('sanctum.rt_expiration')));
   return response()->json([
     'status' => 'Success',
+    'message' => 'Login success',
     'user' => $user,
     'access_token' => $accessToken->plainTextToken,
     'refresh_token' => $refreshToken->plainTextToken,
+    'streak' => $dailyCheck['streak']
   ], 200);
 }
 

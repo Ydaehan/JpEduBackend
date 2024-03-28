@@ -20,7 +20,7 @@ class WordOfWorldController extends Controller
 
     $notes = VocabularyNote::where('user_id', $user->id)->get();
 
-    return response()->json(["status" => "Success", "data" => $notes], 200);
+    return response()->json(["status" => "Success", "notes" => $notes], 200);
   }
 
 
