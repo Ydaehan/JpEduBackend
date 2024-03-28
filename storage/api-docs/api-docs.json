@@ -205,6 +205,79 @@
                 }
             }
         },
+        "/api/user": {
+            "patch": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "회원 정보 수정",
+                "description": "회원 정보 수정\n   *     로그인 된 유저와 같은 회원정보를 수정합니다.",
+                "operationId": "c73d1fb6d1e6f9175628bed231a35574",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "회원 정보",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nickname": {
+                                        "description": "회원 닉네임",
+                                        "type": "string",
+                                        "example": "testuser1"
+                                    },
+                                    "email": {
+                                        "description": "회원 이메일",
+                                        "type": "email",
+                                        "example": "test123@daum.net"
+                                    },
+                                    "password": {
+                                        "description": "회원 비밀번호",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "회원 비밀번호 확인",
+                                        "type": "string",
+                                        "example": "asdf1234"
+                                    },
+                                    "phone": {
+                                        "description": "회원 전화번호",
+                                        "type": "string",
+                                        "example": "01012345678"
+                                    },
+                                    "birthday": {
+                                        "description": "회원 생일",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "01/01/2000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/jlpt/grammar/{tier}": {
             "get": {
                 "tags": [
