@@ -227,6 +227,67 @@ class AuthController extends Controller
     ]);
   }
 
+  /**
+   * @OA\Patch (
+   *     path="/api/user",
+   *     tags={"Auth"},
+   *     summary="회원 정보 수정",
+   *     description="회원 정보 수정
+   *     로그인 된 유저와 같은 회원정보를 수정합니다.",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   * 		 @OA\RequestBody(
+   * 			 description="회원 정보",
+   *			 required=true,
+   * 			 @OA\MediaType(
+   * 				 mediaType="application/json",
+   * 				 @OA\Schema (
+   * 					 @OA\Property (property="nickname", type="string", description="회원 닉네임", example="testuser1"),
+   * 					 @OA\Property (property="email", type="email", description="회원 이메일", example="test123@daum.net"),
+   * 					 @OA\Property (property="password", type="string", description="회원 비밀번호", example="asdf1234"),
+   * 					 @OA\Property (property="password_confirmation", type="string", description="회원 비밀번호 확인", example="asdf1234"),
+   * 					 @OA\Property (property="phone", type="string", description="회원 전화번호", example="01012345678"),
+   * 					 @OA\Property (property="birthday", type="date", description="회원 생일", example="01/01/2000")
+   * 				 )
+   * 			 )
+   * 		 ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   *
+   * */
+  // 회원 정보 수정 부분수정으로 구현
+  public function update(Request $request)
+  {
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
+    $validator = Validator::make($request->all(), [
+      'nickname' => 'string|max:255|unique:users',
+      'email' => 'email|max:255|unique:users',
+      'password' => 'string|min:6|max:255|confirmed',
+      'phone' => 'numeric|digits_between:11,15',
+      'birthday' => 'date',
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json([
+        'status' => 'error',
+        'messages' => $validator->messages()
+      ], 400);
+    }
+
+    $user->update($request->all());
+    return response()->json([
+      'status' => 'Success',
+      'message' => 'User update success'
+    ]);
+  }
+
   // 이메일 인증때 필요한 코드
   public function verifyUser(Request $request)
   {
