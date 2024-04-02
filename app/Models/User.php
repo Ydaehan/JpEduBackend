@@ -24,6 +24,7 @@ class User extends Authenticatable
     'password',
     'phone',
     'birthday',
+    'role',
     // 'verification_code'
   ];
 
@@ -84,5 +85,10 @@ class User extends Authenticatable
   public function targets()
   {
     return $this->hasMany(Subscription::class, 'target_id');
+  }
+
+  public function jlptQuestions()
+  {
+    return $this->hasMany(JlptQuestion::class);
   }
 }
