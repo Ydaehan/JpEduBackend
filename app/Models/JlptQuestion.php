@@ -16,8 +16,8 @@ class JlptQuestion extends Model
         'visibility'
     ];
 
-    public function manager()
+    public function user()
     {
-        return $this->belongsTo(Manager::class);
+        return $this->belongsTo(User::class);
     }
 }
