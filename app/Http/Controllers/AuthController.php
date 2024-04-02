@@ -42,7 +42,7 @@ class AuthController extends Controller
   public function register(Request $request)
   {
     $validator = Validator::make($request->json()->all(), [
-      'nickname' => 'required|string|max:255|unique:users',
+      'nickname' => 'required|string|max:255',
       'email' => 'required|email|max:255|unique:users',
       'password' => 'required|string|min:6|max:255|confirmed',
       'phone' => 'required|numeric|digits_between:11,15',
@@ -192,7 +192,8 @@ class AuthController extends Controller
     if ($oldAccessToken) {
       $oldAccessToken->delete();
     }
-    $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
+    $role = $user->role;
+    $accessToken = $user->createToken('API Token', [$role], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
     return response(['message' => "Token generate", 'token' => $accessToken->plainTextToken]);
   }
 
@@ -267,7 +268,7 @@ class AuthController extends Controller
     /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
     $validator = Validator::make($request->all(), [
-      'nickname' => 'string|max:255|unique:users',
+      'nickname' => 'string|max:255',
       'email' => 'email|max:255|unique:users',
       'password' => 'string|min:6|max:255|confirmed',
       'phone' => 'numeric|digits_between:11,15',
