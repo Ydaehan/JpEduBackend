@@ -204,7 +204,6 @@ function dailyCheck()
 // 사용자 토큰을 생성, 응답을 반환하는 메서드
 function createTokensAndRespond(User $user)
 {
-  $user = Auth::login($user);
   $dailyCheck = dailyCheck(); // 출석 체크
   $user->tokens()->delete();
   $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.ac_expiration')));
