@@ -38,9 +38,15 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // 일반 유저
-Route::middleware('auth:sanctum')->group(function () {
-  Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware(['auth:sanctum', 'ability:refresh'])->group(function () {
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
+});
+
+Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
+  Route::get('/user', function (Request $request) {
+    return $request->user();
+  });
+  Route::post('/logout', [AuthController::class, 'logout']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
