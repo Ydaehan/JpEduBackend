@@ -92,7 +92,7 @@ Route::prefix('/social')->group(function () {
 
 // 관리자가 문법 생성
 Route::prefix('/jlpt')->group(function () {
-  Route::post('/grammar', [GrammarController::class, 'store']);
+  Route::post('/grammar', [GrammarController::class, 'create']);
 });
 
 // test token 생성
