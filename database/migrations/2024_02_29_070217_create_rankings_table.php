@@ -16,7 +16,7 @@ return new class extends Migration
       $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
       $table->foreignId('level_id')->constrained('levels')->onDelete('cascade')->onUpdate('cascade');
       $table->integer('score');
-      $table->integer('solution_time')->nullable();
+      $table->enum('category', ['JLPT', 'WorldOfWords', 'CardMatching']);
       $table->timestamps();
     });
   }

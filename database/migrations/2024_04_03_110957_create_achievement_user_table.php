@@ -11,16 +11,9 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('vocabulary_notes', function (Blueprint $table) {
-			$table->id();
+		Schema::create('achievement_user', function (Blueprint $table) {
 			$table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-			$table->foreignId('level_id')->constrained('levels')->onDelete('cascade')->onUpdate('cascade');
-			$table->string('title');
-			$table->json('gana');
-			$table->json('kanji');
-			$table->json('meaning');
-			$table->boolean('is_public')->default(false);
-			$table->boolean('is_creator')->default(false);
+			$table->foreignId('achievement_id')->constrained('achievements')->onDelete('cascade')->onUpdate('cascade');
 			$table->timestamps();
 		});
 	}
@@ -30,6 +23,6 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('vocabulary_notes');
+		Schema::dropIfExists('achievement_user');
 	}
 };
