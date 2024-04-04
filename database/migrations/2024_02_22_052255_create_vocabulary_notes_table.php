@@ -14,7 +14,7 @@ return new class extends Migration
 		Schema::create('vocabulary_notes', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-			$table->foreignId('level_id')->constrained('levels')->onDelete('cascade')->onUpdate('cascade');
+			$table->foreignId('level_id')->constrained('levels')->onDelete('cascade')->onUpdate('cascade')->default('UserCustom');
 			$table->string('title');
 			$table->json('gana');
 			$table->json('kanji');
