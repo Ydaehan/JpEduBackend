@@ -13,7 +13,7 @@ return new class extends Migration
   {
     Schema::create('levels', function (Blueprint $table) {
       $table->id();
-      $table->tinyInteger('level');
+      $table->enum('level', ['N1', 'N2', 'N3', 'N4', 'N5', 'Total', 'UserCustom'])->default('UserCustom');
       $table->timestamps();
     });
   }

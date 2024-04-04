@@ -6,28 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('grammars', function (Blueprint $table) {
-            $table->id();
-            $table->text("grammar")->unique();
-            $table->text("explain");
-            $table->jsonb("example");
-            $table->text("mean");
-            $table->text("conjunction");
-            $table->enum("tier", ["N1", "N2", "N3", "N4", "N5"]);
-            $table->timestamps();
-        });
-    }
+  /**
+   * Run the migrations.
+   */
+  public function up(): void
+  {
+    Schema::create('grammars', function (Blueprint $table) {
+      $table->id();
+      $table->string("grammar")->unique();
+      $table->text("explain");
+      $table->jsonb("example"); // key value 값으로 key 에 유저아이디, value 에 유저가 추가한 문장 저장
+      $table->string("mean");
+      $table->string("conjunction");
+      $table->enum("tier", ["N1", "N2", "N3", "N4", "N5"]);
+      $table->timestamps();
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('grammars');
-    }
+  /**
+   * Reverse the migrations.
+   */
+  public function down(): void
+  {
+    Schema::dropIfExists('grammars');
+  }
 };
