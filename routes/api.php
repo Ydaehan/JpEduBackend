@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\SpeechController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SocialController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\WordOfWorldController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
-use App\Http\Controllers\PronunciationController;
 use Illuminate\Support\Facades\Http;
 
 /*
@@ -50,6 +50,8 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
   Route::post('/wordOfWorld', [WordOfWorldController::class, 'result']);
+
+  Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
   // 단어장
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
