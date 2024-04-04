@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   // 단어장
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
+    Route::post('/publicNotes', [VocabularyNoteController::class, 'publicNotes']);
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
   });
