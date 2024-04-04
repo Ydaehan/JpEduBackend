@@ -205,7 +205,6 @@ function dailyCheck()
 function createTokensAndRespond(User $user)
 {
   /** @var \App\Models\User $user **/
-  Auth::login($user);
   $dailyCheck = dailyCheck(); // 출석 체크
   $user->tokens()->delete();
   $role = $user->role;

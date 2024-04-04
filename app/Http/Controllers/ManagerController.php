@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Manager;
+use App\Models\User;
 use App\Models\ManagerWaitList;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -66,7 +66,7 @@ class ManagerController extends Controller
     }
 
     try {
-      $manager = Manager::create([
+      $manager = User::create([
         'nickname' => $request->get('nickname'),
         'email' => $request->get('email'),
         'password' => Hash::make($request->get('password')),

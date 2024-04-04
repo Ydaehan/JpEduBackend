@@ -26,8 +26,7 @@
         "socialiteproviders/zoho": "^4.1",
         "symfony/http-client": "^7.0",
         "symfony/mailgun-mailer": "^7.0",
-        "symfony/string": "*",
-        "youaoi/php-mecab": "dev-master"
+        "symfony/string": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
