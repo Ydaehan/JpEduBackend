@@ -7,50 +7,6 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 
-function getMecab($sourceArray)
-{
-  $mecab = new Mecab();
-  $gana = [];
-  $kanji = [];
-
-  $i = 0;
-  foreach ($sourceArray as $index => $item) {
-    $reading = $mecab->parse($item); // mecab
-    foreach ($reading as $value) {
-      if ($value->reading != null) {
-        if ($value->speech == '動詞' || $value->speech == '名詞' || $value->speech == '助動詞' || $value->speech == '形容詞') {
-          $gana[$i] = $value->reading;
-          $kanji[$i] = $value->original;
-          $i++;
-        }
-      }
-    }
-  }
-
-  $i = 0;
-  foreach ($kanji as $item) {
-    $resultReading = $mecab->parse($item);
-    foreach ($resultReading as $value) {
-      if ($value->reading != null) {
-        if ($value->speech == '動詞' || $value->speech == '名詞' || $value->speech == '助動詞' || $value->speech == '形容詞') {
-          $gana[$i] = $value->reading;
-          $kanji[$i] = $value->original;
-          $i++;
-        }
-      }
-    }
-  }
-
-  // index 번호 제거
-  $kanji = array_values($kanji);
-  $gana = array_values($gana);
-  foreach ($gana as $index => $text) {
-    $gana[$index] = convertKatakanaToHiragana($text);
-  }
-  $result = [$kanji, $gana];
-  return $result;
-}
-
 // 한자 필터링
 function kanjiFilter($kanji)
 {
@@ -67,12 +23,6 @@ function kanjiFilter($kanji)
     }
   }
   return $kanji;
-}
-
-// 가타카나 -> 히라가나 변환
-function convertKatakanaToHiragana($text)
-{
-  return mb_convert_kana($text, 'c');
 }
 
 function getKanji($sourceTextArray)
