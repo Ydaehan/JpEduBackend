@@ -11,7 +11,7 @@ class JlptQuestion extends Model
   use HasFactory;
 
   protected $fillable = [
-    'manager_id',
+    'admin_id',
     'level_id',
     'title',
     'visibility'
