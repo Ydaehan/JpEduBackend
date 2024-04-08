@@ -324,17 +324,13 @@ class AuthController extends Controller
     }
     $user = User::where('email', $request->email)->first();
     $user->tokens()->delete();
-    if (DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->exists()) {
-      return response()->json([
-        'status' => 'error',
-        'message' => '이미 로그인되어 있습니다. 로그아웃 후 다시 시도하세요.'
-      ]);
-    }
 
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
       /** @var \App\Models\User $user **/
       $user = Auth::user();
-      $accessToken = $user->createToken('API Token', ['*'], Carbon::now()->addMinutes(config('sanctum.test_expiration')));
+      //   dd($user);
+      $role = $user->role;
+      $accessToken = $user->createToken('API Token', [$role], Carbon::now()->addMinutes(config('sanctum.test_expiration')));
       return response()->json([
         'status' => 'Success',
         'user' => $user,
