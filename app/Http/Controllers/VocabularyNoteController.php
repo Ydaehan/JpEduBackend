@@ -109,6 +109,7 @@ class VocabularyNoteController extends Controller
     $note = VocabularyNote::create([
       'title' => $request->title,
       'user_id' => $user->id,
+      'level_id' => $request->level_id,
       'kanji' => json_encode($kanji),
       'gana' => json_encode($gana),
       'meaning' => json_encode($meaning),
@@ -189,35 +190,31 @@ class VocabularyNoteController extends Controller
    *         @OA\MediaType(
    *             mediaType="multipart/form-data",
    *             @OA\Schema(
+   *                 required={"title", "kanji", "gana", "meaning", "is_public"},
    *                 @OA\Property(
    *                     property="title",
    *                     type="string",
-   *                     required=true,
    *                     description="단어장 이름",
    *                 ),
    *                @OA\Property(
    *                     property="kanji",
    *                     type="json",
-   *                     required=true,
    *                     description="한자 리스트",
    *                 ),
    *                @OA\Property(
    *                     property="gana",
    *                     type="json",
-   *                     required=true,
    *                     description="히라가나/카타카나 리스트",
    *                 ),
    *                @OA\Property(
    *                     property="meaning",
    *                     type="json",
-   *                     required=true,
    *                     description="의미 리스트",
    *                 ),
    *                @OA\Property(
    *                      property="is_public",
-   *                       type="boolean",
-   *                       required=true,
-   *                       description="단어장 공유 여부",
+   *                      type="boolean",
+   *                      description="단어장 공유 여부",
    *                 ),
    *             ),
    *         ),
