@@ -80,4 +80,40 @@ class SpeechController extends Controller
       ], 400);
     }
   }
+
+  //@OA\Post (
+  //     path="/api/speech/translate",
+  //     tags={"Speech"},
+  //     summary="번역",
+  //     description="번역할 텍스트를 보내면 번역된 결과를 받을 수 있습니다.",
+  //     @OA\Parameter(
+  //         name="Authorization",
+  //         in="header",
+  //         required=true,
+  //         description="Bearer {access_token}",
+  //         @OA\Schema(type="string")
+  //     ),
+  //     @OA\RequestBody(
+  //         description="번역 요구 정보",
+  //         required=true,
+  //         @OA\MediaType(
+  //             mediaType="application/json",
+  //             @OA\Schema(
+  //                 @OA\Property(
+  //                     property="text",
+  //                     type="string",
+  //                     description="번역할 텍스트",
+  //                 ),
+  //             ),
+  //         ),
+  //     ),
+  //     @OA\Response(response="200", description="Success"),
+  //     @OA\Response(response="400", description="Fail")
+  // )
+  public function translate(Request $request)
+  {
+    $text = $request->input('text');
+    $result = papagoTranslation('ko', 'ja', $text);
+    return $result;
+  }
 }

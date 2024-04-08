@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   */
-  public function up(): void
-  {
-    Schema::create('levels', function (Blueprint $table) {
-      $table->id();
-      $table->enum('level', ['N1', 'N2', 'N3', 'N4', 'N5', 'Total', 'UserCustom'])->default('UserCustom');
-      $table->timestamps();
-    });
-  }
+	/**
+	 * Run the migrations.
+	 */
+	public function up(): void
+	{
+		Schema::create('levels', function (Blueprint $table) {
+			$table->id();
+			$table->enum('level', ['N1', 'N2', 'N3', 'N4', 'N5', 'Total', 'UserCustom']);
+			$table->timestamps();
+		});
+	}
 
-  /**
-   * Reverse the migrations.
-   */
-  public function down(): void
-  {
-    Schema::dropIfExists('levels');
-  }
+	/**
+	 * Reverse the migrations.
+	 */
+	public function down(): void
+	{
+		Schema::dropIfExists('levels');
+	}
 };

@@ -13,6 +13,12 @@ class VocabularyNote extends Model
 		'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public', 'is_creator', 'level_id',
 	];
 
+	protected $attributes = [
+		'is_public' => false,
+		'is_creator' => false,
+		'level_id' => 7,
+	];
+
 	protected $casts = [
 		'meaning' => 'array',
 		'gana' => 'array',
