@@ -63,10 +63,6 @@ class User extends Authenticatable
   {
     return $this->hasMany(VocabularyNote::class);
   }
-  public function reviewNote(): HasOne
-  {
-    return $this->hasOne(ReviewNote::class);
-  }
 
   public function userSetting(): HasOne
   {

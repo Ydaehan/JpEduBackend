@@ -83,6 +83,11 @@ class VocabularyNoteController extends Controller
    *                     type="json",
    *                     description="의미 리스트",
    *                 ),
+   *                @OA\Property(
+   *                     property="level_id",
+   *                     type="integer",
+   *                     description="1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
+   *                 ),
    *             ),
    *         ),
    *     ),
@@ -109,7 +114,7 @@ class VocabularyNoteController extends Controller
     $note = VocabularyNote::create([
       'title' => $request->title,
       'user_id' => $user->id,
-      'level_id' => $request->level_id,
+      'level_id' => $request->level_id ?? 7,
       'kanji' => json_encode($kanji),
       'gana' => json_encode($gana),
       'meaning' => json_encode($meaning),
