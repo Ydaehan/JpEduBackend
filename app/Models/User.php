@@ -73,7 +73,7 @@ class User extends Authenticatable
     return $this->hasOne(UserSetting::class);
   }
 
-  public function rankings(): HasMany
+  public function scores(): HasMany
   {
     return $this->hasMany(Score::class);
   }
