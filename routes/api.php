@@ -13,6 +13,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +62,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   });
   Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
   Route::prefix('/jlpt')->group(function () {
-    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit']);
+    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
   });
 });
 
