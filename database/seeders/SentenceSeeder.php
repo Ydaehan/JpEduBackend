@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Sentence;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class SentenceSeeder extends Seeder
@@ -29,7 +30,8 @@ class SentenceSeeder extends Seeder
         //똑같은 문장이면 들어가지 않게 처리
         // 문장의 길이 제한을 두어야 할것 같음
         if (!$existingSentence && mb_strlen($line, 'utf-8') < 37) {
-          Sentence::create(['user_id' => 1, 'sentence' => $line]);
+          $user = User::where('role', 'admin')->first();
+          $user->sentences()->create(['sentence' => $line]);
         }
       }
     }

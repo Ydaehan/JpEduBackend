@@ -7,31 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class VocabularyNote extends Model
 {
-	use HasFactory;
+  use HasFactory;
 
-	protected $fillable = [
-		'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public', 'is_creator', 'level_id',
-	];
+  protected $fillable = [
+    'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public', 'is_creator', 'level_id',
+  ];
 
-	protected $attributes = [
-		'is_public' => false,
-		'is_creator' => false,
-		'level_id' => 7,
-	];
+  protected $attributes = [
+    'is_public' => false,
+    'is_creator' => false,
+    'level_id' => 7,
+  ];
+  protected $casts = [
+    'meaning' => 'array',
+    'gana' => 'array',
+    'kanji' => 'array',
+  ];
 
-	protected $casts = [
-		'meaning' => 'array',
-		'gana' => 'array',
-		'kanji' => 'array',
-	];
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 
-	public function user()
-	{
-		return $this->belongsTo(User::class);
-	}
-
-	public function level()
-	{
-		return $this->belongsTo(Level::class);
-	}
+  public function level()
+  {
+    return $this->belongsTo(Level::class);
+  }
 }

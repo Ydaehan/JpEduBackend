@@ -109,6 +109,7 @@ class VocabularyNoteController extends Controller
     $note = VocabularyNote::create([
       'title' => $request->title,
       'user_id' => $user->id,
+      'level_id' => $request->level_id,
       'kanji' => json_encode($kanji),
       'gana' => json_encode($gana),
       'meaning' => json_encode($meaning),
@@ -443,5 +444,31 @@ class VocabularyNoteController extends Controller
     } else {
       return response()->json(["status" => "Error", "message" => "VocabularyNoteController: " . $data['errorMessage']], 400);
     }
+  }
+
+  /**
+   * @OA\Get (
+   *     path="/api/vocabularyNote/publicNotes",
+   *     tags={"VocabularyNote"},
+   *     summary="public 단어장 리스트",
+   *     description="공개여부가 public인 단어장 리스트 리턴",
+   *     @OA\Parameter(
+   *         name="Authorization",
+   *         in="header",
+   *         required=true,
+   *         description="Bearer {access_token}",
+   *         @OA\Schema(type="string")
+   *     ),
+   *     @OA\Response(response="200", description="Success"),
+   *     @OA\Response(response="400", description="Fail")
+   * )
+   */
+  public function publicNotes()
+  {
+    $notes = VocabularyNote::where('is_public', true)->get();
+    return response()->json([
+      "status" => "Success",
+      "notes" => $notes
+    ], 200);
   }
 }
