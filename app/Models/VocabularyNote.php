@@ -18,10 +18,11 @@ class VocabularyNote extends Model
     'is_creator' => false,
     'level_id' => 7,
   ];
+
   protected $casts = [
-    'meaning' => 'array',
-    'gana' => 'array',
-    'kanji' => 'array',
+    'meaning' => 'json',
+    'gana' => 'json',
+    'kanji' => 'json',
   ];
 
   public function user()

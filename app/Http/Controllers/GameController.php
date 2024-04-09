@@ -12,18 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class GameController extends Controller
 {
-  public function index(Request $request)
-  {
-    //
-    $user = Auth::user();
-    // 관리자 생성 문제 찾아서 같이 넘겨주기
-
-    $notes = VocabularyNote::where('user_id', $user->id)->get();
-
-    return response()->json(["status" => "Success", "notes" => $notes], 200);
-  }
-
-
   /**
    * @OA\Post (
    *     path="/api/worldOfWords",
@@ -44,7 +32,7 @@ class GameController extends Controller
    *         @OA\MediaType(
    *             mediaType="multipart/form-data",
    *             @OA\Schema(
-   *              required={"score", "kanji", "gana", "meaning", "level_id", "category"},   
+   *              required={"score", "kanji", "gana", "meaning", "category"},   
    *                 @OA\Property(
    *                     property="score",
    *                     type="integer",
@@ -68,14 +56,13 @@ class GameController extends Controller
    *                @OA\Property( 
    *                     property="level_id",
    *                     type="integer",
-   *                     description="플레이한 게임 난이도",
-   *                     example="WorldOfWords"
+   *                     description="플레이한 난이도 1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트 중 하나를 선택",
+   *                     example="8"
    *                 ),
    *                @OA\Property( 
    *                     property="category",
    *                     type="string",
-   *                     enum={"JLPT", "WorldOfWords", "CardMatching"},
-   *                     description="게임 카테고리",
+   *                     description="게임 카테고리 JLPT, WorldOfWords, CardMatching 중 하나를 선택",
    *                     example="WorldOfWords"
    *                 ),
    *             ),
@@ -85,7 +72,7 @@ class GameController extends Controller
    *     @OA\Response(response="400", description="Fail")
    * )
    */
-  public function wordsResult(Request $request)
+  public function gameResult(Request $request)
   {
     try {
       $validator = Validator::make($request->json()->all(), [
@@ -102,7 +89,7 @@ class GameController extends Controller
       // 오답노트 생성, 갱신
       if ($setting->review_note_auto_register) {
         $reviewNote = VocabularyNote::where('user_id', $user->id)
-          ->where('level_id', 8)->firstOrFail();
+          ->where('level_id', 8)->first();
         if ($reviewNote) {
           $reviewNote->kanji = array_merge($reviewNote->kanji, $request->kanji);
           $reviewNote->gana = array_merge($reviewNote->gana, $request->gana);
@@ -115,7 +102,7 @@ class GameController extends Controller
           $reviewNote->gana = $request->gana;
           $reviewNote->meaning = $request->meaning;
         }
-        $reviewNote->title = $user->nickname + "님의 오답노트";
+        $reviewNote->title = $user->nickname . "님의 오답노트";
         $reviewNote->user_id = $user->id;
         $reviewNote->level_id = 8;
         $reviewNote->save();
