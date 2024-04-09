@@ -26,5 +26,9 @@ class LevelSeeder extends Seeder
     Level::create([
       'level' => 'UserCustom'
     ]);
+
+    Level::create([
+      'level' => 'Review'
+    ]);
   }
 }
