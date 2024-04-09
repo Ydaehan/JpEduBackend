@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LevelEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,9 +16,13 @@ class Level extends Model
     'level',
   ];
 
-  public function ranking(): BelongsTo
+  protected $casts = [
+    'level' => LevelEnum::class,
+  ];
+
+  public function score(): BelongsTo
   {
-    return $this->belongsTo(Ranking::class);
+    return $this->belongsTo(Score::class);
   }
 
   public function vocabularyNotes(): HasMany

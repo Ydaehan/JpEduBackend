@@ -6,25 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-	/**
-	 * Run the migrations.
-	 */
-	public function up(): void
-	{
-		Schema::create('user_grammar_examples', function (Blueprint $table) {
-			$table->id();
-			$table->foreignId('grammar_id')->constrained('grammars')->onDelete('cascade')->onUpdate('cascade');
-			$table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-			$table->text('example');
-			$table->timestamps();
-		});
-	}
+  /**
+   * Run the migrations.
+   */
+  public function up(): void
+  {
+    Schema::create('user_grammar_examples', function (Blueprint $table) {
+      $table->id();
+      $table->foreignId('grammar_id')->constrained('grammars')->onDelete('cascade')->onUpdate('cascade');
+      $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+      $table->text('example');
+      $table->timestamps();
+    });
+  }
 
-	/**
-	 * Reverse the migrations.
-	 */
-	public function down(): void
-	{
-		Schema::dropIfExists('user_grammar_examples');
-	}
+  /**
+   * Reverse the migrations.
+   */
+  public function down(): void
+  {
+    Schema::dropIfExists('user_grammar_examples');
+  }
 };
