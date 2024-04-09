@@ -1225,6 +1225,35 @@
                 }
             }
         },
+        "/api/vocabularyNote/publicNotes": {
+            "get": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "public 단어장 리스트",
+                "description": "공개여부가 public인 단어장 리스트 리턴",
+                "operationId": "c29584f7c3a79199f2fa75bfefac87c5",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer {access_token}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/wordOfWorld": {
             "post": {
                 "tags": [
