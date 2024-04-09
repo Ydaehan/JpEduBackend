@@ -18,13 +18,6 @@ class VocabularyNote extends Model
     'is_creator' => false,
     'level_id' => 7,
   ];
-
-  protected $attributes = [
-    'is_public' => false,
-    'is_creator' => false,
-    'level_id' => 7,
-  ];
-
   protected $casts = [
     'meaning' => 'array',
     'gana' => 'array',
