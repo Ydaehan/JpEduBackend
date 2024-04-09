@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
-  Route::post('/worldOfWords', [GameController::class, 'wordsResult']);
+  Route::post('/worldOfWords', [GameController::class, 'gameResult']);
 
   Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
   Route::post('/speech/translate', [SpeechController::class, 'translate']);
