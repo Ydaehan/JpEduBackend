@@ -8,7 +8,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TypingPracticeController;
 use App\Http\Controllers\VocabularyNoteController;
-use App\Http\Controllers\WordOfWorldController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
-  Route::post('/worldOfWords', [WordOfWorldController::class, 'wordsResult']);
+  Route::post('/worldOfWords', [GameController::class, 'wordsResult']);
 
   Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
   Route::post('/speech/translate', [SpeechController::class, 'translate']);

@@ -278,6 +278,88 @@
                 }
             }
         },
+        "/api/worldOfWords": {
+            "post": {
+                "tags": [
+                    "Game"
+                ],
+                "summary": "게임 결과 저장",
+                "description": "게임 결과 저장",
+                "operationId": "d18e19f089c1d068fb4fd5cd25a412eb",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "액세스 토큰",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer access_token"
+                    }
+                ],
+                "requestBody": {
+                    "description": "단어장 정보",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "score",
+                                    "kanji",
+                                    "gana",
+                                    "meaning",
+                                    "level_id",
+                                    "category"
+                                ],
+                                "properties": {
+                                    "score": {
+                                        "description": "게임 점수",
+                                        "type": "integer"
+                                    },
+                                    "kanji": {
+                                        "description": "오답 한자 리스트",
+                                        "type": "json"
+                                    },
+                                    "gana": {
+                                        "description": "오답 히라가나/카타카나 리스트",
+                                        "type": "json"
+                                    },
+                                    "meaning": {
+                                        "description": "오답 의미 리스트",
+                                        "type": "json"
+                                    },
+                                    "level_id": {
+                                        "description": "플레이한 게임 난이도",
+                                        "type": "integer",
+                                        "example": "WorldOfWords"
+                                    },
+                                    "category": {
+                                        "description": "게임 카테고리",
+                                        "type": "string",
+                                        "enum": [
+                                            "JLPT",
+                                            "WorldOfWords",
+                                            "CardMatching"
+                                        ],
+                                        "example": "WorldOfWords"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Fail"
+                    }
+                }
+            }
+        },
         "/api/jlpt/grammar/{tier}": {
             "get": {
                 "tags": [
@@ -1244,65 +1326,6 @@
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Fail"
-                    }
-                }
-            }
-        },
-        "/api/wordOfWorld": {
-            "post": {
-                "tags": [
-                    "Game"
-                ],
-                "summary": "게임 결과 저장",
-                "description": "게임 결과 저장",
-                "operationId": "60bc2442bc14f20ce2ca37524d2ce702",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "액세스 토큰",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "Bearer access_token"
-                    }
-                ],
-                "requestBody": {
-                    "description": "단어장 정보",
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "score": {
-                                        "description": "게임 점수",
-                                        "type": "integer"
-                                    },
-                                    "kanji": {
-                                        "description": "오답 한자 리스트",
-                                        "type": "json"
-                                    },
-                                    "gana": {
-                                        "description": "오답 히라가나/카타카나 리스트",
-                                        "type": "json"
-                                    },
-                                    "meaning": {
-                                        "description": "오답 의미 리스트",
-                                        "type": "json"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Success"
