@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -49,6 +51,7 @@ class User extends Authenticatable
   protected $casts = [
     'email_verified_at' => 'datetime',
     'password' => 'hashed',
+    'role' => RoleEnum::class,
   ];
 
   public function socialAccounts(): HasMany
@@ -72,7 +75,7 @@ class User extends Authenticatable
 
   public function rankings(): HasMany
   {
-    return $this->hasMany(Ranking::class);
+    return $this->hasMany(Score::class);
   }
 
   public function dailyChecks(): HasMany

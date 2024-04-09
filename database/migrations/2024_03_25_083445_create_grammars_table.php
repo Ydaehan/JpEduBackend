@@ -18,7 +18,7 @@ return new class extends Migration
       $table->jsonb("example"); // key value 값으로 key 에 유저아이디, value 에 유저가 추가한 문장 저장
       $table->string("mean");
       $table->string("conjunction");
-      $table->enum("tier", ["N1", "N2", "N3", "N4", "N5"]);
+      $table->string("tier");
       $table->timestamps();
     });
   }
