@@ -68,7 +68,7 @@ class AuthController extends Controller
             // 'verification_code' => sha1(time())
         ]);
 
-        if (isset($validatedData['role']) !== null) {
+        if (isset($validatedData['role']) && $validatedData['role'] !== null) {
             $user->role = $validatedData['role'];
             $user->save();
         }
@@ -286,7 +286,6 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             /** @var \App\Models\User $user **/
             $user = Auth::user();
-            //   dd($user);
             $role = $user->role;
             $accessToken = $user->createToken('API Token', [$role], Carbon::now()->addMinutes(config('sanctum.test_expiration')));
             return response()->json([
