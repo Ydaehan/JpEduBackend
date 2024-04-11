@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             LevelSeeder::class,
             UserSeeder::class,
             ScoreSeeder::class,
+            VocabularySeeder::class,
         ]);
     }
 }
