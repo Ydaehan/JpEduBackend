@@ -4,34 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sentence;
+use App\OpenApi\Parameters\AccessTokenParameters;
+use App\OpenApi\Parameters\DeleteSentenceParameters;
+use App\OpenApi\Parameters\SentenceUpdateParameters;
+use App\OpenApi\RequestBodies\SentenceUpdateRequestBody;
+use App\OpenApi\RequestBodies\StoreSentencesRequestBody;
+use App\OpenApi\Responses\BadRequestResponse;
+use App\OpenApi\Responses\ErrorValidationResponse;
+use App\OpenApi\Responses\StoreSuccessResponse;
+use App\OpenApi\Responses\SuccessResponse;
+use App\OpenApi\Responses\UnauthorizedResponse;
 use Illuminate\Support\Facades\Validator;
+use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
+#[OpenApi\PathItem]
 class TypingPracticeController extends Controller
 {
   /**
-   * @OA\Post (
-   *     path="/api/typing/store",
-   *     tags={"TypingPractice"},
-   *     summary="관리자의 타자연습 파일 등록",
-   *     description="관리자가 타자연습용 문장을 생성
-   *     .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
-   *     @OA\RequestBody(
-   *         description="txt 파일",
-   *         required=true,
-   *         @OA\MediaType(
-   *             mediaType="multipart/form-data",
-   *             @OA\Schema(
-   *                 @OA\Property(
-   *                     property="file",
-   *                     type="file",
-   *                 ),
-   *             ),
-   *         ),
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
+   * 관리자의 타자연습 파일 등록
+   *
+   * 관리자가 타자연습용 문장을 생성<br/>
+   * .txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.
    */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'POST')]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+  #[OpenApi\RequestBody(factory: StoreSentencesRequestBody::class)]
+  #[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
   public function store(Request $request)
   {
     if ($request->hasFile('file')) {
@@ -62,23 +62,16 @@ class TypingPracticeController extends Controller
   }
 
   /**
-   * @OA\Get (
-   *     path="/api/typing/getSentences",
-   *     tags={"TypingPractice"},
-   *     summary="타자연습용 문장 조회",
-   *     description="타자연습용 문장을 조회합니다.
-   *     DB의 모든 문장을 들고옵니다.",
-   *     @OA\Parameter(
-   *         name="Authorization",
-   *         in="header",
-   *         required=true,
-   *         description="Bearer access token",
-   *         @OA\Schema(type="string")
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
+   * 타자연습용 문장 조회
+   *
+   * 타자연습용 문장을 조회합니다.<br/>
+   * DB의 모든 문장을 반환합니다.
    */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'GET')]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '문장 조회 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
   public function getSentences()
   {
     $sentences = Sentence::all();
@@ -86,35 +79,16 @@ class TypingPracticeController extends Controller
   }
 
   /**
-   * @OA\Patch (
-   *     path="/api/typing/update/{id}",
-   *     tags={"TypingPractice"},
-   *     summary="관리자의 타자연습용 문장 수정",
-   *     description="관리자가 타자연습용 문장을 수정합니다.",
-   *     @OA\Parameter(
-   *         name="id",
-   *         in="path",
-   *         required=true,
-   *         description="문장의 id 값",
-   *         @OA\Schema(type="string")
-   *     ),
-   *     @OA\RequestBody(
-   *         description="변경할 문자열",
-   *         required=true,
-   *         @OA\MediaType(
-   *             mediaType="multipart/form-data",
-   *             @OA\Schema(
-   *                 @OA\Property(
-   *                     property="sentence",
-   *                     type="string",
-   *                 ),
-   *             ),
-   *         ),
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
-   * */
+   * 관리자의 타자연습용 문장 수정
+   *
+   * 관리자가 타자연습용 문장을 수정합니다.
+   */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'PATCH')]
+  #[OpenApi\Parameters(factory: SentenceUpdateParameters::class)]
+  #[OpenApi\RequestBody(factory: SentenceUpdateRequestBody::class)]
+  #[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: ErrorValidationResponse::class, description: '유효성 검사 실패', statusCode: 422)]
   public function update(string $id, Request $request)
   {
     $validator = Validator::make($request->all(), [
@@ -139,22 +113,15 @@ class TypingPracticeController extends Controller
   }
 
   /**
-   * @OA\Delete (
-   *     path="/api/typing/delete/{id}",
-   *     tags={"TypingPractice"},
-   *     summary="관리자의 타자연습용 문장 삭제",
-   *     description="관리자가 타자연습용 문장을 삭제합니다.",
-   *     @OA\Parameter(
-   *         name="id",
-   *         in="path",
-   *         required=true,
-   *         description="문장의 id 값",
-   *         @OA\Schema(type="string")
-   *     ),
-   *     @OA\Response(response="200", description="Success"),
-   *     @OA\Response(response="400", description="Fail")
-   * )
-   * */
+   * 관리자의 타자연습용 문장 삭제
+   *
+   * 관리자가 타자연습용 문장을 삭제합니다.
+   */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'DELETE')]
+  #[OpenApi\Parameters(factory: DeleteSentenceParameters::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '문장 삭제 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
   public function destroy(string $id)
   {
     $sentence = Sentence::find($id);
