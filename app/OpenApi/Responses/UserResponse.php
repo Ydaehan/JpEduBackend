@@ -10,15 +10,15 @@ use Vyuldashev\LaravelOpenApi\Factories\ResponseFactory;
 
 class UserResponse extends ResponseFactory implements Reusable
 {
-  public function build(): Response
-  {
-    $response = Schema::object()->properties(
-      Schema::integer('status_code')->example(200),
-      Schema::string('message')->example('회원가입 성공'),
-    );
+	public function build(): Response
+	{
+		$response = Schema::object()->properties(
+			Schema::integer('status_code')->example(201),
+			Schema::string('message')->example('회원가입 성공'),
+		);
 
-    return Response::create(self::class)
-      ->description('회원가입 성공')
-      ->content(MediaType::json()->schema($response));
-  }
+		return Response::create(self::class)
+			->description('회원가입 성공')
+			->content(MediaType::json()->schema($response));
+	}
 }

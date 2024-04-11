@@ -2,76 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserSetting;
-use App\Models\ReviewNote;
 use App\Models\VocabularyNote;
 use App\Models\Score;
+use App\OpenApi\RequestBodies\GameResultRequestBody;
+use App\OpenApi\Responses\BadRequestResponse;
+use App\OpenApi\Responses\ErrorValidationResponse;
+use App\OpenApi\Responses\StoreSuccessResponse;
+use App\OpenApi\Responses\SuccessResponse;
+use App\OpenApi\Responses\UnauthorizedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
+#[OpenApi\PathItem]
 class GameController extends Controller
 {
     /**
-     * @OA\Post (
-     *     path="/api/worldOfWords",
-     *     tags={"Game"},
-     *     summary="게임 결과 저장",
-     *     description="게임 결과 저장",
-     *     @OA\Parameter(
-     *         name="Authorization",
-     *         in="header",
-     *         required=true,
-     *         description="액세스 토큰",
-     *         example="Bearer access_token",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\RequestBody(
-     *         description="단어장 정보",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *              required={"score", "kanji", "gana", "meaning", "category"},
-     *                 @OA\Property(
-     *                     property="score",
-     *                     type="integer",
-     *                     description="게임 점수",
-     *                 ),
-     *                @OA\Property(
-     *                     property="kanji",
-     *                     type="json",
-     *                     description="오답 한자 리스트",
-     *                 ),
-     *                @OA\Property(
-     *                     property="gana",
-     *                     type="json",
-     *                     description="오답 히라가나/카타카나 리스트",
-     *                 ),
-     *                @OA\Property(
-     *                     property="meaning",
-     *                     type="json",
-     *                     description="오답 의미 리스트",
-     *                 ),
-     *                @OA\Property(
-     *                     property="level_id",
-     *                     type="integer",
-     *                     description="플레이한 난이도 1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트 중 하나를 선택",
-     *                     example="8"
-     *                 ),
-     *                @OA\Property(
-     *                     property="category",
-     *                     type="string",
-     *                     description="게임 카테고리 JLPT, WorldOfWords, CardMatching 중 하나를 선택",
-     *                     example="WorldOfWords"
-     *                 ),
-     *             ),
-     *         ),
-     *     ),
-     *     @OA\Response(response="200", description="Success"),
-     *     @OA\Response(response="400", description="Fail")
-     * )
+     * 게임 결과 저장
+     *
+     * 각 게임 결과를 저장합니다.<br/>
+     * 게임 결과에 따라 오답노트를 생성하거나 갱신하고, 점수를 등록합니다.
+     * 요청을 보낼 때 플레이한 난이도와 카테고리를 함께 보내야 합니다.
      */
+    #[OpenApi\Operation(tags: ['Game'], method: 'POST')]
+    #[OpenApi\RequestBody(factory: GameResultRequestBody::class)]
+    #[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+    #[OpenApi\Response(factory: BadRequestResponse::class, statusCode: 400, description: '요청 실패')]
+    #[OpenApi\Response(factory: UnauthorizedResponse::class, statusCode: 401, description: '토큰 인증 실패')]
+    #[OpenApi\Response(factory: ErrorValidationResponse::class, statusCode: 422, description: '유효성 검사 실패')]
     public function gameResult(Request $request)
     {
         try {

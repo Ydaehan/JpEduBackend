@@ -2,19 +2,20 @@
 
 namespace App\OpenApi\RequestBodies;
 
-use App\OpenApi\Schemas\UserSchema;
+use App\OpenApi\Schemas\ImageSchema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use Vyuldashev\LaravelOpenApi\Factories\RequestBodyFactory;
 
-class UserStoreRequestBody extends RequestBodyFactory
+class ImageRequestBody extends RequestBodyFactory
 {
   public function build(): RequestBody
   {
-    return RequestBody::create("UserStoreRequestBody")
-      ->description('회원가입')
+    return RequestBody::create('Image')
+      ->description('이미지 파일 등록')
       ->content(
-        MediaType::json()->schema(UserSchema::ref())
+        MediaType::formData()
+          ->schema(ImageSchema::ref())
       );
   }
 }

@@ -11,10 +11,11 @@ class LoginRequestBody extends RequestBodyFactory
 {
   public function build(): RequestBody
   {
-    return RequestBody::create(self::class)
+    return RequestBody::create('LoginRequestBody')
       ->description('로그인')
       ->content(
-        MediaType::json()->schema(LoginSchema::ref())
+        MediaType::json()
+          ->schema(LoginSchema::ref())
       );
   }
 }

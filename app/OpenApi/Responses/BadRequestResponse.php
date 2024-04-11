@@ -8,21 +8,21 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Contracts\Reusable;
 use Vyuldashev\LaravelOpenApi\Factories\ResponseFactory;
 
-class ErrorValidationResponse extends ResponseFactory implements Reusable
+class BadRequestResponse extends ResponseFactory implements Reusable
 {
     public function build(): Response
     {
-        $response = Schema::object('ErrorValidation')->properties(
-            Schema::integer('status_code')->example(422),
-            Schema::string('message')->example('ErrorValidation'),
+        $response = Schema::object('BadRequest')->properties(
+            Schema::integer('status_code')->example(400),
+            Schema::string('message')->example('BadRequest'),
             Schema::object('errors')
                 ->additionalProperties(
                     Schema::array()->items(Schema::string())
                 )
-                ->example(['field' => ['요청은 잘 만들어졌지만, 문법 오류로 인하여 따를 수 없습니다.']])
+                ->example(['field' => ['400 Bad Request']])
         );
-        return Response::create('ErrorValidation')
-            ->description('요청은 잘 만들어졌지만, 문법 오류로 인하여 따를 수 없습니다.')
+        return Response::create('BadRequest')
+            ->description('이 응답은 잘못된 문법으로 인하여 서버가 요청을 이해할 수 없음을 의미합니다.')
             ->content(MediaType::json()->schema($response));
     }
 }

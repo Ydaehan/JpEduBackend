@@ -18,7 +18,7 @@ class UserSchema extends SchemaFactory implements Reusable
    */
   public function build(): SchemaContract
   {
-    return Schema::object()->properties(
+    return Schema::object('User')->properties(
       Schema::string('nickname')->example('testUser')->title('유저 닉네임'),
       Schema::string('email')->example('testuser123@naver.com')->title('유저 이메일'),
       Schema::string('password')->example('password123')->title('유저 비밀번호'),

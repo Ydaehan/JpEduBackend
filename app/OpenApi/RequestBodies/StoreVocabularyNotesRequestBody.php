@@ -2,19 +2,19 @@
 
 namespace App\OpenApi\RequestBodies;
 
-use App\OpenApi\Schemas\UserSchema;
+use App\OpenApi\Schemas\VocabularyNotesSchema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use Vyuldashev\LaravelOpenApi\Factories\RequestBodyFactory;
 
-class UserStoreRequestBody extends RequestBodyFactory
+class StoreVocabularyNotesRequestBody extends RequestBodyFactory
 {
   public function build(): RequestBody
   {
-    return RequestBody::create("UserStoreRequestBody")
-      ->description('회원가입')
+    return RequestBody::create('StoreVocabularyNotes')
+      ->description('단어장 생성')
       ->content(
-        MediaType::json()->schema(UserSchema::ref())
+        MediaType::formData()->schema(VocabularyNotesSchema::ref())
       );
   }
 }

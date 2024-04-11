@@ -2,19 +2,19 @@
 
 namespace App\OpenApi\RequestBodies;
 
-use App\OpenApi\Schemas\UserSchema;
+use App\OpenApi\Schemas\EmailSchema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use Vyuldashev\LaravelOpenApi\Factories\RequestBodyFactory;
 
-class UserStoreRequestBody extends RequestBodyFactory
+class DeleteWaitListRequestBody extends RequestBodyFactory
 {
   public function build(): RequestBody
   {
-    return RequestBody::create("UserStoreRequestBody")
-      ->description('회원가입')
+    return RequestBody::create('DeleteWaitListRequestBody')
+      ->description('대기열 삭제')
       ->content(
-        MediaType::json()->schema(UserSchema::ref())
+        MediaType::json()->schema(EmailSchema::ref())
       );
   }
 }

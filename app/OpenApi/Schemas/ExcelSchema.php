@@ -11,16 +11,14 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Contracts\Reusable;
 use Vyuldashev\LaravelOpenApi\Factories\SchemaFactory;
 
-class LoginSchema extends SchemaFactory implements Reusable
+class ExcelSchema extends SchemaFactory implements Reusable
 {
-	/**
-	 * @return AllOf|OneOf|AnyOf|Not|Schema
-	 */
-	public function build(): SchemaContract
-	{
-		return Schema::object('Login')->properties(
-			Schema::string('email')->example('testuser123@naver.com')->title('유저 이메일'),
-			Schema::string('password')->example('password123')->title('유저 비밀번호'),
-		)->required('email', 'password');
-	}
+    /**
+     * @return AllOf|OneOf|AnyOf|Not|Schema
+     */
+    public function build(): SchemaContract
+    {
+        return Schema::object('StoreExcelVoca')
+            ->properties(Schema::file('excel')->example('excel.xlsx')->title('엑셀 파일')->description('엑셀 파일을 첨부합니다.'));
+    }
 }
