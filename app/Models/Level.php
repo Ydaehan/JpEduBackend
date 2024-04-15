@@ -10,23 +10,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Level extends Model
 {
-  use HasFactory;
+	use HasFactory;
 
-  protected $fillable = [
-    'level',
-  ];
+	protected $fillable = [
+		'level',
+	];
 
-  protected $casts = [
-    'level' => LevelEnum::class,
-  ];
+	protected $casts = [
+		'level' => LevelEnum::class,
+	];
 
-  public function score(): BelongsTo
-  {
-    return $this->belongsTo(Score::class);
-  }
+	public function score(): HasMany
+	{
+		return $this->hasMany(Score::class);
+	}
 
-  public function vocabularyNotes(): HasMany
-  {
-    return $this->hasMany(VocabularyNote::class);
-  }
+	public function vocabularyNotes(): HasMany
+	{
+		return $this->hasMany(VocabularyNote::class);
+	}
 }

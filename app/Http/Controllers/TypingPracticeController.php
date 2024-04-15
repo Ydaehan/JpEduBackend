@@ -7,6 +7,7 @@ use App\Models\Sentence;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\DeleteSentenceParameters;
 use App\OpenApi\Parameters\SentenceUpdateParameters;
+use App\OpenApi\RequestBodies\SentenceRequestBody;
 use App\OpenApi\RequestBodies\SentenceUpdateRequestBody;
 use App\OpenApi\RequestBodies\StoreSentencesRequestBody;
 use App\OpenApi\Responses\BadRequestResponse;
@@ -14,6 +15,8 @@ use App\OpenApi\Responses\ErrorValidationResponse;
 use App\OpenApi\Responses\StoreSuccessResponse;
 use App\OpenApi\Responses\SuccessResponse;
 use App\OpenApi\Responses\UnauthorizedResponse;
+use App\OpenApi\Schemas\SentenceSchema;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
@@ -52,7 +55,7 @@ class TypingPracticeController extends Controller
           //똑같은 문장이면 들어가지 않게 처리
           // 문장의 길이 제한을 두어야 할것 같음
           if (!$existingSentence && mb_strlen($line, 'utf-8') < 37) {
-            Sentence::create(['sentence' => $line]);
+            Sentence::create(['sentence' => $line, 'user_id' => Auth::user()->id]);
           }
         }
       }
@@ -62,10 +65,10 @@ class TypingPracticeController extends Controller
   }
 
   /**
-   * 타자연습용 문장 조회
+   * 관리자 문장 조회
    *
-   * 타자연습용 문장을 조회합니다.<br/>
-   * DB의 모든 문장을 반환합니다.
+   * 관리자 문장을 조회합니다.<br/>
+   * 관리자가 생성한 모든 문장을 조회합니다.
    */
   #[OpenApi\Operation(tags: ['TypingPractice'], method: 'GET')]
   #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
@@ -74,7 +77,7 @@ class TypingPracticeController extends Controller
   #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
   public function getSentences()
   {
-    $sentences = Sentence::all();
+    $sentences = Sentence::whereIn('user_id', [1, 2])->get();
     return $sentences;
   }
 
@@ -130,5 +133,69 @@ class TypingPracticeController extends Controller
     }
     $sentence->delete();
     return response()->json(["sentence" => $sentence]);
+  }
+
+  /**
+   * 유저 문장 등록
+   *
+   * 유저가 타자연습용 문장을 등록합니다.
+   */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'POST')]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+  #[OpenApi\RequestBody(factory: SentenceRequestBody::class)]
+  #[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+  #[OpenApi\Response(factory: ErrorValidationResponse::class, description: '유효성 검사 실패', statusCode: 422)]
+  public function storeUserSentence(Request $request)
+  {
+    try {
+      $validated = $request->validate([
+        'sentence' => 'required|string',
+      ]);
+      $user_id = Auth::user()->id;
+
+      // 문장의 길이를 확인
+      if (mb_strlen($validated['sentence'], 'utf-8') > 36) {
+        return response()->json(["message" => "문장은 36자 이하로 입력해주세요."], 400);
+      }
+      // 문장의 중복을 확인
+      $existingSentence = Sentence::where('sentence', $validated['sentence'])->first();
+      if ($existingSentence) {
+        return response()->json(["message" => "이미 등록된 문장입니다."], 400);
+      }
+
+      Sentence::create([
+        'sentence' => $validated['sentence'],
+        'user_id' => $user_id
+      ]);
+      return response()->json(["message" => "success"]);
+    } catch (\Exception $e) {
+      return response()->json(["message" => $e->getMessage()]);
+    }
+  }
+
+  /**
+   * 유저 문장 조회
+   *
+   * 유저가 등록한 문장을 조회합니다.
+   */
+  #[OpenApi\Operation(tags: ['TypingPractice'], method: 'GET')]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '문장 조회 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+  public function getUserSentences()
+  {
+    $user_id = Auth::user()->id;
+    $sentences = Sentence::where('user_id', $user_id)->with('user')->get()->map(function ($sentence) {
+      return [
+        'id' => $sentence->id,
+        'sentence' => $sentence->sentence,
+        'user_id' => $sentence->user_id,
+        'nickname' => $sentence->user->nickname,
+      ];
+    });
+    return $sentences;
   }
 }

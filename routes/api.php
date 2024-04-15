@@ -13,7 +13,10 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\S3Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -62,7 +65,11 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
   });
-  Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
+  Route::prefix('/typing')->group(function () {
+    Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
+    Route::get('/getUserSentences', [TypingPracticeController::class, 'getUserSentences']);
+    Route::post('/user', [TypingPracticeController::class, 'storeUserSentence']);
+  });
   Route::prefix('/jlpt')->group(function () {
     Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
   });
@@ -111,3 +118,14 @@ Route::prefix('/jlpt')->group(function () {
 
 // test token 생성
 Route::post('/test-token', [AuthController::class, 'createTestToken']);
+
+// s3 test
+Route::post('/s3', [S3Controller::class, 'store']);
+Route::get('/s3-files', [S3Controller::class, 'getS3Files']);
+// Route::get('/s3', function (Request $request) {
+//     $validated = $request->validate([
+//         'path' => 'required|string',
+//     ]);
+//     $result = getS3GetUrl($validated['path']);
+//     dd($result);
+// });
