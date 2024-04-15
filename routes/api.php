@@ -13,7 +13,10 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\S3Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,7 +29,7 @@ use Illuminate\Support\Facades\Http;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-  return $request->user();
+	return $request->user();
 });
 
 // Route::middleware('guest')->group(function () {
@@ -41,73 +44,89 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // 토큰 갱신
 Route::middleware(['auth:sanctum', 'ability:refresh'])->group(function () {
-  Route::post('/refresh', [AuthController::class, 'refreshToken']);
+	Route::post('/refresh', [AuthController::class, 'refreshToken']);
 });
 
 // 일반 유저
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
-  Route::get('/user', function (Request $request) {
-    return $request->user();
-  });
-  Route::post('/logout', [AuthController::class, 'logout']);
-  Route::delete('/sign-out', [AuthController::class, 'signOut']);
-  Route::patch('/user', [AuthController::class, 'update']);
-  Route::post('/worldOfWords', [GameController::class, 'gameResult']);
+	Route::get('/user', function (Request $request) {
+		return $request->user();
+	});
+	Route::post('/logout', [AuthController::class, 'logout']);
+	Route::delete('/sign-out', [AuthController::class, 'signOut']);
+	Route::patch('/user', [AuthController::class, 'update']);
+	Route::post('/worldOfWords', [GameController::class, 'gameResult']);
 
-  Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
-  Route::post('/speech/translate', [SpeechController::class, 'translate']);
-  // 단어장
-  Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
-  Route::prefix('/vocabularyNote')->group(function () {
-    Route::post('/export', [VocabularyNoteController::class, 'export']);
-    Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
-  });
-  Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
-  Route::prefix('/jlpt')->group(function () {
-    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
-  });
-  // 랭킹
-  Route::prefix('/ranking')->group(function () {
-    Route::get('/myScore', [RankingController::class, 'getAllMyScore']);
-    Route::get('/{category}', [RankingController::class, 'getCategoryRanking']);
-  });
+	Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
+	Route::post('/speech/translate', [SpeechController::class, 'translate']);
+	// 단어장
+	Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
+	Route::prefix('/vocabularyNote')->group(function () {
+		Route::post('/export', [VocabularyNoteController::class, 'export']);
+		Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
+		Route::get('/publicNotes', [VocabularyNoteController::class, 'publicNotes']);
+	});
+	Route::prefix('/typing')->group(function () {
+		Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
+		Route::get('/getUserSentences', [TypingPracticeController::class, 'getUserSentences']);
+		Route::post('/user', [TypingPracticeController::class, 'storeUserSentence']);
+	});
+	Route::prefix('/jlpt')->group(function () {
+		Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
+	});
+	// 랭킹
+	Route::prefix('/ranking')->group(function () {
+		Route::get('/myScore', [RankingController::class, 'getAllMyScore']);
+		Route::get('/{category}', [RankingController::class, 'getCategoryRanking']);
+	});
 });
 
 // 매니저, 관리자
 Route::middleware(['auth:sanctum', 'ability:manager,admin'])->group(function () {
-  Route::prefix('/manager')->group(function () {
-    Route::post('/register', [ManagerController::class, 'managerSignUp']);
-  });
-  Route::prefix('admin')->group(function () {
-    Route::delete('/deleteGrammar/{grammar_id}', [GrammarController::class, 'delete']);
-    Route::delete('/deleteManagerWaitList', [ManagerController::class, 'deleteManagerWaitList']);
-  });
-  // 타자 연습
-  Route::prefix('/typing')->group(function () {
-    Route::post('/store', [TypingPracticeController::class, 'store']);
-    Route::patch('/update/{id}', [TypingPracticeController::class, 'update']);
-    Route::delete('/delete/{id}', [TypingPracticeController::class, 'destroy']);
-  });
+	Route::prefix('/manager')->group(function () {
+		Route::post('/register', [ManagerController::class, 'managerSignUp']);
+	});
+	Route::prefix('admin')->group(function () {
+		Route::delete('/deleteGrammar/{grammar_id}', [GrammarController::class, 'delete']);
+		Route::delete('/deleteManagerWaitList', [ManagerController::class, 'deleteManagerWaitList']);
+	});
+	// 타자 연습
+	Route::prefix('/typing')->group(function () {
+		Route::post('/store', [TypingPracticeController::class, 'store']);
+		Route::patch('/update/{id}', [TypingPracticeController::class, 'update']);
+		Route::delete('/delete/{id}', [TypingPracticeController::class, 'destroy']);
+	});
 });
 
 
 // 메일
 Route::prefix('mail')->group(function () {
-  Route::post('/applyToManager', [MailController::class, 'applyToManager']);
-  Route::post('/sendSignUpEmail', [MailController::class, 'sendSignUpEmail']);
+	Route::post('/applyToManager', [MailController::class, 'applyToManager']);
+	Route::post('/sendSignUpEmail', [MailController::class, 'sendSignUpEmail']);
 });
 
 // 소셜로그인
 Route::prefix('/social')->group(function () {
-  Route::get('/{provider}', [SocialController::class, 'login']);
-  Route::get('/callback/{provider}', [SocialController::class, 'callback']);
-  Route::get('/mobile/{provider}', [SocialController::class, 'mobileCallback']);
+	Route::get('/{provider}', [SocialController::class, 'login']);
+	Route::get('/callback/{provider}', [SocialController::class, 'callback']);
+	Route::get('/mobile/{provider}', [SocialController::class, 'mobileCallback']);
 });
 
 // 관리자가 문법 생성
 Route::prefix('/jlpt')->group(function () {
-  Route::post('/grammar', [GrammarController::class, 'create']);
+	Route::post('/grammar', [GrammarController::class, 'create']);
 });
 
 // test token 생성
 Route::post('/test-token', [AuthController::class, 'createTestToken']);
+
+// s3 test
+Route::post('/s3', [S3Controller::class, 'store']);
+Route::get('/s3-files', [S3Controller::class, 'getS3Files']);
+// Route::get('/s3', function (Request $request) {
+//     $validated = $request->validate([
+//         'path' => 'required|string',
+//     ]);
+//     $result = getS3GetUrl($validated['path']);
+//     dd($result);
+// });

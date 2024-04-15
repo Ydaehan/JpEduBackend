@@ -718,8 +718,8 @@
                 "tags": [
                     "TypingPractice"
                 ],
-                "summary": "타자연습용 문장 조회",
-                "description": "타자연습용 문장을 조회합니다.<br\/>\nDB의 모든 문장을 반환합니다.",
+                "summary": "관리자 문장 조회",
+                "description": "관리자 문장을 조회합니다.<br\/>\n관리자가 생성한 모든 문장을 조회합니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -741,6 +741,100 @@
                     },
                     "401": {
                         "$ref": "#\/components\/responses\/Unauthorized"
+                    }
+                }
+            }
+        },
+        "\/api\/typing\/getUserSentences": {
+            "get": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "유저 문장 조회",
+                "description": "유저가 등록한 문장을 조회합니다.",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    }
+                }
+            }
+        },
+        "\/api\/typing\/user": {
+            "post": {
+                "tags": [
+                    "TypingPractice"
+                ],
+                "summary": "유저 문장 등록",
+                "description": "유저가 타자연습용 문장을 등록합니다.",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    }
+                ],
+                "requestBody": {
+                    "description": "문장 생성",
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/Sentence"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "생성\/등록\/수정 요청 성공",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "생성\/등록\/수정 요청 성공"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
@@ -1433,6 +1527,88 @@
                     }
                 }
             }
+        },
+        "\/api\/s3": {
+            "post": {
+                "tags": [
+                    "S3"
+                ],
+                "summary": "s3 파일 업로드",
+                "description": "s3에 파일을 업로드합니다.<br\/>\n파일을 업로드할 때는 파일과 경로를 함께 보내야 합니다.<br\/>\n파일은 file, 경로는 path로 보내야 합니다.<br\/>\npath는 achievements, grammars, mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
+                "requestBody": {
+                    "description": "s3 파일 업로드",
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/S3Upload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "생성\/등록\/수정 요청 성공",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "생성\/등록\/수정 요청 성공"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ErrorValidation"
+                    }
+                }
+            }
+        },
+        "\/api\/s3-files": {
+            "get": {
+                "tags": [
+                    "S3"
+                ],
+                "summary": "s3 파일 전체 URL 가져오기",
+                "description": "s3에 저장된 파일들의 전체 URL을 가져옵니다.<br\/>\npath를 보내면 해당 경로의 파일들의 URL을 가져옵니다.<br\/>\npath는 s3의 경로를 의미합니다.<br\/>\npath는 mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
+                "parameters": [
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "description": "s3의 경로를 의미합니다.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "mobile-images"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ErrorValidation"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1511,6 +1687,21 @@
                         "description": "엑셀 파일을 첨부합니다.",
                         "type": "file",
                         "example": "excel.xlsx"
+                    }
+                }
+            },
+            "S3Upload": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "파일명",
+                        "type": "string",
+                        "example": "file-name"
+                    },
+                    "path": {
+                        "title": "경로",
+                        "type": "string",
+                        "example": "achievements"
                     }
                 }
             },
@@ -2017,6 +2208,10 @@
         {
             "name": "Ranking",
             "description": "Ranking 관련 API 입니다"
+        },
+        {
+            "name": "S3",
+            "description": "S3 관련 API 입니다"
         }
     ]
 }
