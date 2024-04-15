@@ -13,6 +13,6 @@ class ManagerSeeder extends Seeder
    */
   public function run(): void
   {
-    User::factory(rand(5, 10))->manager()->create();
+    User::factory(8)->manager()->create();
   }
 }

@@ -9,27 +9,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Score extends Model
 {
-  use HasFactory;
+	use HasFactory;
 
-  protected $fillable = [
-    'user_id',
-    'category',
-    'score',
-    'solution_time',
-    'level_id',
-  ];
+	protected $fillable = [
+		'user_id',
+		'category',
+		'score',
+		'solution_time',
+		'level_id',
+	];
 
-  protected $casts = [
-    'category' => CategoryEnum::class,
-  ];
+	protected $casts = [
+		'category' => CategoryEnum::class,
+	];
 
-  public function user(): BelongsTo
-  {
-    return $this->belongsTo(User::class);
-  }
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 
-  public function level()
-  {
-    return $this->hasOne(Level::class);
-  }
+	public function level(): BelongsTo
+	{
+		return $this->belongsTo(Level::class);
+	}
 }

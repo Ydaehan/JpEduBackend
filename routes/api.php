@@ -12,7 +12,10 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
+use App\Http\Controllers\RankingController;
+use App\Http\Controllers\S3Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,14 +37,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // });
 
 // Route::get('/verify', [AuthController::class, 'verifyUser'])->name('verify.user');
+
+// 비 토큰 인증 라우트
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-// 일반 유저
+// 토큰 갱신
 Route::middleware(['auth:sanctum', 'ability:refresh'])->group(function () {
   Route::post('/refresh', [AuthController::class, 'refreshToken']);
 });
 
+// 일반 유저
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::get('/user', function (Request $request) {
     return $request->user();
@@ -58,10 +64,20 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
+    Route::get('/publicNotes', [VocabularyNoteController::class, 'publicNotes']);
   });
-  Route::get('/typing/getSentences', [TypingPracticeController::class, 'getSentences']);
+  Route::prefix('/typing')->group(function () {
+    Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
+    Route::get('/getUserSentences', [TypingPracticeController::class, 'getUserSentences']);
+    Route::post('/user', [TypingPracticeController::class, 'storeUserSentence']);
+  });
   Route::prefix('/jlpt')->group(function () {
-    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit']);
+    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
+  });
+  // 랭킹
+  Route::prefix('/ranking')->group(function () {
+    Route::get('/myScore', [RankingController::class, 'getAllMyScore']);
+    Route::get('/{category}', [RankingController::class, 'getCategoryRanking']);
   });
 });
 
@@ -69,21 +85,24 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
 Route::middleware(['auth:sanctum', 'ability:manager,admin'])->group(function () {
   Route::prefix('/manager')->group(function () {
     Route::post('/register', [ManagerController::class, 'managerSignUp']);
-    Route::delete('/deleteManagerWaitList/{email}', [ManagerController::class, 'deleteManagerWaitList']);
+  });
+  Route::prefix('admin')->group(function () {
+    Route::delete('/deleteGrammar/{grammar_id}', [GrammarController::class, 'delete']);
+    Route::delete('/deleteManagerWaitList', [ManagerController::class, 'deleteManagerWaitList']);
+  });
+  // 타자 연습
+  Route::prefix('/typing')->group(function () {
+    Route::post('/store', [TypingPracticeController::class, 'store']);
+    Route::patch('/update/{id}', [TypingPracticeController::class, 'update']);
+    Route::delete('/delete/{id}', [TypingPracticeController::class, 'destroy']);
   });
 });
 
-// 타자 연습
-Route::prefix('/typing')->group(function () {
-  Route::post('/store', [TypingPracticeController::class, 'store']);
-  Route::patch('/update/{id}', [TypingPracticeController::class, 'update']);
-  Route::delete('/delete/{id}', [TypingPracticeController::class, 'destroy']);
-});
 
 // 메일
 Route::prefix('mail')->group(function () {
   Route::post('/applyToManager', [MailController::class, 'applyToManager']);
-  Route::post('/sendSignUpEmail/{email}', [MailController::class, 'sendSignUpEmail']);
+  Route::post('/sendSignUpEmail', [MailController::class, 'sendSignUpEmail']);
 });
 
 // 소셜로그인
@@ -100,3 +119,14 @@ Route::prefix('/jlpt')->group(function () {
 
 // test token 생성
 Route::post('/test-token', [AuthController::class, 'createTestToken']);
+
+// s3 test
+Route::post('/s3', [S3Controller::class, 'store']);
+Route::get('/s3-files', [S3Controller::class, 'getS3Files']);
+// Route::get('/s3', function (Request $request) {
+//     $validated = $request->validate([
+//         'path' => 'required|string',
+//     ]);
+//     $result = getS3GetUrl($validated['path']);
+//     dd($result);
+// });
