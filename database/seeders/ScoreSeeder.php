@@ -17,7 +17,7 @@ class ScoreSeeder extends Seeder
     for ($i = 0; $i < 100; $i++) {
       $selectedCategory = $category[array_rand($category)];
       Score::create([
-        'user_id' => rand(11, 15),
+        'user_id' => rand(11, 13),
         'level_id' => rand(1, 8),
         'score' => rand(0, 100),
         'category' => $selectedCategory
