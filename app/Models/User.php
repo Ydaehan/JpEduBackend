@@ -94,9 +94,9 @@ class User extends Authenticatable
     return $this->hasMany(JlptQuestion::class);
   }
 
-  public function userGrammarExamples(): HasMany
+  public function grammarExamples(): HasMany
   {
-    return $this->hasMany(UserGrammarExample::class);
+    return $this->hasMany(GrammarExample::class);
   }
 
   public function sentences(): HasMany
