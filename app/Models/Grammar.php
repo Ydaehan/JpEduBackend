@@ -5,26 +5,27 @@ namespace App\Models;
 use App\Enums\GrammarLevelEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Grammar extends Model
 {
-	use HasFactory;
+  use HasFactory;
 
-	protected $fillable = [
-		'grammar',
-		'explain',
-		'example',
-		'mean',
-		'conjunction',
-		'tier',
-	];
+  protected $fillable = [
+    'grammar',
+    'explain',
+    'example',
+    'mean',
+    'conjunction',
+    'tier',
+  ];
 
-	protected $casts = [
-		'tier' => GrammarLevelEnum::class,
-	];
+  protected $casts = [
+    'tier' => GrammarLevelEnum::class,
+  ];
 
-	public function userGrammarExamples()
-	{
-		return $this->hasMany(UserGrammarExample::class);
-	}
+  public function grammarExamples(): HasMany
+  {
+    return $this->hasMany(GrammarExample::class);
+  }
 }
