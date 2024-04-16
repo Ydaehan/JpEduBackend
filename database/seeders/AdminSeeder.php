@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
       'phone' => '01068089833',
       'birthday' => '2000-05-19',
       'role' => 'admin'
-    ])->userSetting()->create([]);
+    ])->userSetting()->create();
 
     User::create([
       'nickname' => 'Sunghwan',
@@ -29,6 +29,6 @@ class AdminSeeder extends Seeder
       'phone' => '01067831332',
       'birthday' => '2000-07-24',
       'role' => 'admin'
-    ])->userSetting()->create([]);
+    ])->userSetting()->create();
   }
 }

@@ -22,13 +22,13 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             AdminSeeder::class,
-            GrammarSeeder::class,
             ManagerSeeder::class,
-            SentenceSeeder::class,
-            LevelSeeder::class,
             UserSeeder::class,
-            ScoreSeeder::class,
+            LevelSeeder::class,
+            GrammarSeeder::class,
+            SentenceSeeder::class,
             VocabularySeeder::class,
+            ScoreSeeder::class,
         ]);
     }
 }

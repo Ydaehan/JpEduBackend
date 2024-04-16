@@ -14,58 +14,39 @@ class UserSeeder extends Seeder
   public function run(): void
   {
     User::create([
-      'nickname' => 'testUser1',
-      'email' => 'asdf1234@naver.com',
+      'nickname' => '이효빈',
+      'email' => 'h@gmail.com',
+      'password' => bcrypt('qwer1234'),
+      'phone' => '01012345678',
+      'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
+      'role' => 'user'
+    ])->userSetting()->create();
+
+    User::create([
+      'nickname' => '심성환',
+      'email' => 'sunghwan1332@naver.com',
       'password' => bcrypt('asdf1234'),
-      'phone' => '01012345678',
-      'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
+      'phone' => '01067831332',
+      'birthday' => '2000-07-24',
       'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '11',
-    ]);;
+    ])->userSetting()->create();
 
     User::create([
-      'nickname' => 'testUser2',
-      'email' => 'asdf1235@gmail.com',
-      'password' => bcrypt('asdf1235'),
+      'nickname' => '우성준',
+      'email' => 'qwer1234@gmail.com',
+      'password' => bcrypt('qwer1234'),
       'phone' => '01012345678',
       'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
       'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '12',
-    ]);;
+    ])->userSetting()->create();
 
     User::create([
-      'nickname' => 'testUser3',
-      'email' => 'asdf1236@gmail.com',
-      'password' => bcrypt('asdf1236'),
-      'phone' => '01012345678',
+      'nickname' => 'tokenUser',
+      'email' => 'token@gmail.com',
+      'password' => bcrypt('asdf1234'),
+      'phone' => 'tokenPhone',
       'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
       'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '13',
-    ]);
-
-    User::create([
-      'nickname' => 'testUser4',
-      'email' => 'asdf1237@gmail.com',
-      'password' => bcrypt('asdf1237'),
-      'phone' => '01012345678',
-      'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
-      'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '14',
-    ]);;
-
-    User::create([
-      'nickname' => 'testUser5',
-      'email' => 'asdf1238@gmail.com',
-      'password' => bcrypt('asdf1238'),
-      'phone' => '01012345678',
-      'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
-      'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '15',
-    ]);;
+    ])->userSetting()->create();
   }
 }
