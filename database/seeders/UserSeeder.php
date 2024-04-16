@@ -31,9 +31,7 @@ class UserSeeder extends Seeder
       'phone' => '01012345678',
       'birthday' => random_int(2000, 2020) . '-' . random_int(1, 12) . '-' . random_int(1, 28),
       'role' => 'user'
-    ])->userSetting()->create([
-      'user_id' => '12',
-    ]);;
+    ])->userSetting()->create();
 
     User::create([
       'nickname' => 'testUser3',

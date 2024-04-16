@@ -56,15 +56,17 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
   Route::post('/gameResult', [GameController::class, 'gameResult']);
-
-  Route::post('/speech', [SpeechController::class, 'pronunciationAssessment']);
-  Route::post('/speech/translate', [SpeechController::class, 'translate']);
+  Route::prefix('/speech')->group(function () {
+    Route::post('', [SpeechController::class, 'pronunciationAssessment']);
+    Route::post('/translate', [SpeechController::class, 'translate']);
+    Route::post('/tts', [SpeechController::class, 'tts']);
+  });
   // 단어장
   Route::resource('/vocabularyNote', VocabularyNoteController::class)->except(['create', 'edit']);
   Route::prefix('/vocabularyNote')->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
-    Route::get('/publicNotes', [VocabularyNoteController::class, 'publicNotes']);
+    Route::get('/public/notes', [VocabularyNoteController::class, 'publicIndex']);
   });
   Route::prefix('/typing')->group(function () {
     Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
