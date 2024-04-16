@@ -47,7 +47,7 @@ class VocabularySeeder extends Seeder
         'kanji' => json_encode($kanji),
         'gana' => json_encode($gana),
         'meaning' => json_encode($meaning),
-        'is_public' => $setting->vocabulary_note_auto_visibility,
+        'is_public' => true,
         'is_creator' => true
       ]);
     }
