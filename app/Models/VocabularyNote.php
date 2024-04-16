@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VocabularyNote extends Model
 {
@@ -11,6 +12,11 @@ class VocabularyNote extends Model
 
   protected $fillable = [
     'title', 'user_id', 'meaning', 'gana', 'kanji', 'is_public', 'is_creator', 'level_id',
+  ];
+
+  protected $hidden = [
+    'user_id',
+    'is_creator',
   ];
 
   protected $attributes = [
@@ -25,12 +31,12 @@ class VocabularyNote extends Model
     'kanji' => 'json',
   ];
 
-  public function user()
+  public function user(): BelongsTo
   {
     return $this->belongsTo(User::class);
   }
 
-  public function level()
+  public function level(): BelongsTo
   {
     return $this->belongsTo(Level::class);
   }

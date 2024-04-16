@@ -21,4 +21,9 @@ class JlptQuestion extends Model
   {
     return $this->belongsTo(User::class);
   }
+
+  public function level(): BelongsTo
+  {
+    return $this->belongsTo(Level::class);
+  }
 }
