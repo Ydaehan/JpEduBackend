@@ -266,38 +266,4 @@ class AuthController extends Controller
       'message' => 'User verify fail'
     ]);
   }
-
-  protected function createTestToken(Request $request)
-  {
-    $validator = Validator::make($request->all(), [
-      'email' => 'required|email|max:255',
-      'password' => 'required|string|min:6',
-    ]);
-
-    if ($validator->fails()) {
-      return response()->json([
-        'status' => 'error',
-        'messages' => $validator->messages()
-      ], 400);
-    }
-    $user = User::where('email', $request->email)->first();
-    $user->tokens()->delete();
-
-    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-      /** @var \App\Models\User $user **/
-      $user = Auth::user();
-      $role = $user->role;
-      $accessToken = $user->createToken('API Token', [$role], Carbon::now()->addMinutes(config('sanctum.test_expiration')));
-      return response()->json([
-        'status' => 'Success',
-        'user' => $user,
-        'access_token' => $accessToken->plainTextToken,
-      ]);
-    }
-
-    return response()->json([
-      'status' => 'error',
-      'messages' => 'invalid credentials'
-    ]);
-  }
 }
