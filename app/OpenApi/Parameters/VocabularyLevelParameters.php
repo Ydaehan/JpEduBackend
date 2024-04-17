@@ -6,7 +6,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Factories\ParametersFactory;
 
-class JlptTierParameters extends ParametersFactory
+class VocabularyLevelParameters extends ParametersFactory
 {
   /**
    * @return Parameter[]
@@ -20,11 +20,11 @@ class JlptTierParameters extends ParametersFactory
         ->required(true)
         ->example('Bearer {access_token}')
         ->schema(Schema::string()),
-      Parameter::query()
-        ->name('tier')
-        ->description('JLPT Tier')
+      Parameter::path()
+        ->name('levelId')
+        ->description('단어장 급수')
         ->required(true)
-        ->example('N1, N2, N3, N4, N5')
+        ->example(1)
         ->schema(Schema::string()),
     ];
   }

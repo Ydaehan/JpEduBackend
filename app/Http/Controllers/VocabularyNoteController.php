@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\VocabularyNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
+use App\OpenApi\Parameters\VocabularyLevelParameters;
 use App\OpenApi\RequestBodies\ImageRequestBody;
 use App\OpenApi\RequestBodies\StoreExcelVocaRequestBody;
 use App\OpenApi\RequestBodies\StoreVocabularyNotesRequestBody;
@@ -45,11 +46,12 @@ class VocabularyNoteController extends Controller
 
     $notes = $user->vocabularyNotes()->get();
 
-    $adminNotes = VocabularyNote::with(['user' => function ($query) {
-      $query->select('nickname', 'id')->where('role', 'admin');
-    }])
-      ->with('level:id,level')
-      ->get();
+    $adminNotes = VocabularyNote::with([
+      'user' => function ($query) {
+        $query->select('nickname', 'id')->where('role', 'admin');
+      },
+      'level:id,level'
+    ])->get();
 
 
     return response()->json([
@@ -325,8 +327,39 @@ class VocabularyNoteController extends Controller
   public function publicIndex()
   {
     $notes = VocabularyNote::where('is_public', true)
-      ->with('user:id,nickname')
-      ->with('level:id,level')
+      ->with([
+        'user:id,nickname',
+        'level:id,level'
+      ])
+      ->get();
+
+    return response()->json([
+      "status" => "Success",
+      "notes" => $notes
+    ], 200);
+  }
+
+
+  /**
+   * 관리자 단어장 레벨별 리스트
+   *
+   * 레벨별 관리장 단어장 리스트 리턴
+   */
+  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'GET')]
+  #[OpenApi\Parameters(factory: VocabularyLevelParameters::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '레벨별 관리자 단어장 조회 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+  public function levelIndex(string $level)
+  {
+    $level = (int)$level;
+    $notes = VocabularyNote::where('level_id', $level)
+      ->with([
+        'user' => function ($query) {
+          $query->select('nickname', 'id')->where('role', 'admin');
+        },
+        'level:id,level'
+      ])
       ->get();
 
     return response()->json([

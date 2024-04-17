@@ -790,6 +790,48 @@
                 }
             }
         },
+        "\/api\/vocabularyNote\/notes\/{levelId}": {
+            "get": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "관리자 단어장 레벨별 리스트",
+                "description": "레벨별 관리장 단어장 리스트 리턴",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    },
+                    {
+                        "name": "levelId",
+                        "in": "path",
+                        "description": "단어장 급수",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    }
+                }
+            }
+        },
         "\/api\/typing\/getSentences": {
             "get": {
                 "tags": [
@@ -917,6 +959,39 @@
             }
         },
         "\/api\/jlpt\/grammar": {
+            "get": {
+                "tags": [
+                    "Grammar"
+                ],
+                "summary": "JLPT 문법 조회",
+                "description": "JLPT 전체 문법을 등급별로 반환합니다.",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ErrorValidation"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Grammar"
@@ -968,17 +1043,20 @@
                     },
                     "400": {
                         "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "\/api\/jlpt\/grammar\/{grammar}": {
-            "get": {
+        "\/api\/jlpt\/grammar\/{id}": {
+            "delete": {
                 "tags": [
                     "Grammar"
                 ],
-                "summary": "JLPT 문법을 등급별로 조회",
-                "description": "JLPT 문법을 등급별로 조회합니다.",
+                "summary": "JLPT 문법 삭제",
+                "description": "JLPT 문법을 삭제합니다.<br\/>\n관리자만 JLPT 문법을 삭제 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -991,14 +1069,14 @@
                         "example": "Bearer {access_token}"
                     },
                     {
-                        "name": "tier",
+                        "name": "id",
                         "in": "query",
-                        "description": "JLPT Tier",
+                        "description": "id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         },
-                        "example": "N1, N2, N3, N4, N5"
+                        "example": "1"
                     }
                 ],
                 "responses": {
@@ -1010,9 +1088,6 @@
                     },
                     "401": {
                         "$ref": "#\/components\/responses\/Unauthorized"
-                    },
-                    "422": {
-                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
@@ -1153,7 +1228,7 @@
                 }
             }
         },
-        "\/api\/admin\/deleteGrammar\/{grammar_id}": {
+        "\/api\/admin\/jlpt\/grammar\/{id}": {
             "delete": {
                 "tags": [
                     "Grammar"
@@ -1164,12 +1239,12 @@
                     {
                         "name": "AccessToken",
                         "in": "header",
-                        "description": "Admin'sAccess Token",
+                        "description": "Access Token",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "example": "Bearer {관리자 access_token}"
+                        "example": "Bearer {access_token}"
                     },
                     {
                         "name": "id",
@@ -1188,6 +1263,9 @@
                     },
                     "400": {
                         "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
@@ -1373,12 +1451,12 @@
                     {
                         "name": "AccessToken",
                         "in": "header",
-                        "description": "Admin'sAccess Token",
+                        "description": "Access Token",
                         "required": true,
                         "schema": {
                             "type": "string"
                         },
-                        "example": "Bearer {관리자 access_token}"
+                        "example": "Bearer {access_token}"
                     },
                     {
                         "name": "id",
@@ -1883,7 +1961,7 @@
             "TTS": {
                 "type": "object",
                 "properties": {
-                    "text": {
+                    "referenceText": {
                         "title": "TTS로 변환할 일본어 문장",
                         "type": "text",
                         "example": "일본어"
