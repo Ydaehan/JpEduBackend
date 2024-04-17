@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\VocabularyNoteImport;
+use App\Models\User;
 use App\Models\VocabularyNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
@@ -44,11 +45,17 @@ class VocabularyNoteController extends Controller
 
     $notes = $user->vocabularyNotes()->get();
 
-    // 관리자 생성 문제 찾아서 같이 넘겨주기
+    $adminNotes = VocabularyNote::with(['user' => function ($query) {
+      $query->select('nickname', 'id')->where('role', 'admin');
+    }])
+      ->with('level:id,level')
+      ->get();
+
 
     return response()->json([
       "status" =>   "Success",
-      "notes" => $notes
+      "notes" => $notes,
+      "adminNotes" => $adminNotes
     ], 200);
   }
 
@@ -317,7 +324,11 @@ class VocabularyNoteController extends Controller
   #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
   public function publicIndex()
   {
-    $notes = VocabularyNote::where('is_public', true)->get();
+    $notes = VocabularyNote::where('is_public', true)
+      ->with('user:id,nickname')
+      ->with('level:id,level')
+      ->get();
+
     return response()->json([
       "status" => "Success",
       "notes" => $notes

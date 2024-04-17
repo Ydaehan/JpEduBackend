@@ -15,7 +15,7 @@ class VocabularyNote extends Model
   ];
 
   protected $hidden = [
-    'user_id',
+    'user_id', 'level_id',
     'is_creator',
   ];
 
