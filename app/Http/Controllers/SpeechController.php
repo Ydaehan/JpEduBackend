@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\RequestBodies\PronunciationResultRequestBody;
 use App\OpenApi\RequestBodies\PronunciationTranslateResultRequestBody;
+use App\OpenApi\RequestBodies\TTSRequestBody;
 use App\OpenApi\Responses\BadRequestResponse;
 use App\OpenApi\Responses\ErrorValidationResponse;
 use App\OpenApi\Responses\SuccessResponse;
@@ -80,26 +81,36 @@ class SpeechController extends Controller
     $result = papagoTranslation('ko', 'ja', $text);
     return $result;
   }
-
+  /**
+   * TTS 결과 받기
+   *
+   * 텍스트를 보내면 TTS 결과를 받을 수 있습니다.
+   */
+  #[OpenApi\Operation(tags: ['Speech'], method: 'POST')]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+  #[OpenApi\RequestBody(factory: TTSRequestBody::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: 'TTS 결과 받기 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 오류', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 오류', statusCode: 401)]
+  #[OpenApi\Response(factory: ErrorValidationResponse::class, description: '유효성 검사 오류', statusCode: 422)]
   public function tts(Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
         'referenceText' => 'required|string',
       ]);
+      $referenceText = $request->input('referenceText');
+      $response = Http::withHeaders([
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
+      ])->post('http://host.docker.internal:5000/speech/tts', [
+        'referenceText' => $referenceText,
+      ]);
 
-      $response = Http::post('http://host.docker.internal:5000/tts', [
-        [
-          'name' => 'referenceText',
-          'contents' => $request->referenceText,
-        ],
-      ])->json();
-
-      return response()->json([
-        "status" => "Success",
-        "ttsAudio" => $response,
-        "message" => "TTS가 생성되었습니다."
-      ], 200);
+      $audioContent = $response->body();
+      return response()->streamDownload(function () use ($audioContent) {
+        echo $audioContent;
+      }, 'audio.wav', ['Content-Type' => 'audio/wav']);
     } catch (Exception $e) {
       return response()->json([
         "status" => "Fail",
