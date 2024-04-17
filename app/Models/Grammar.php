@@ -15,14 +15,9 @@ class Grammar extends Model
   protected $fillable = [
     'grammar',
     'explain',
-    'example',
-    'mean',
+    'meaning',
     'conjunction',
-    'tier',
-  ];
-
-  protected $casts = [
-    'tier' => GrammarLevelEnum::class,
+    'level_id',
   ];
 
   public function grammarExamples(): HasMany

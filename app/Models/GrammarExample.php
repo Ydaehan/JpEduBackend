@@ -13,7 +13,7 @@ class GrammarExample extends Model
 
   public function grammar(): BelongsTo
   {
-    return $this->belongsTo(GrammarExample::class);
+    return $this->belongsTo(Grammar::class);
   }
 
   public function user(): BelongsTo
