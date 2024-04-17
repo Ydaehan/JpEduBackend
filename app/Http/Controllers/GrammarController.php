@@ -7,31 +7,29 @@ use App\Models\Grammar;
 use App\Models\Level;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\DeleteSentenceParameters;
-use App\OpenApi\Parameters\JlptTierParameters;
 use App\OpenApi\RequestBodies\StoreGrammarRequestBody;
 use App\OpenApi\Responses\BadRequestResponse;
 use App\OpenApi\Responses\ErrorValidationResponse;
 use App\OpenApi\Responses\StoreSuccessResponse;
 use App\OpenApi\Responses\SuccessResponse;
 use App\OpenApi\Responses\UnauthorizedResponse;
-use Illuminate\Support\Facades\Validator;
 use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
 
 #[OpenApi\PathItem]
 class GrammarController extends Controller
 {
   /**
-   * JLPT 문법을 등급별로 조회
+   * JLPT 문법 조회
    *
-   * JLPT 문법을 등급별로 조회합니다.
+   * JLPT 전체 문법을 등급별로 반환합니다.
    * */
   #[OpenApi\Operation(tags: ['Grammar'], method: 'GET')]
-  #[OpenApi\Parameters(factory: JlptTierParameters::class)]
+  #[OpenApi\Parameters(factory: AccessTokenParameters::class)]
   #[OpenApi\Response(factory: SuccessResponse::class, statusCode: 200, description: '조회 성공')]
   #[OpenApi\Response(factory: BadRequestResponse::class, statusCode: 400, description: '조회 실패')]
   #[OpenApi\Response(factory: UnauthorizedResponse::class, statusCode: 401, description: '토큰 인증 실패')]
   #[OpenApi\Response(factory: ErrorValidationResponse::class, statusCode: 422, description: '유효성 검사 실패')]
-  public function show()
+  public function index()
   {
     $grammars = Level::with('grammars.grammarExamples')
       ->get()
@@ -50,6 +48,7 @@ class GrammarController extends Controller
   #[OpenApi\RequestBody(factory: StoreGrammarRequestBody::class)]
   #[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
   #[OpenApi\Response(factory: BadRequestResponse::class, statusCode: 400, description: '오류 발생')]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, statusCode: 401, description: '토큰 인증 실패')]
   public function create(Request $request)
   {
     // request에 json 타입의 파일을 받음
@@ -90,6 +89,7 @@ class GrammarController extends Controller
   #[OpenApi\Parameters(factory: DeleteSentenceParameters::class)]
   #[OpenApi\Response(factory: SuccessResponse::class, statusCode: 200, description: '삭제 성공')]
   #[OpenApi\Response(factory: BadRequestResponse::class, statusCode: 400, description: '삭제 실패')]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, statusCode: 401, description: '토큰 인증 실패')]
   public function delete($id)
   {
     $grammar = Grammar::find($id);

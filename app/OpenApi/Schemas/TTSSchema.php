@@ -20,7 +20,7 @@ class TTSSchema extends SchemaFactory implements Reusable
   {
     return Schema::object('TTS')
       ->properties(
-        Schema::text('text')->example('일본어')->title('TTS로 변환할 일본어 문장'),
+        Schema::text('referenceText')->example('일본어')->title('TTS로 변환할 일본어 문장'),
       );
   }
 }

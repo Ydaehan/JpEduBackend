@@ -67,6 +67,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
     Route::get('/public/notes', [VocabularyNoteController::class, 'publicIndex']);
+    Route::get('/notes/{levelId}', [VocabularyNoteController::class, 'levelIndex']);
   });
   Route::prefix('/typing')->group(function () {
     Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
@@ -74,7 +75,9 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/user', [TypingPracticeController::class, 'storeUserSentence']);
   });
   Route::prefix('/jlpt')->group(function () {
-    Route::resource('/grammar', GrammarController::class)->except(['index', 'create', 'edit', 'update', 'destroy']);
+    Route::get('/grammar', [GrammarController::class, 'index']);
+    Route::post('/grammar', [GrammarController::class, 'create']);
+    Route::delete('/grammar/{id}', [GrammarController::class, 'delete']);
   });
   // 랭킹
   Route::prefix('/ranking')->group(function () {
@@ -89,7 +92,7 @@ Route::middleware(['auth:sanctum', 'ability:manager,admin'])->group(function () 
     Route::post('/register', [ManagerController::class, 'managerSignUp']);
   });
   Route::prefix('admin')->group(function () {
-    Route::delete('/deleteGrammar/{grammar_id}', [GrammarController::class, 'delete']);
+    Route::delete('/jlpt/grammar/{id}', [GrammarController::class, 'delete']);
     Route::delete('/deleteManagerWaitList', [ManagerController::class, 'deleteManagerWaitList']);
   });
   // 타자 연습

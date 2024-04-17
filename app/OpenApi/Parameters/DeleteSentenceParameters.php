@@ -16,9 +16,9 @@ class DeleteSentenceParameters extends ParametersFactory
     return [
       Parameter::header()
         ->name('AccessToken')
-        ->description("Admin'sAccess Token")
+        ->description("Access Token")
         ->required(true)
-        ->example('Bearer {관리자 access_token}')
+        ->example('Bearer {access_token}')
         ->schema(Schema::string()),
       Parameter::query()
         ->name('id')
