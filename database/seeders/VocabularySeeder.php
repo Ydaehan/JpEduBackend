@@ -32,27 +32,32 @@ class VocabularySeeder extends Seeder
       switch ($fileName) {
         case 'vocabulary-notes/JLPT_Voca_N5.xlsx':
           $level = 5;
+          $name = 'N5 단어장';
           break;
         case 'vocabulary-notes/JLPT_Voca_N4.xlsx':
           $level = 4;
+          $name = 'N4 단어장';
           break;
         case 'vocabulary-notes/JLPT_Voca_N3.xlsx':
           $level = 3;
+          $name = 'N3 단어장';
           break;
         case 'vocabulary-notes/JLPT_Voca_N2.xlsx':
           $level = 2;
+          $name = 'N2 단어장';
           break;
         case 'vocabulary-notes/JLPT_Voca_N1.xlsx':
           $level = 1;
+          $name = 'N1 단어장';
           break;
       };
       VocabularyNote::create([
-        'title' => $file,
+        'title' => $name,
         'user_id' => $owner->id,
         'level_id' => $level,
-        'kanji' => json_encode($kanji),
-        'gana' => json_encode($gana),
-        'meaning' => json_encode($meaning),
+        'kanji' => $kanji,
+        'gana' => $gana,
+        'meaning' => $meaning,
         'is_public' => true,
         'is_creator' => true
       ]);
