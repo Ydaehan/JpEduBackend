@@ -46,10 +46,9 @@ class VocabularyNoteController extends Controller
 
     $notes = $user->vocabularyNotes()->get();
 
-    $adminNotes = VocabularyNote::with([
-      'user' => function ($query) {
-        $query->select('nickname', 'id')->where('role', 'admin');
-      },
+    $adminNotes = VocabularyNote::whereHas('user', function ($query) {
+      $query->select('id', 'nickname')->where('role', 'admin');
+    })->with([
       'level:id,level'
     ])->get();
 
@@ -354,13 +353,11 @@ class VocabularyNoteController extends Controller
   {
     $level = (int)$level;
     $notes = VocabularyNote::where('level_id', $level)
-      ->with([
-        'user' => function ($query) {
-          $query->select('nickname', 'id')->where('role', 'admin');
-        },
+      ->whereHas('user', function ($query) {
+        $query->select('id', 'nickname')->where('role', 'admin');
+      })->with([
         'level:id,level'
-      ])
-      ->get();
+      ])->get();
 
     return response()->json([
       "status" => "Success",
