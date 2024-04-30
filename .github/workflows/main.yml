@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Print message
+      run: echo "This is a custom message"
 
     - name: Check out code
       uses: actions/checkout@v3
@@ -27,9 +29,6 @@ jobs:
     - name: Login to Amazon ECR Private
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Print message
-      run: echo "This is a custom message"
       
     - name: Build, tag, and push image to Amazon ECR
       run: |
