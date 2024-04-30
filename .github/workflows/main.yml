@@ -1,7 +1,7 @@
 name: Deploy to ECR
 
 on:
-
+ 
   push:
     branches: [ main ]
 
@@ -15,10 +15,10 @@ jobs:
     steps:
 
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -26,8 +26,8 @@ jobs:
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
+      uses: aws-actions/amazon-ecr-login@v1
+      
     - name: Build, tag, and push image to Amazon ECR
       run: |
         docker build -t tamago-laravel .
