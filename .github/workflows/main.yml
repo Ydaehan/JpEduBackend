@@ -28,7 +28,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Install dependencies
-      run: composer install
+      run: composer update
       
     - name: Build, tag, and push image to Amazon ECR
       run: |
