@@ -34,9 +34,15 @@ jobs:
     - name: Login to Amazon ECR Private
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+
+    - name: sail up
+      run: ./vendor/bin/sail up -d
       
     - name: Build, tag, and push image to Amazon ECR
       run: |
         ./vendor/bin/sail build
         docker tag sail-8.2/app:latest 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
         docker push 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
+
+    - name: sail down
+      run: ./vendor/bin/sail down
