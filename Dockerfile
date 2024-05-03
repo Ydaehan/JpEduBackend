@@ -15,10 +15,6 @@ RUN apk add curl
 
 RUN apk add nodejs npm
 
-## install pdo postgresql
-RUN apk add postgresql-dev \
-		&& docker-php-ext-install pdo_pgsql
-	
 ## install gd
 RUN apk add --no-cache \
 	zlib-dev \
