@@ -35,8 +35,14 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
-    - name: Build, tag, and push image to Amazon ECR
+    - name: build_laravel
       run: |
-        ./vendor/bin/sail build
+        docker build -t tamago-laravel Dockerfile
         docker tag sail-8.2/app:latest 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
         docker push 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
+
+    - name: build_nginx
+      run: |
+        docker build -t tamago-nginx Dockerfile.nginx
+        docker tag tamago-nginx:latest 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-nginx:latest
+        docker push 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-nginx:latest
