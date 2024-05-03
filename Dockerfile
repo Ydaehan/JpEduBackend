@@ -11,49 +11,48 @@ RUN chown -R www-data:www-data /var/www/html/storage
 RUN apk update
 
 ## install curl
-RUN apk add curl
-
-RUN apk add nodejs npm
-
-## install gd
-RUN apk add --no-cache \
-	zlib-dev \
-	libpng-dev \
-	libjpeg-turbo-dev \
-	freetype-dev \
-	&& docker-php-ext-configure gd \
-		--with-freetype \
-		--with-jpeg \
-	&& docker-php-ext-install -j$(nproc) gd
+RUN apk add --no-cache curl
 
 ## install zip
 RUN apk add --no-cache libzip-dev \
-	&& docker-php-ext-install zip
+    && docker-php-ext-install zip
+
+## install gd
+RUN apk add --no-cache \
+    zlib-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
 
 ## install composer
-RUN curl -sS https://getcomposer.org/installer | php
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-## move file to /usr/bin/composer
-RUN mv composer.phar /usr/bin/composer
+## install nodejs and npm
+RUN apk add --no-cache nodejs npm
 
-## install packages
-RUN composer install --optimize-autoloader --no-dev
-
+## install npm packages
 RUN npm install
 
 ## use 9000 port
 EXPOSE 9000
 
+## change owner of the bootstrap directory
 RUN chown www-data:www-data ./bootstrap
 
+## build npm
 RUN npm run build
 
-RUN php artisan route:cache
+## cache routes and views
+RUN php artisan route:cache && php artisan view:cache
 
-RUN php artisan view:cache
-
+## publish vendor files
 RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
 
+## generate l5-swagger
 RUN php artisan l5-swagger:generate
 
 ## run php-fpm
