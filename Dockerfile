@@ -11,7 +11,24 @@ RUN chown -R www-data:www-data /var/www/html/storage
 RUN apk update
 
 ## install curl
+<<<<<<< HEAD
 RUN apk add --no-cache curl
+=======
+RUN apk add curl
+
+RUN apk add nodejs npm
+
+## install gd
+RUN apk add --no-cache \
+	zlib-dev \
+	libpng-dev \
+	libjpeg-turbo-dev \
+	freetype-dev \
+	&& docker-php-ext-configure gd \
+		--with-freetype \
+		--with-jpeg \
+	&& docker-php-ext-install -j$(nproc) gd
+>>>>>>> 1ec68a73558b2be0ffda47a68e9e3393916bb459
 
 ## install zip
 RUN apk add --no-cache libzip-dev \
