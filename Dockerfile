@@ -14,7 +14,11 @@ RUN apk update
 RUN apk add curl
 
 RUN apk add nodejs npm
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> 2364d010f758e6814d689a1106806555196409b0
 ## install gd
 RUN apk add --no-cache \
 	zlib-dev \
@@ -34,7 +38,7 @@ RUN apk add --no-cache libzip-dev \
 RUN curl -sS https://getcomposer.org/installer | php
 
 ## move file to /usr/bin/composer
-RUN my composer.phar /usr/bin/composer
+RUN mv composer.phar /usr/bin/composer
 
 ## install packages
 RUN composer install --optimize-autoloader --no-dev
