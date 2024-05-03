@@ -14,11 +14,7 @@ RUN apk update
 RUN apk add curl
 
 RUN apk add nodejs npm
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> 2364d010f758e6814d689a1106806555196409b0
 ## install gd
 RUN apk add --no-cache \
 	zlib-dev \
