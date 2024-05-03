@@ -14,10 +14,6 @@ RUN apk update
 RUN apk add curl
 
 RUN apk add nodejs npm
-
-## install pdo postgresql
-RUN apk add postgresql-dev \
-		&& docker-php-ext-install pdo_pgsql
 	
 ## install gd
 RUN apk add --no-cache \
@@ -38,7 +34,7 @@ RUN apk add --no-cache libzip-dev \
 RUN curl -sS https://getcomposer.org/installer | php
 
 ## move file to /usr/bin/composer
-RUN my composer.phar /usr/bin/composer
+RUN mv composer.phar /usr/bin/composer
 
 ## install packages
 RUN composer install --optimize-autoloader --no-dev
