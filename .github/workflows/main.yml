@@ -37,12 +37,12 @@ jobs:
       
     - name: build_laravel
       run: |
-        docker build -t tamago-laravel Dockerfile .
+        docker build -t tamago-laravel -f ./Dockerfile
         docker tag tamago-laravel:latest 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
         docker push 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-laravel:latest
 
     - name: build_nginx
       run: |
-        docker build -t tamago-nginx Dockerfile.nginx .
+        docker build -t tamago-nginx ./Dockerfile.nginx
         docker tag tamago-nginx:latest 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-nginx:latest
         docker push 637423528396.dkr.ecr.ap-northeast-2.amazonaws.com/tamago-nginx:latest
