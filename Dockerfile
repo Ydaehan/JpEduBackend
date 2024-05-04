@@ -28,6 +28,10 @@ RUN apk add --no-cache \
         --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
+## install postgresql driver
+RUN apk add --no-cache postgresql-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+
 ## install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
