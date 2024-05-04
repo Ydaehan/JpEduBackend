@@ -50,7 +50,7 @@ RUN npm run build
 RUN php artisan route:cache && php artisan view:cache
 
 ## publish vendor files
-RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+RUN php artisan vendor:publish --provider="L5Swagger\L5SwaggerServiceProvider"
 RUN php artisan vendor:publish --provider="Vyuldashev\LaravelOpenApi\OpenApiServiceProvider" --tag="openapi-config"
 
 ## generate l5-swagger
