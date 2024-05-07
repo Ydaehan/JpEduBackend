@@ -292,7 +292,7 @@ class VocabularyNoteController extends Controller
     $kanji = getKanji($inferTexts);
     $mecabResult = Http::withHeaders([
       'Content-Type' => 'application/json',
-    ])->post('http://host.docker.internal:5000/mecab', [
+    ])->post('http://tamago-flask-rb-917341444.ap-northeast-2.elb.amazonaws.com:5000/mecab', [
       'texts' => $kanji
     ])->json();
     // 파파고 번역
