@@ -56,6 +56,7 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
   Route::delete('/sign-out', [AuthController::class, 'signOut']);
   Route::patch('/user', [AuthController::class, 'update']);
   Route::post('/gameResult', [GameController::class, 'gameResult']);
+  Route::get('/gameNote', [GameController::class, 'index']);
   Route::prefix('/speech')->group(function () {
     Route::post('', [SpeechController::class, 'pronunciationAssessment']);
     Route::post('/translate', [SpeechController::class, 'translate']);
