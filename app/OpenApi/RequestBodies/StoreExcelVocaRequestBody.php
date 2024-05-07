@@ -3,7 +3,7 @@
 namespace App\OpenApi\RequestBodies;
 
 use App\OpenApi\Schemas\ExcelSchema;
-use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
+use App\Http\Responses\MyCustomMediaType as MediaType;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\RequestBody;
 use Vyuldashev\LaravelOpenApi\Factories\RequestBodyFactory;
 
