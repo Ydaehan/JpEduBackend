@@ -39,7 +39,7 @@ class SpeechController extends Controller
         'referenceText' => 'required|string',
       ]);
 
-      $speechResponse = Http::asMultipart()->post('http://host.docker.internal:5000/speech', [
+      $speechResponse = Http::asMultipart()->post('http://tamago-flask-rb-917341444.ap-northeast-2.elb.amazonaws.com:5000/speech', [
         [
           'name' => 'audio',
           'contents' => fopen($request->file('audio')->getRealPath(), 'r'),
@@ -103,7 +103,7 @@ class SpeechController extends Controller
       $response = Http::withHeaders([
         'Content-Type' => 'application/json',
         'Accept' => 'application/json',
-      ])->post('http://host.docker.internal:5000/speech/tts', [
+      ])->post('http://tamago-flask-rb-917341444.ap-northeast-2.elb.amazonaws.com:5000/speech/tts', [
         'referenceText' => $referenceText,
       ]);
 
