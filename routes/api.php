@@ -68,7 +68,8 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
     Route::get('/public/notes', [VocabularyNoteController::class, 'publicIndex']);
-    Route::get('/notes/{levelId}', [VocabularyNoteController::class, 'levelIndex']);
+    Route::get('/notes/{levelId}', [VocabularyNoteController::class, 'levelShow']);
+    Route::get('/copy/{noteId}', [VocabularyNoteController::class, 'noteCopy']);
   });
   Route::prefix('/typing')->group(function () {
     Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
