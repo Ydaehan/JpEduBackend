@@ -323,7 +323,7 @@ class VocabularyNoteController extends Controller
   #[OpenApi\Response(factory: SuccessResponse::class, description: '공개 단어장 조회 성공', statusCode: 200)]
   #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
   #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
-  public function publicShow()
+  public function publicIndex()
   {
     $notes = VocabularyNote::where('is_public', true)
       ->with([
@@ -349,7 +349,7 @@ class VocabularyNoteController extends Controller
   #[OpenApi\Response(factory: SuccessResponse::class, description: '레벨별 관리자 단어장 조회 성공', statusCode: 200)]
   #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
   #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
-  public function levelIndex(string $level)
+  public function levelShow(string $level)
   {
     $level = (int)$level;
     $notes = VocabularyNote::where('level_id', $level)
@@ -362,6 +362,39 @@ class VocabularyNoteController extends Controller
     return response()->json([
       "status" => "Success",
       "notes" => $notes
+    ], 200);
+  }
+
+  /**
+   * 단어장 복사 생성
+   *
+   * 복사한 단어장 리턴
+   */
+  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'GET')]
+  #[OpenApi\Parameters(factory: TokenAndIdParameters::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '단어장 복사 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+  public function noteCopy(string $id)
+  {
+    /** @var \App\Models\VocabularyNote $note **/
+    $note = VocabularyNote::find($id);
+    $user = auth('sanctum')->user();
+
+    $newNote = VocabularyNote::create([
+      'title' => $note->title,
+      'user_id' => $user->id,
+      'level_id' => $note->level_id,
+      'kanji' => $note->kanji,
+      'gana' => $note->gana,
+      'meaning' => $note->meaning,
+      'is_public' => false,
+      'is_creator' => false
+    ]);
+
+    return response()->json([
+      "status" => "Success",
+      "note" => $newNote
     ], 200);
   }
 }
