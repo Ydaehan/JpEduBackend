@@ -536,7 +536,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -576,7 +576,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -629,7 +629,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -833,7 +833,7 @@
             }
         },
         "\/api\/vocabularyNote\/copy\/{noteId}": {
-            "get": {
+            "post": {
                 "tags": [
                     "VocabularyNote"
                 ],
@@ -852,7 +852,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -861,6 +861,58 @@
                         "example": "1"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    }
+                }
+            }
+        },
+        "\/api\/vocabularyNote\/progress\/{noteId}": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 암기 진척도 기록",
+                "description": "단어장 암기 진척도 수정",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    },
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "단어장 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "학습 진행도를 저장합니다.",
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/Progress"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "$ref": "#\/components\/responses\/Success"
@@ -1894,6 +1946,19 @@
                         "title": "문법 파일",
                         "type": "file",
                         "example": "grammar.json"
+                    }
+                }
+            },
+            "Progress": {
+                "type": "object",
+                "required": [
+                    "progress"
+                ],
+                "properties": {
+                    "progress": {
+                        "title": "학습도",
+                        "type": "string",
+                        "example": "50%"
                     }
                 }
             },

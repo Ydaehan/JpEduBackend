@@ -8,7 +8,9 @@ use App\Models\VocabularyNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
 use App\OpenApi\Parameters\VocabularyLevelParameters;
+use App\OpenApi\Parameters\VocabularyProgressParameters;
 use App\OpenApi\RequestBodies\ImageRequestBody;
+use App\OpenApi\RequestBodies\ProgressRequestBody;
 use App\OpenApi\RequestBodies\StoreExcelVocaRequestBody;
 use App\OpenApi\RequestBodies\StoreVocabularyNotesRequestBody;
 use App\OpenApi\RequestBodies\UpdateVocabularyNotesRequestBody;
@@ -123,7 +125,9 @@ class VocabularyNoteController extends Controller
     /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
 
-    $note = $user->vocabularyNotes()->where('id', $id)->first();
+    // $note = $user->vocabularyNotes()->where('id', $id)->first();
+
+    $note = VocabularyNote::where('id', $id)->first();
 
     if ($note) {
       return response()->json(["status" => "Success", "note" => $note], 200);
@@ -370,7 +374,7 @@ class VocabularyNoteController extends Controller
    *
    * 복사한 단어장 리턴
    */
-  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'GET')]
+  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'POST')]
   #[OpenApi\Parameters(factory: TokenAndIdParameters::class)]
   #[OpenApi\Response(factory: SuccessResponse::class, description: '단어장 복사 성공', statusCode: 200)]
   #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
@@ -395,6 +399,37 @@ class VocabularyNoteController extends Controller
     return response()->json([
       "status" => "Success",
       "note" => $newNote
+    ], 200);
+  }
+
+  /**
+   * 단어장 암기 진척도 기록
+   *
+   * 단어장 암기 진척도 수정
+   */
+  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'PATCH')]
+  #[OpenApi\Parameters(factory: VocabularyProgressParameters::class)]
+  #[OpenApi\RequestBody(factory: ProgressRequestBody::class)]
+  #[OpenApi\Response(factory: SuccessResponse::class, description: '단어장 복사 성공', statusCode: 200)]
+  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+  public function progressUpdate(Request $request, string $noteId)
+  {
+    $validator = Validator::make($request->json()->all(), [
+      'progress' => 'required|string|max:255',
+    ]);
+
+    /** @var \App\Models\User $user **/
+    $user = auth('sanctum')->user();
+
+    $note = VocabularyNote::find($noteId);
+    $note->progress = $request->progress;
+    $note->save();
+
+    return response()->json([
+      "status" => "Success",
+      "message" => "VocabularyNoteController: Updated VocabularyNote Progress",
+      "note" => $note
     ], 200);
   }
 }
