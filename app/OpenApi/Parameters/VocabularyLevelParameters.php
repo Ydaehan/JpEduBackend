@@ -24,7 +24,7 @@ class VocabularyLevelParameters extends ParametersFactory
         ->name('levelId')
         ->description('단어장 급수')
         ->required(true)
-        ->example(1)
+        ->example('1')
         ->schema(Schema::string()),
     ];
   }
