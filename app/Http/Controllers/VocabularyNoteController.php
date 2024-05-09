@@ -323,7 +323,7 @@ class VocabularyNoteController extends Controller
   #[OpenApi\Response(factory: SuccessResponse::class, description: '공개 단어장 조회 성공', statusCode: 200)]
   #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
   #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
-  public function publicIndex()
+  public function publicShow()
   {
     $notes = VocabularyNote::where('is_public', true)
       ->with([
