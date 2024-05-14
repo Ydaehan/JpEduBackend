@@ -2,10 +2,6 @@
 
 use App\Models\User;
 use Carbon\Carbon;
-use Youaoi\MeCab\MeCab;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Auth;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 
 // 한자 필터링
