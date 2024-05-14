@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Sentence extends Model
+class SentenceNote extends Model
 {
 	use HasFactory;
 	protected $fillable = [
 		'user_id',
-		'sentence',
+		'title',
+		'sentences',
 		'situation',
 	];
 
