@@ -19,6 +19,7 @@ return new class extends Migration
       $table->json('gana');
       $table->json('kanji');
       $table->json('meaning');
+      $table->string('progress')->default('0%');
       $table->boolean('is_public')->default(false);
       $table->boolean('is_creator')->default(false);
       $table->timestamps();
