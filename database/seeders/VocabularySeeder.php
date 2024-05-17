@@ -55,9 +55,9 @@ class VocabularySeeder extends Seeder
         'title' => $name,
         'user_id' => $owner->id,
         'level_id' => $level,
-        'kanji' => $kanji,
-        'gana' => $gana,
-        'meaning' => $meaning,
+        'kanji' => json_encode($kanji),
+        'gana' => json_encode($gana),
+        'meaning' => json_encode($meaning),
         'is_public' => true,
         'is_creator' => true
       ]);
