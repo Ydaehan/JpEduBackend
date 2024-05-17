@@ -14,6 +14,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\GrammarController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\S3Controller;
+use App\Http\Controllers\SentenceNoteController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -72,10 +73,16 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/copy/{noteId}', [VocabularyNoteController::class, 'noteCopy']);
     Route::post('/progress/{noteId}', [VocabularyNoteController::class, 'progressUpdate']);
   });
+  // 문장 노트
+  Route::prefix('/sentenceNotes')->group(function () {
+    Route::get('/lists', [SentenceNoteController::class, 'sentenceNoteLists']);
+    Route::get('/get/{id}', [SentenceNoteController::class, 'getSentenceNote']);
+    Route::post('/make', [SentenceNoteController::class, 'create']);
+    Route::patch('/update', [SentenceNoteController::class, 'update']);
+    Route::delete('/delete/{id}', [SentenceNoteController::class, 'destroy']);
+  });
   Route::prefix('/typing')->group(function () {
     Route::get('/getSentences', [TypingPracticeController::class, 'getSentences']);
-    Route::get('/getUserSentences', [TypingPracticeController::class, 'getUserSentences']);
-    Route::post('/user', [TypingPracticeController::class, 'storeUserSentence']);
   });
   Route::prefix('/jlpt')->group(function () {
     Route::get('/grammar', [GrammarController::class, 'index']);

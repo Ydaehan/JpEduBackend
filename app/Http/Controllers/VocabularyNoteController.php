@@ -125,8 +125,6 @@ class VocabularyNoteController extends Controller
     /** @var \App\Models\User $user **/
     $user = auth('sanctum')->user();
 
-    // $note = $user->vocabularyNotes()->where('id', $id)->first();
-
     $note = VocabularyNote::where('id', $id)->first();
 
     if ($note) {
