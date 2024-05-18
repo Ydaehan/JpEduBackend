@@ -6,7 +6,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Objects\Parameter;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use Vyuldashev\LaravelOpenApi\Factories\ParametersFactory;
 
-class TokenAndIdParameters extends ParametersFactory
+class VocabularyProgressParameters extends ParametersFactory
 {
   /**
    * @return Parameter[]
@@ -21,11 +21,11 @@ class TokenAndIdParameters extends ParametersFactory
         ->example('Bearer {access_token}')
         ->schema(Schema::string()),
       Parameter::path()
-        ->name('id')
-        ->description('id')
+        ->name('noteId')
+        ->description('단어장 아이디')
         ->required(true)
         ->example('1')
-        ->schema(Schema::integer()),
+        ->schema(Schema::string()),
     ];
   }
 }
