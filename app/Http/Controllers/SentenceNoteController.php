@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SentenceNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
+use App\OpenApi\RequestBodies\ImageRequestBody;
 use App\OpenApi\RequestBodies\StoreSentenceNotesRequestBody;
 use App\OpenApi\RequestBodies\UpdateSentenceNoteRequestBody;
 use App\OpenApi\Responses\BadRequestResponse;
@@ -67,6 +68,11 @@ class SentenceNoteController extends Controller
 	 * 이미지를 받아 문장 노트로 변환합니다.
 	 */
 	#[OpenApi\Operation(tags: ['SentenceNote'], method: 'Post')]
+	#[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+	#[OpenApi\RequestBody(factory: ImageRequestBody::class)]
+	#[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+	#[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+	#[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
 	public function imageOcr(Request $request)
 	{
 		$client_secret = config('services.naver_ocr.client_secret');
@@ -103,32 +109,26 @@ class SentenceNoteController extends Controller
 		$test = 0;
 		foreach ($word as $index => $value) {
 			// 한 문장씩 만들어 배열에 저장
-
-			// . ! ? 중 하나를 만나면 문장을 종결하고 배열에 저장
-			// 히라가나만 있는거 저장
-			// boundingPoly 0~3 까지의 x,y 좌표로 요미가나의 크기를 구한 후 빼내기
 			$boundingPoly = $value['boundingPoly']['vertices'];
 			$height = $boundingPoly[2]['y'] - $boundingPoly[1]['y'];
-			// echo $value['inferText'] . " : " . $height . "<br>";
+
+			// 높이 19 이상이면 문장에 추가
 			if ($height > 19) {
-				$sentence = Str::of($sentence)->append($value['inferText']);
+				$sentence = Str::of($sentence)->append($value['inferText'])->__toString();
 			}
 
-			// $gooResult = Http::withHeaders([
-			// 	'Content-Type' => 'application/json',
-			// ])->post('https://labs.goo.ne.jp/api/hiragana', [
-			// 	'app_id' => env('GOO_APP_ID'),
-			// 	'sentence' => $value['inferText'],
-			// 	'output_type' => 'hiragana',
-			// ])->json();
+
+			if (preg_match('/[。！？]/u', $value['inferText'])) {
+				$gooResult = gooHiragana($sentence);
+
+				$meaning = papagoTranslation('ja', 'ko', $sentence);
+
+				$sentences[] = ["문장" => $sentence, "히라가나" => $gooResult, "의미" => $meaning];
+				$sentence = '';
+			}
 		}
 
-		if (preg_match('/[。！？]/u', $value['inferText'])) {
-			// echo ($sentence . '<br>');
-			$sentences[$index] = $sentence;
-			$sentence = '';
-		}
-		dd($sentences);
+		return response()->json($sentences);
 	}
 
 	/**
