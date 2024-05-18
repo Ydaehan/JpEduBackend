@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SentenceNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
+use App\OpenApi\RequestBodies\ImageRequestBody;
 use App\OpenApi\RequestBodies\StoreSentenceNotesRequestBody;
 use App\OpenApi\RequestBodies\UpdateSentenceNoteRequestBody;
 use App\OpenApi\Responses\BadRequestResponse;
@@ -14,6 +15,7 @@ use App\OpenApi\Responses\UnauthorizedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
+use Illuminate\Support\Str;
 
 #[OpenApi\PathItem]
 class SentenceNoteController extends Controller
@@ -58,6 +60,75 @@ class SentenceNoteController extends Controller
 		$sentenceNote->sentences = json_encode($result);
 		$sentenceNote->situation = $validation['situation'];
 		$sentenceNote->save();
+	}
+
+	/** 
+	 * 문장 노트 OCR
+	 * 
+	 * 이미지를 받아 문장 노트로 변환합니다.
+	 */
+	#[OpenApi\Operation(tags: ['SentenceNote'], method: 'Post')]
+	#[OpenApi\Parameters(factory: AccessTokenParameters::class)]
+	#[OpenApi\RequestBody(factory: ImageRequestBody::class)]
+	#[OpenApi\Response(factory: StoreSuccessResponse::class, description: '생성/등록/수정 요청 성공', statusCode: 201)]
+	#[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
+	#[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
+	public function imageOcr(Request $request)
+	{
+		$client_secret = config('services.naver_ocr.client_secret');
+		$url = config('services.naver_ocr.url');
+		$image_file = $request->file('image');
+
+		$params = [
+			'version' => 'V2',
+			'requestId' => uniqid(),
+			'timestamp' => time(),
+			'images' => [
+				[
+					'format' => "jpg",
+					'name' => "ocrResult",
+					'lang' => 'ja',
+				]
+			]
+		];
+
+		$json = json_encode($params);
+
+		$response = Http::withHeaders([
+			'X-OCR-SECRET' => $client_secret
+		])->attach('file', file_get_contents($image_file), 'image.jpg')->post($url, [
+			'message' => $json
+		]);
+
+		$data = json_decode($response, true);
+		$word = $data['images'][0]['fields'];
+
+		$sentence = '';
+		$sentences = [];
+		$hiragana = [];
+		$test = 0;
+		foreach ($word as $index => $value) {
+			// 한 문장씩 만들어 배열에 저장
+			$boundingPoly = $value['boundingPoly']['vertices'];
+			$height = $boundingPoly[2]['y'] - $boundingPoly[1]['y'];
+
+			// 높이 19 이상이면 문장에 추가
+			if ($height > 19) {
+				$sentence = Str::of($sentence)->append($value['inferText'])->__toString();
+			}
+
+
+			if (preg_match('/[。！？]/u', $value['inferText'])) {
+				$gooResult = gooHiragana($sentence);
+
+				$meaning = papagoTranslation('ja', 'ko', $sentence);
+
+				$sentences[] = ["문장" => $sentence, "히라가나" => $gooResult, "의미" => $meaning];
+				$sentence = '';
+			}
+		}
+
+		return response()->json($sentences);
 	}
 
 	/**

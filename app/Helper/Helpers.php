@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 // 한자 필터링
@@ -194,6 +195,18 @@ function papagoTranslation($source, $target, $text)
 	} else {
 		return ['message' => 'failed'];
 	}
+}
+
+function gooHiragana($text)
+{
+	$gooResult = Http::withHeaders([
+		'Content-Type' => 'application/json',
+	])->post('https://labs.goo.ne.jp/api/hiragana', [
+		'app_id' => env('GOO_APP_ID'),
+		'sentence' => $text,
+		'output_type' => 'hiragana',
+	])->json();
+	return $gooResult['converted'];
 }
 
 function s3Upload($file, $s3Path)
