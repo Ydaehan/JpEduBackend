@@ -14,6 +14,7 @@ use App\OpenApi\Responses\UnauthorizedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Vyuldashev\LaravelOpenApi\Attributes as OpenApi;
+use Illuminate\Support\Str;
 
 #[OpenApi\PathItem]
 class SentenceNoteController extends Controller
@@ -58,6 +59,76 @@ class SentenceNoteController extends Controller
 		$sentenceNote->sentences = json_encode($result);
 		$sentenceNote->situation = $validation['situation'];
 		$sentenceNote->save();
+	}
+
+	/** 
+	 * 문장 노트 OCR
+	 * 
+	 * 이미지를 받아 문장 노트로 변환합니다.
+	 */
+	#[OpenApi\Operation(tags: ['SentenceNote'], method: 'Post')]
+	public function imageOcr(Request $request)
+	{
+		$client_secret = config('services.naver_ocr.client_secret');
+		$url = config('services.naver_ocr.url');
+		$image_file = $request->file('image');
+
+		$params = [
+			'version' => 'V2',
+			'requestId' => uniqid(),
+			'timestamp' => time(),
+			'images' => [
+				[
+					'format' => "jpg",
+					'name' => "ocrResult",
+					'lang' => 'ja',
+				]
+			]
+		];
+
+		$json = json_encode($params);
+
+		$response = Http::withHeaders([
+			'X-OCR-SECRET' => $client_secret
+		])->attach('file', file_get_contents($image_file), 'image.jpg')->post($url, [
+			'message' => $json
+		]);
+
+		$data = json_decode($response, true);
+		$word = $data['images'][0]['fields'];
+
+		$sentence = '';
+		$sentences = [];
+		$hiragana = [];
+		$test = 0;
+		foreach ($word as $index => $value) {
+			// 한 문장씩 만들어 배열에 저장
+
+			// . ! ? 중 하나를 만나면 문장을 종결하고 배열에 저장
+			// 히라가나만 있는거 저장
+			// boundingPoly 0~3 까지의 x,y 좌표로 요미가나의 크기를 구한 후 빼내기
+			$boundingPoly = $value['boundingPoly']['vertices'];
+			$height = $boundingPoly[2]['y'] - $boundingPoly[1]['y'];
+			// echo $value['inferText'] . " : " . $height . "<br>";
+			if ($height > 19) {
+				$sentence = Str::of($sentence)->append($value['inferText']);
+			}
+
+			// $gooResult = Http::withHeaders([
+			// 	'Content-Type' => 'application/json',
+			// ])->post('https://labs.goo.ne.jp/api/hiragana', [
+			// 	'app_id' => env('GOO_APP_ID'),
+			// 	'sentence' => $value['inferText'],
+			// 	'output_type' => 'hiragana',
+			// ])->json();
+		}
+
+		if (preg_match('/[。！？]/u', $value['inferText'])) {
+			// echo ($sentence . '<br>');
+			$sentences[$index] = $sentence;
+			$sentence = '';
+		}
+		dd($sentences);
 	}
 
 	/**
