@@ -6,71 +6,77 @@
     },
     "servers": [
         {
-            "url": "http://localhost"
+            "url": "http:\/\/localhost"
         }
     ],
     "paths": {
-        "/api/register": {
+        "\/api\/register": {
             "post": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "회원가입",
-                "description": "회원의 닉네임,이름,비밀번호,비밀번호 확인 <br/>\n전화번호, 생일, 역할을 입력받아 <br/>\n유효성 검사를 진행하고 통과 시 회원가입 절차를 진행합니다. <br/>\nrole 부분을 제외한 모든 데이터는 필수요소입니다.<br/>\nmanager, admin은 role 부분에 Manager, Admin 데이터를 기입해 주셔야 합니다. <br/>\n일반 사용자의 경우 role 부분을 보내지 않아도 default로 User 값이 들어가게 됩니다. <br/>",
+                "description": "회원의 닉네임,이름,비밀번호,비밀번호 확인 <br\/>\n전화번호, 생일, 역할을 입력받아 <br\/>\n유효성 검사를 진행하고 통과 시 회원가입 절차를 진행합니다. <br\/>\nrole 부분을 제외한 모든 데이터는 필수요소입니다.<br\/>\nmanager, admin은 role 부분에 Manager, Admin 데이터를 기입해 주셔야 합니다. <br\/>\n일반 사용자의 경우 role 부분을 보내지 않아도 default로 User 값이 들어가게 됩니다. <br\/>",
                 "requestBody": {
                     "description": "회원가입",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/User"
+                                "$ref": "#\/components\/schemas\/User"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/App\\OpenApi\\Responses\\UserResponse"
+                        "$ref": "#\/components\/responses\/App\\OpenApi\\Responses\\UserResponse"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/login": {
+        "\/api\/login": {
             "post": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "로그인",
-                "description": "회원의 이메일과 비밀번호를 검사하고, 로그인 합니다. <br/>\n로그인 시 AccessToken 과 RefreshToken을 발급해 주며 <br/>\nAccessToken은 API요청을, RefreshToken은 AccessToken을 재발급 할 때 사용합니다. <br/>",
+                "description": "회원의 이메일과 비밀번호를 검사하고, 로그인 합니다. <br\/>\n로그인 시 AccessToken 과 RefreshToken을 발급해 주며 <br\/>\nAccessToken은 API요청을, RefreshToken은 AccessToken을 재발급 할 때 사용합니다. <br\/>",
                 "requestBody": {
                     "description": "로그인",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Login"
+                                "$ref": "#\/components\/schemas\/Login"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/Login"
+                        "$ref": "#\/components\/responses\/Login"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/refresh": {
+        "\/api\/refresh": {
             "post": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "ACCESS_TOKEN 재발급",
-                "description": "회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다. <br/>\nfront 측에서는 발급된 Access token을 저장해두면 됩니다.",
+                "description": "회원의 Access token이 만료되었을 경우 refresh token을 헤더에 담아 보내면 새로운 Access token이 발급됩니다. <br\/>\nfront 측에서는 발급된 Access token을 저장해두면 됩니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -85,9 +91,9 @@
                 ],
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -97,7 +103,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -105,19 +111,21 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/logout": {
+        "\/api\/logout": {
             "delete": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "로그아웃",
-                "description": "회원의 로그아웃을 진행합니다. <br/>\n로그인 된 유저와 같은 회원정보를 삭제합니다.",
+                "description": "회원의 로그아웃을 진행합니다. <br\/>\n로그인 된 유저와 같은 회원정보를 삭제합니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -132,20 +140,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Logout"
+                        "$ref": "#\/components\/responses\/Logout"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/sign-out": {
+        "\/api\/sign-out": {
             "delete": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "회원 탈퇴",
                 "description": "로그인 된 유저와 같은 회원정보를 삭제합니다.\n회원의 토큰을 삭제하고 회원정보를 삭제합니다.",
                 "parameters": [
@@ -162,22 +172,24 @@
                 ],
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/user": {
+        "\/api\/user": {
             "patch": {
-                "tags": ["User"],
+                "tags": [
+                    "User"
+                ],
                 "summary": "회원 정보 수정",
-                "description": "회원의 닉네임, 이메일, 비밀번호, 비밀번호 confirmed, 전화번호, 생일을 확인하여 DB에 저장한다 <br/>\n비밀번호는 비밀번호 confirmed와 같아야 하며 최소 길이 6 이상\n전화번호는 11~15자 이내로 작성해야한다\n생일은 date 양식으로 보내야한다.",
+                "description": "회원의 닉네임, 이메일, 비밀번호, 비밀번호 confirmed, 전화번호, 생일을 확인하여 DB에 저장한다 <br\/>\n비밀번호는 비밀번호 confirmed와 같아야 하며 최소 길이 6 이상\n전화번호는 11~15자 이내로 작성해야한다\n생일은 date 양식으로 보내야한다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -193,18 +205,18 @@
                 "requestBody": {
                     "description": "회원 정보 수정",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserUpdate"
+                                "$ref": "#\/components\/schemas\/UserUpdate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -214,7 +226,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -222,37 +234,39 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/gameResult": {
+        "\/api\/gameResult": {
             "post": {
-                "tags": ["Game"],
+                "tags": [
+                    "Game"
+                ],
                 "summary": "게임 결과 저장",
-                "description": "각 게임 결과를 저장합니다.<br/>\n게임 결과에 따라 오답노트를 생성하거나 갱신하고, 점수를 등록합니다.\n요청을 보낼 때 플레이한 난이도와 카테고리를 함께 보내야 합니다.",
+                "description": "각 게임 결과를 저장합니다.<br\/>\n게임 결과에 따라 오답노트를 생성하거나 갱신하고, 점수를 등록합니다.\n요청을 보낼 때 플레이한 난이도와 카테고리를 함께 보내야 합니다.",
                 "requestBody": {
                     "description": "게임 결과",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/GameResult"
+                                "$ref": "#\/components\/schemas\/GameResult"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -262,7 +276,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -270,20 +284,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/speech": {
+        "\/api\/speech": {
             "post": {
-                "tags": ["Speech"],
+                "tags": [
+                    "Speech"
+                ],
                 "summary": "발음평가 결과 받기",
                 "description": "자신의 발음 녹음본과 비교할 텍스트를 보내면 발음평가 결과를 받을 수 있습니다.",
                 "parameters": [
@@ -301,29 +317,31 @@
                 "requestBody": {
                     "description": "발음평가 결과 받기",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/PronunciationResultSchema"
+                                "$ref": "#\/components\/schemas\/PronunciationResultSchema"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/speech/translate": {
+        "\/api\/speech\/translate": {
             "post": {
-                "tags": ["Speech"],
+                "tags": [
+                    "Speech"
+                ],
                 "summary": "번역 결과 받기",
                 "description": "번역할 텍스트를 보내면 번역 결과를 받을 수 있습니다. ko->ja",
                 "parameters": [
@@ -341,29 +359,31 @@
                 "requestBody": {
                     "description": "Ko->ja 번역 텍스트 받기",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/translateResult"
+                                "$ref": "#\/components\/schemas\/translateResult"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/speech/tts": {
+        "\/api\/speech\/tts": {
             "post": {
-                "tags": ["Speech"],
+                "tags": [
+                    "Speech"
+                ],
                 "summary": "TTS 결과 받기",
                 "description": "텍스트를 보내면 TTS 결과를 받을 수 있습니다.",
                 "parameters": [
@@ -381,32 +401,34 @@
                 "requestBody": {
                     "description": "텍스트를 음성으로 변환합니다.",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TTS"
+                                "$ref": "#\/components\/schemas\/TTS"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/vocabularyNote": {
+        "\/api\/vocabularyNote": {
             "get": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 리스트",
                 "description": "단어장 리스트를 반환합니다.",
                 "parameters": [
@@ -423,18 +445,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             },
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 생성",
                 "description": "단어장을 생성합니다.",
                 "parameters": [
@@ -452,18 +476,18 @@
                 "requestBody": {
                     "description": "단어장 생성",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/VocabularyNote"
+                                "$ref": "#\/components\/schemas\/VocabularyNote"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -473,7 +497,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -481,20 +505,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/{vocabularyNote}": {
+        "\/api\/vocabularyNote\/{vocabularyNote}": {
             "get": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 상세 정보",
                 "description": "단어장 상세 정보를 조회합니다.",
                 "parameters": [
@@ -521,18 +547,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             },
             "patch": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 수정",
                 "description": "단어장을 수정합니다.",
                 "parameters": [
@@ -560,30 +588,32 @@
                 "requestBody": {
                     "description": "단어장 수정",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateVocabularyNote"
+                                "$ref": "#\/components\/schemas\/UpdateVocabularyNote"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             },
             "delete": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 삭제",
                 "description": "단어장을 삭제합니다.",
                 "parameters": [
@@ -610,23 +640,25 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/export": {
+        "\/api\/vocabularyNote\/export": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "Excel 단어장 생성",
                 "description": "Excel 파일로 단어장을 생성합니다.",
                 "parameters": [
@@ -644,18 +676,18 @@
                 "requestBody": {
                     "description": "Excel로 단어장 생성",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreExcelVoca"
+                                "$ref": "#\/components\/schemas\/StoreExcelVoca"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -665,7 +697,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -673,20 +705,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/ocr": {
+        "\/api\/vocabularyNote\/ocr": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "이미지를 텍스트로 변환 후 번역",
                 "description": "이미지를 텍스트로 변환 후 번역 후 mecab을 이용해 동사와 명사만 추출하여 요미가나를 생성하여 보내줍니다.",
                 "parameters": [
@@ -704,29 +738,31 @@
                 "requestBody": {
                     "description": "이미지 파일 등록",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/Image"
+                                "$ref": "#\/components\/schemas\/Image"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/public/notes": {
+        "\/api\/vocabularyNote\/public\/notes": {
             "get": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "public 단어장 리스트",
                 "description": "공개여부가 public인 단어장 리스트 리턴",
                 "parameters": [
@@ -743,60 +779,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/notes/{levelId}": {
-            "get": {
-                "tags": ["VocabularyNote"],
-                "summary": "관리자 단어장 레벨별 리스트",
-                "description": "레벨별 관리장 단어장 리스트 리턴",
-                "parameters": [
-                    {
-                        "name": "AccessToken",
-                        "in": "header",
-                        "description": "Access Token",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "Bearer {access_token}"
-                    },
-                    {
-                        "name": "levelId",
-                        "in": "path",
-                        "description": "단어장 급수",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "1"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/Success"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    }
-                }
-            }
-        },
-        "/api/vocabularyNote/copy/{noteId}": {
+        "\/api\/vocabularyNote\/copy\/{noteId}": {
             "post": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 복사 생성",
                 "description": "복사한 단어장 리턴",
                 "parameters": [
@@ -823,20 +821,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/vocabularyNote/progress/{noteId}": {
+        "\/api\/vocabularyNote\/progress\/{noteId}": {
             "patch": {
-                "tags": ["VocabularyNote"],
+                "tags": [
+                    "VocabularyNote"
+                ],
                 "summary": "단어장 암기 진척도 기록",
                 "description": "단어장 암기 진척도 수정",
                 "parameters": [
@@ -864,29 +864,31 @@
                 "requestBody": {
                     "description": "학습 진행도를 저장합니다.",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Progress"
+                                "$ref": "#\/components\/schemas\/Progress"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/typing/getSentences": {
+        "\/api\/sentenceNotes\/lists": {
             "get": {
-                "tags": ["SentenceNote"],
+                "tags": [
+                    "SentenceNote"
+                ],
                 "summary": "문장 노트 리스트",
                 "description": "문장 노트 리스트를 반환합니다.\n유저 자신의 문장 노트와 관리자가 생성한 문장 노트를 반환합니다.",
                 "parameters": [
@@ -903,9 +905,9 @@
                 ],
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -915,7 +917,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -923,20 +925,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/sentenceNotes/get/{id}": {
+        "\/api\/sentenceNotes\/get\/{id}": {
             "get": {
-                "tags": ["SentenceNote"],
+                "tags": [
+                    "SentenceNote"
+                ],
                 "summary": "문장 노트 조회",
                 "description": "문장 노트를 조회합니다.\n노트의 id를 받아서 조회합니다.",
                 "parameters": [
@@ -952,7 +956,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -963,9 +967,9 @@
                 ],
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -975,7 +979,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -983,20 +987,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/sentenceNotes/make": {
+        "\/api\/sentenceNotes\/make": {
             "post": {
-                "tags": ["SentenceNote"],
+                "tags": [
+                    "SentenceNote"
+                ],
                 "summary": "문장 노트 생성",
                 "description": "문장 노트를 생성합니다.",
                 "parameters": [
@@ -1014,18 +1020,18 @@
                 "requestBody": {
                     "description": "타자 연습 문장 생성",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Sentence"
+                                "$ref": "#\/components\/schemas\/Sentence"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1035,7 +1041,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1043,20 +1049,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/sentenceNotes/update": {
+        "\/api\/sentenceNotes\/update": {
             "patch": {
-                "tags": ["SentenceNote"],
+                "tags": [
+                    "SentenceNote"
+                ],
                 "summary": "문장 노트 수정",
                 "description": "문장 노트를 수정합니다.\n노트의 제목, 문장, 상황을 수정할 수 있습니다.\n문장은 배열로 받아서 수정할 수 있습니다.\n문장의 id도 필요합니다.",
                 "parameters": [
@@ -1074,18 +1082,18 @@
                 "requestBody": {
                     "description": "단어장 수정",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateSentenceNote"
+                                "$ref": "#\/components\/schemas\/UpdateSentenceNote"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1095,7 +1103,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1103,20 +1111,22 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/sentenceNotes/delete/{id}": {
+        "\/api\/sentenceNotes\/delete\/{id}": {
             "delete": {
-                "tags": ["SentenceNote"],
+                "tags": [
+                    "SentenceNote"
+                ],
                 "summary": "문장 노트 삭제",
                 "description": "문장 노트를 삭제합니다.\n노트의 id를 받아서 삭제합니다.",
                 "parameters": [
@@ -1132,7 +1142,7 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
+                        "in": "path",
                         "description": "id",
                         "required": true,
                         "schema": {
@@ -1143,9 +1153,9 @@
                 ],
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1155,7 +1165,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1163,22 +1173,24 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/typing/getSentences": {
+        "\/api\/typing\/getSentences": {
             "get": {
-                "tags": ["AdminSentenceNote"],
+                "tags": [
+                    "AdminSentenceNote"
+                ],
                 "summary": "관리자 문장 조회",
-                "description": "관리자 문장을 조회합니다.<br/>\n관리자가 생성한 모든 문장을 조회합니다.",
+                "description": "관리자 문장을 조회합니다.<br\/>\n관리자가 생성한 모든 문장을 조회합니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1193,20 +1205,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/jlpt/grammar": {
+        "\/api\/jlpt\/grammar": {
             "get": {
-                "tags": ["Grammar"],
+                "tags": [
+                    "Grammar"
+                ],
                 "summary": "JLPT 문법 조회",
                 "description": "JLPT 전체 문법을 등급별로 반환합니다.",
                 "parameters": [
@@ -1223,21 +1237,23 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             },
             "post": {
-                "tags": ["Grammar"],
+                "tags": [
+                    "Grammar"
+                ],
                 "summary": "JLPT 문법 생성",
                 "description": "JLPT 문법을 생성합니다.",
                 "parameters": [
@@ -1255,18 +1271,18 @@
                 "requestBody": {
                     "description": "Jlpt 문법 생성",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreGrammar"
+                                "$ref": "#\/components\/schemas\/StoreGrammar"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1276,7 +1292,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1284,19 +1300,21 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/jlpt/grammar/{id}": {
+        "\/api\/jlpt\/grammar\/{id}": {
             "delete": {
-                "tags": ["Grammar"],
+                "tags": [
+                    "Grammar"
+                ],
                 "summary": "JLPT 문법 삭제",
-                "description": "JLPT 문법을 삭제합니다.<br/>\n관리자만 JLPT 문법을 삭제 할 수 있습니다.",
+                "description": "JLPT 문법을 삭제합니다.<br\/>\n관리자만 JLPT 문법을 삭제 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1321,22 +1339,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/ranking/myScore": {
+        "\/api\/ranking\/myScore": {
             "get": {
-                "tags": ["Ranking"],
+                "tags": [
+                    "Ranking"
+                ],
                 "summary": "내 모든 점수 이력 조회",
-                "description": "로그인한 유저의 모든 점수 이력을 조회합니다.<br/>\n해당 데이터를 바탕으로 알맞게 가공하여 사용하시면 됩니다.",
+                "description": "로그인한 유저의 모든 점수 이력을 조회합니다.<br\/>\n해당 데이터를 바탕으로 알맞게 가공하여 사용하시면 됩니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1351,22 +1371,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/ranking/{category}": {
+        "\/api\/ranking\/{category}": {
             "get": {
-                "tags": ["Ranking"],
+                "tags": [
+                    "Ranking"
+                ],
                 "summary": "카테고리별 랭킹 조회",
-                "description": "유저의 점수를 카테고리별로 랭킹을 조회합니다.<br/>\n카테고리는 JLPT, WorldOfWords, CardMatching이 있습니다.<br/>\n각 카테고리 내의 레벨별로 최고 점수를 조회할때는 level_id를 사용합니다.<br/>\n해당 데이터를 바탕으로 알맞게 가공하여 사용하시면 됩니다.",
+                "description": "유저의 점수를 카테고리별로 랭킹을 조회합니다.<br\/>\n카테고리는 JLPT, WorldOfWords, CardMatching이 있습니다.<br\/>\n각 카테고리 내의 레벨별로 최고 점수를 조회할때는 level_id를 사용합니다.<br\/>\n해당 데이터를 바탕으로 알맞게 가공하여 사용하시면 됩니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1391,22 +1413,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/manager/register": {
+        "\/api\/manager\/register": {
             "post": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 회원가입",
-                "description": "매니저를 등록<br/>\nURL에 토큰과 email이 넣어져 있기 때문에 회원가입창의 email 부분을 해당 이메일로 넣어주기<br/>\n따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
+                "description": "매니저를 등록<br\/>\nURL에 토큰과 email이 넣어져 있기 때문에 회원가입창의 email 부분을 해당 이메일로 넣어주기<br\/>\n따로 access token을 발급해 주지 않으므로 로그인창으로 넘어가게 구현하시면 됩니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1422,18 +1446,18 @@
                 "requestBody": {
                     "description": "회원가입",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/User"
+                                "$ref": "#\/components\/schemas\/User"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1443,7 +1467,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1451,22 +1475,24 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/admin/jlpt/grammar/{id}": {
+        "\/api\/admin\/jlpt\/grammar\/{id}": {
             "delete": {
-                "tags": ["Grammar"],
+                "tags": [
+                    "Grammar"
+                ],
                 "summary": "JLPT 문법 삭제",
-                "description": "JLPT 문법을 삭제합니다.<br/>\n관리자만 JLPT 문법을 삭제 할 수 있습니다.",
+                "description": "JLPT 문법을 삭제합니다.<br\/>\n관리자만 JLPT 문법을 삭제 할 수 있습니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1491,22 +1517,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/admin/deleteManagerWaitList": {
+        "\/api\/admin\/deleteManagerWaitList": {
             "delete": {
-                "tags": ["Manager"],
+                "tags": [
+                    "Manager"
+                ],
                 "summary": "매니저 대기 명단 거부 및 DB에서 삭제",
-                "description": "관리자가 매니저 대기 명단을 거부 했을 경우<br/>\n해당 지원자의 이메일을 함께 보내면 삭제됩니다.",
+                "description": "관리자가 매니저 대기 명단을 거부 했을 경우<br\/>\n해당 지원자의 이메일을 함께 보내면 삭제됩니다.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1522,31 +1550,33 @@
                 "requestBody": {
                     "description": "대기열 삭제",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Email"
+                                "$ref": "#\/components\/schemas\/Email"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/typing/store": {
+        "\/api\/typing\/store": {
             "post": {
-                "tags": ["AdminSentenceNote"],
+                "tags": [
+                    "AdminSentenceNote"
+                ],
                 "summary": "관리자의 타자연습 파일 등록",
-                "description": "관리자가 타자연습용 문장을 생성<br/>\n.txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
+                "description": "관리자가 타자연습용 문장을 생성<br\/>\n.txt 파일을 보내면 해당 파일을「 。」을 기준으로 줄바꿈하여 타자연습용 문장을 만듦.",
                 "parameters": [
                     {
                         "name": "AccessToken",
@@ -1562,18 +1592,18 @@
                 "requestBody": {
                     "description": "타자 연습 문장 생성",
                     "content": {
-                        "multipart/form-data": {
+                        "multipart\/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/File"
+                                "$ref": "#\/components\/schemas\/File"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1583,7 +1613,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1591,17 +1621,19 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/typing/update/{id}": {
+        "\/api\/typing\/update\/{id}": {
             "patch": {
-                "tags": ["AdminSentenceNote"],
+                "tags": [
+                    "AdminSentenceNote"
+                ],
                 "summary": "관리자의 타자연습용 문장 수정",
                 "description": "관리자가 타자연습용 문장을 수정합니다.",
                 "parameters": [
@@ -1629,18 +1661,18 @@
                 "requestBody": {
                     "description": "문장 수정",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Sentence"
+                                "$ref": "#\/components\/schemas\/Sentence"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1650,7 +1682,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1658,17 +1690,19 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/typing/delete/{id}": {
+        "\/api\/typing\/delete\/{id}": {
             "delete": {
-                "tags": ["AdminSentenceNote"],
+                "tags": [
+                    "AdminSentenceNote"
+                ],
                 "summary": "관리자의 타자연습용 문장 노트 삭제",
                 "description": "관리자가 타자연습용 문장 노트 을 삭제합니다.",
                 "parameters": [
@@ -1695,37 +1729,39 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/mail/applyToManager": {
+        "\/api\/mail\/applyToManager": {
             "post": {
-                "tags": ["Mail"],
+                "tags": [
+                    "Mail"
+                ],
                 "summary": "매니저 지원",
                 "description": "매니저 지원자가 이메일과 지원사유를 적어 보내면 지원신청이 됩니다.",
                 "requestBody": {
                     "description": "게임 결과",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ApplyToManager"
+                                "$ref": "#\/components\/schemas\/ApplyToManager"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1735,7 +1771,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1743,34 +1779,36 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/mail/sendSignUpEmail": {
+        "\/api\/mail\/sendSignUpEmail": {
             "post": {
-                "tags": ["Mail"],
+                "tags": [
+                    "Mail"
+                ],
                 "summary": "매니저 지원 대기자 이메일 발송",
-                "description": "관리자가 지원 대기자를 승인할 경우 해당 지원내용의 id와 함께 요청을 보내면<br/>\n해당 지원자에게 메일을 발송합니다.",
+                "description": "관리자가 지원 대기자를 승인할 경우 해당 지원내용의 id와 함께 요청을 보내면<br\/>\n해당 지원자에게 메일을 발송합니다.",
                 "requestBody": {
                     "description": "회원가입 이메일 전송",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Email"
+                                "$ref": "#\/components\/schemas\/Email"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1780,7 +1818,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1788,14 +1826,16 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     }
                 }
             }
         },
-        "/api/social/{provider}": {
+        "\/api\/social\/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 URL 생성",
                 "description": "소셜 로그인 URL을 생성합니다.",
                 "parameters": [
@@ -1812,17 +1852,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     }
                 }
             }
         },
-        "/api/social/callback/{provider}": {
+        "\/api\/social\/callback\/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "소셜 로그인 콜백 처리",
                 "description": "소셜 로그인 콜백 처리",
                 "parameters": [
@@ -1849,17 +1891,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     }
                 }
             }
         },
-        "/api/social/mobile/{provider}": {
+        "\/api\/social\/mobile\/{provider}": {
             "get": {
-                "tags": ["SocialAuth"],
+                "tags": [
+                    "SocialAuth"
+                ],
                 "summary": "모바일 소셜 로그인 콜백 처리",
                 "description": "모바일 소셜 로그인 콜백 처리",
                 "parameters": [
@@ -1886,37 +1930,39 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
         },
-        "/api/s3": {
+        "\/api\/s3": {
             "post": {
-                "tags": ["S3"],
+                "tags": [
+                    "S3"
+                ],
                 "summary": "s3 파일 업로드",
-                "description": "s3에 파일을 업로드합니다.<br/>\n파일을 업로드할 때는 파일과 경로를 함께 보내야 합니다.<br/>\n파일은 file, 경로는 path로 보내야 합니다.<br/>\npath는 achievements, grammars, mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
+                "description": "s3에 파일을 업로드합니다.<br\/>\n파일을 업로드할 때는 파일과 경로를 함께 보내야 합니다.<br\/>\n파일은 file, 경로는 path로 보내야 합니다.<br\/>\npath는 achievements, grammars, mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
                 "requestBody": {
                     "description": "s3 파일 업로드",
                     "content": {
-                        "application/json": {
+                        "application\/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/S3Upload"
+                                "$ref": "#\/components\/schemas\/S3Upload"
                             }
                         }
                     }
                 },
                 "responses": {
                     "default": {
-                        "description": "생성/등록/수정 요청 성공",
+                        "description": "생성\/등록\/수정 요청 성공",
                         "content": {
-                            "application/json": {
+                            "application\/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
@@ -1926,7 +1972,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "생성/등록/수정 요청 성공"
+                                            "example": "생성\/등록\/수정 요청 성공"
                                         }
                                     }
                                 }
@@ -1934,22 +1980,24 @@
                         }
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "401": {
-                        "$ref": "#/components/responses/Unauthorized"
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
                     }
                 }
             }
         },
-        "/api/s3-files": {
+        "\/api\/s3-files": {
             "get": {
-                "tags": ["S3"],
+                "tags": [
+                    "S3"
+                ],
                 "summary": "s3 파일 전체 URL 가져오기",
-                "description": "s3에 저장된 파일들의 전체 URL을 가져옵니다.<br/>\npath를 보내면 해당 경로의 파일들의 URL을 가져옵니다.<br/>\npath는 s3의 경로를 의미합니다.<br/>\npath는 mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
+                "description": "s3에 저장된 파일들의 전체 URL을 가져옵니다.<br\/>\npath를 보내면 해당 경로의 파일들의 URL을 가져옵니다.<br\/>\npath는 s3의 경로를 의미합니다.<br\/>\npath는 mobile-images, web-images, user-files 중 1개를 선택하여 보내야 합니다.",
                 "parameters": [
                     {
                         "name": "path",
@@ -1964,13 +2012,72 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/Success"
+                        "$ref": "#\/components\/responses\/Success"
                     },
                     "400": {
-                        "$ref": "#/components/responses/BadRequest"
+                        "$ref": "#\/components\/responses\/BadRequest"
                     },
                     "422": {
-                        "$ref": "#/components/responses/ErrorValidation"
+                        "$ref": "#\/components\/responses\/ErrorValidation"
+                    }
+                }
+            }
+        },
+        "\/api\/sentenceNotes\/image": {
+            "post": {
+                "tags": [
+                    "SentenceNote"
+                ],
+                "summary": "문장 노트 OCR",
+                "description": "이미지를 받아 문장 노트로 변환합니다.",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    }
+                ],
+                "requestBody": {
+                    "description": "이미지 파일 등록",
+                    "content": {
+                        "multipart\/form-data": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/Image"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "생성\/등록\/수정 요청 성공",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "생성\/등록\/수정 요청 성공"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
                     }
                 }
             }
@@ -1978,127 +2085,13 @@
     },
     "components": {
         "schemas": {
-            "VocabularyNote": {
-                "type": "object",
-                "required": ["title", "kanji", "gana", "meaning", "level_id"],
-                "properties": {
-                    "title": {
-                        "title": "단어장 제목",
-                        "type": "string",
-                        "example": "title"
-                    },
-                    "kanji": {
-                        "title": "단어장 한자",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["한자1,한자2, ..."]
-                    },
-                    "gana": {
-                        "title": "단어장 가나",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["가나1,가나2, ..."]
-                    },
-                    "meaning": {
-                        "title": "단어장 의미",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["의미1,의미2, ..."]
-                    },
-                    "level_id": {
-                        "title": "등급",
-                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
-                        "type": "integer",
-                        "example": 1
-                    }
-                }
-            },
-            "ApplyToManager": {
-                "type": "object",
-                "required": ["email", "content"],
-                "properties": {
-                    "email": {
-                        "title": "매니저 지원할 유저 이메일",
-                        "type": "string",
-                        "example": "testuser123@naver.com"
-                    },
-                    "content": {
-                        "title": "신청 내용",
-                        "type": "string",
-                        "example": "매니저 지원 글"
-                    }
-                }
-            },
-            "StoreExcelVoca": {
-                "type": "object",
-                "properties": {
-                    "excel": {
-                        "title": "엑셀 파일",
-                        "description": "엑셀 파일을 첨부합니다.",
-                        "type": "file",
-                        "example": "excel.xlsx"
-                    }
-                }
-            },
-            "S3Upload": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "파일명",
-                        "type": "string",
-                        "example": "file-name"
-                    },
-                    "path": {
-                        "title": "경로",
-                        "type": "string",
-                        "example": "achievements"
-                    }
-                }
-            },
-            "PronunciationResultSchema": {
-                "type": "object",
-                "properties": {
-                    "audio": {
-                        "title": "녹음된 음성 파일",
-                        "type": "file",
-                        "example": "testAudio.wav"
-                    }
-                }
-            },
-            "StoreGrammar": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "문법 파일",
-                        "type": "file",
-                        "example": "grammar.json"
-                    }
-                }
-            },
-            "Progress": {
-                "type": "object",
-                "required": ["progress"],
-                "properties": {
-                    "progress": {
-                        "title": "학습도",
-                        "type": "string",
-                        "example": "50%"
-                    }
-                }
-            },
-            "translateResult": {
-                "type": "object",
-                "properties": {
-                    "image": {
-                        "title": "이미지 파일",
-                        "type": "file",
-                        "example": ".png, .jpg, .jpeg"
-                    }
-                }
-            },
             "Sentence": {
                 "type": "object",
-                "required": ["title", "sentences", "situation"],
+                "required": [
+                    "title",
+                    "sentences",
+                    "situation"
+                ],
                 "properties": {
                     "title": {
                         "title": "제목",
@@ -2130,64 +2123,136 @@
                     }
                 }
             },
-            "GameResult": {
+            "File": {
                 "type": "object",
-                "required": ["score", "kanji", "gana", "meaning", "level_id"],
                 "properties": {
-                    "score": {
-                        "title": "게임 점수",
-                        "type": "integer",
-                        "example": 100
-                    },
-                    "kanji": {
-                        "title": "오답 한자 리스트",
-                        "type": "object",
-                        "items": {
-                            "type": "string"
-                        },
-                        "example": ["漢字1", "漢字2", "..."]
-                    },
-                    "gana": {
-                        "title": "오답 히라가나/카타카나 리스트",
-                        "type": "object",
-                        "items": {
-                            "type": "string"
-                        },
-                        "example": ["かな1", "かな2", "..."]
-                    },
-                    "meaning": {
-                        "title": "오답 의미 리스트",
-                        "type": "object",
-                        "items": {
-                            "type": "string"
-                        },
-                        "example": ["의미1", "의미2", "..."]
-                    },
-                    "level_id": {
-                        "title": "플레이한 난이도 1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트 중 하나를 선택",
-                        "type": "integer",
-                        "example": 8
-                    },
-                    "category": {
-                        "title": "카테고리",
-                        "type": "string",
-                        "example": "category"
+                    "file": {
+                        "title": "Text 파일",
+                        "type": "file",
+                        "example": "test.txt"
                     }
                 }
             },
-            "Login": {
+            "ApplyToManager": {
                 "type": "object",
-                "required": ["email", "password"],
+                "required": [
+                    "email",
+                    "content"
+                ],
                 "properties": {
                     "email": {
-                        "title": "유저 이메일",
+                        "title": "매니저 지원할 유저 이메일",
                         "type": "string",
                         "example": "testuser123@naver.com"
                     },
-                    "password": {
-                        "title": "유저 비밀번호",
+                    "content": {
+                        "title": "신청 내용",
                         "type": "string",
-                        "example": "password123"
+                        "example": "매니저 지원 글"
+                    }
+                }
+            },
+            "S3Upload": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "파일명",
+                        "type": "string",
+                        "example": "file-name"
+                    },
+                    "path": {
+                        "title": "경로",
+                        "type": "string",
+                        "example": "achievements"
+                    }
+                }
+            },
+            "PronunciationResultSchema": {
+                "type": "object",
+                "properties": {
+                    "audio": {
+                        "title": "녹음된 음성 파일",
+                        "type": "file",
+                        "example": "testAudio.wav"
+                    }
+                }
+            },
+            "Email": {
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "회원 이메일",
+                        "type": "string",
+                        "example": "asdf1234@gmail.com"
+                    }
+                }
+            },
+            "StoreGrammar": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "문법 파일",
+                        "type": "file",
+                        "example": "grammar.json"
+                    }
+                }
+            },
+            "Progress": {
+                "type": "object",
+                "required": [
+                    "progress"
+                ],
+                "properties": {
+                    "progress": {
+                        "title": "학습도",
+                        "type": "string",
+                        "example": "50%"
+                    }
+                }
+            },
+            "translateResult": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "title": "번역할 텍스트",
+                        "type": "string",
+                        "example": "안녕하세요"
+                    }
+                }
+            },
+            "UpdateSentenceNote": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "제목",
+                        "type": "string",
+                        "example": "おはようございます"
+                    },
+                    "sentences": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "문장": {
+                                    "title": "문장",
+                                    "type": "string",
+                                    "example": "おはようございます"
+                                },
+                                "의미": {
+                                    "title": "의미",
+                                    "type": "string",
+                                    "example": "안녕하세요"
+                                }
+                            }
+                        }
+                    },
+                    "situation": {
+                        "title": "상황",
+                        "type": "string",
+                        "example": "출근"
                     }
                 }
             },
@@ -2226,118 +2291,13 @@
                     }
                 }
             },
-            "translateResult": {
+            "Image": {
                 "type": "object",
                 "properties": {
-                    "text": {
-                        "title": "번역할 텍스트",
-                        "type": "string",
-                        "example": "안녕하세요"
-                    }
-                }
-            },
-            "UpdateVocabularyNote": {
-                "type": "object",
-                "required": ["title", "kanji", "gana", "meaning", "level_id"],
-                "properties": {
-                    "title": {
-                        "title": "단어장 제목",
-                        "type": "string",
-                        "example": "title"
-                    },
-                    "kanji": {
-                        "title": "단어장 한자",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["한자1,한자2, ..."]
-                    },
-                    "gana": {
-                        "title": "단어장 가나",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["가나1,가나2, ..."]
-                    },
-                    "meaning": {
-                        "title": "단어장 의미",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": ["의미1,의미2, ..."]
-                    },
-                    "level_id": {
-                        "title": "등급",
-                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "is_public": {
-                        "title": "단어장 공개 여부",
-                        "description": "단어장 공개 여부를 boolean 형태로 저장합니다.",
-                        "type": "boolean",
-                        "example": true
-                    }
-                }
-            },
-            "UpdateSentenceNote": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "title": "제목",
-                        "type": "string",
-                        "example": "おはようございます"
-                    },
-                    "sentences": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "문장": {
-                                    "title": "문장",
-                                    "type": "string",
-                                    "example": "おはようございます"
-                                },
-                                "의미": {
-                                    "title": "의미",
-                                    "type": "string",
-                                    "example": "안녕하세요"
-                                }
-                            }
-                        }
-                    },
-                    "situation": {
-                        "title": "상황",
-                        "type": "string",
-                        "example": "출근"
-                    }
-                }
-            },
-            "TTS": {
-                "type": "object",
-                "properties": {
-                    "referenceText": {
-                        "title": "TTS로 변환할 일본어 문장",
-                        "type": "text",
-                        "example": "일본어"
-                    }
-                }
-            },
-            "Email": {
-                "type": "object",
-                "required": ["email"],
-                "properties": {
-                    "email": {
-                        "title": "회원 이메일",
-                        "type": "string",
-                        "example": "asdf1234@gmail.com"
-                    }
-                }
-            },
-            "File": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "Text 파일",
+                    "image": {
+                        "title": "이미지 파일",
                         "type": "file",
-                        "example": "test.txt"
+                        "example": ".png, .jpg, .jpeg"
                     }
                 }
             },
@@ -2388,23 +2348,226 @@
                         "example": "manager"
                     }
                 }
+            },
+            "TTS": {
+                "type": "object",
+                "properties": {
+                    "referenceText": {
+                        "title": "TTS로 변환할 일본어 문장",
+                        "type": "text",
+                        "example": "일본어"
+                    }
+                }
+            },
+            "UpdateVocabularyNote": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "kanji",
+                    "gana",
+                    "meaning",
+                    "level_id"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "단어장 제목",
+                        "type": "string",
+                        "example": "title"
+                    },
+                    "kanji": {
+                        "title": "단어장 한자",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "한자1,한자2, ..."
+                        ]
+                    },
+                    "gana": {
+                        "title": "단어장 가나",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "가나1,가나2, ..."
+                        ]
+                    },
+                    "meaning": {
+                        "title": "단어장 의미",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "의미1,의미2, ..."
+                        ]
+                    },
+                    "level_id": {
+                        "title": "등급",
+                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "is_public": {
+                        "title": "단어장 공개 여부",
+                        "description": "단어장 공개 여부를 boolean 형태로 저장합니다.",
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "VocabularyNote": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "kanji",
+                    "gana",
+                    "meaning",
+                    "level_id"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "단어장 제목",
+                        "type": "string",
+                        "example": "title"
+                    },
+                    "kanji": {
+                        "title": "단어장 한자",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "한자1,한자2, ..."
+                        ]
+                    },
+                    "gana": {
+                        "title": "단어장 가나",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "가나1,가나2, ..."
+                        ]
+                    },
+                    "meaning": {
+                        "title": "단어장 의미",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "의미1,의미2, ..."
+                        ]
+                    },
+                    "level_id": {
+                        "title": "등급",
+                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "Login": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "유저 이메일",
+                        "type": "string",
+                        "example": "testuser123@naver.com"
+                    },
+                    "password": {
+                        "title": "유저 비밀번호",
+                        "type": "string",
+                        "example": "password123"
+                    }
+                }
+            },
+            "GameResult": {
+                "type": "object",
+                "required": [
+                    "score",
+                    "kanji",
+                    "gana",
+                    "meaning",
+                    "level_id"
+                ],
+                "properties": {
+                    "score": {
+                        "title": "게임 점수",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "kanji": {
+                        "title": "오답 한자 리스트",
+                        "type": "object",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "漢字1",
+                            "漢字2",
+                            "..."
+                        ]
+                    },
+                    "gana": {
+                        "title": "오답 히라가나\/카타카나 리스트",
+                        "type": "object",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "かな1",
+                            "かな2",
+                            "..."
+                        ]
+                    },
+                    "meaning": {
+                        "title": "오답 의미 리스트",
+                        "type": "object",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "의미1",
+                            "의미2",
+                            "..."
+                        ]
+                    },
+                    "level_id": {
+                        "title": "플레이한 난이도 1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트 중 하나를 선택",
+                        "type": "integer",
+                        "example": 8
+                    },
+                    "category": {
+                        "title": "카테고리",
+                        "type": "string",
+                        "example": "category"
+                    }
+                }
+            },
+            "StoreExcelVoca": {
+                "type": "object",
+                "properties": {
+                    "excel": {
+                        "title": "엑셀 파일",
+                        "description": "엑셀 파일을 첨부합니다.",
+                        "type": "file",
+                        "example": "excel.xlsx"
+                    }
+                }
             }
         },
         "responses": {
-            "Login": {
-                "description": "로그인",
+            "Logout": {
+                "description": "로그아웃",
                 "content": {
-                    "application/json": {
+                    "application\/json": {
                         "schema": {
                             "type": "object",
                             "properties": {
                                 "status_code": {
                                     "type": "integer",
-                                    "example": 201
+                                    "example": 200
                                 },
                                 "message": {
                                     "type": "string",
-                                    "example": "로그인 성공"
+                                    "example": "로그아웃 성공"
                                 }
                             }
                         }
@@ -2414,7 +2577,7 @@
             "BadRequest": {
                 "description": "이 응답은 잘못된 문법으로 인하여 서버가 요청을 이해할 수 없음을 의미합니다.",
                 "content": {
-                    "application/json": {
+                    "application\/json": {
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -2435,7 +2598,9 @@
                                         }
                                     },
                                     "example": {
-                                        "field": ["400 Bad Request"]
+                                        "field": [
+                                            "400 Bad Request"
+                                        ]
                                     }
                                 }
                             }
@@ -2443,10 +2608,50 @@
                     }
                 }
             },
-            "Logout": {
-                "description": "로그아웃",
+            "Login": {
+                "description": "로그인",
                 "content": {
-                    "application/json": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 201
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "로그인 성공"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "올바르지 않은 요청으로 유저가 인증 받지 못했음을 나타냅니다.",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 401
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "401: Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Success": {
+                "description": "요청 성공",
+                "content": {
+                    "application\/json": {
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -2456,7 +2661,27 @@
                                 },
                                 "message": {
                                     "type": "string",
-                                    "example": "로그아웃 성공"
+                                    "example": "요청 성공"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "App\\OpenApi\\Responses\\UserResponse": {
+                "description": "회원가입 성공",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 201
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "회원가입 성공"
                                 }
                             }
                         }
@@ -2466,7 +2691,7 @@
             "ErrorValidation": {
                 "description": "요청은 잘 만들어졌지만, 문법 오류로 인하여 따를 수 없습니다.",
                 "content": {
-                    "application/json": {
+                    "application\/json": {
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -2491,66 +2716,6 @@
                                             "요청은 잘 만들어졌지만, 문법 오류로 인하여 따를 수 없습니다."
                                         ]
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Success": {
-                "description": "요청 성공",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 200
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "요청 성공"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Unauthorized": {
-                "description": "올바르지 않은 요청으로 유저가 인증 받지 못했음을 나타냅니다.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 401
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "401: Unauthorized"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "App\\OpenApi\\Responses\\UserResponse": {
-                "description": "회원가입 성공",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 201
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "회원가입 성공"
                                 }
                             }
                         }

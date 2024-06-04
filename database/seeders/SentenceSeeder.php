@@ -49,14 +49,8 @@ class SentenceSeeder extends Seeder
 			}
 
 			foreach ($result as $index => $text) {
-				$gooResult = Http::withHeaders([
-					'Content-Type' => 'application/json',
-				])->post('https://labs.goo.ne.jp/api/hiragana', [
-					'app_id' => env('GOO_APP_ID'),
-					'sentence' => $text["문장"],
-					'output_type' => 'hiragana',
-				])->json();
-				$text['히라가나'] = $gooResult['converted'];
+				$gooResult = gooHiragana($text['문장']);
+				$text['히라가나'] = $gooResult;
 				$result[$index] = $text;
 			}
 

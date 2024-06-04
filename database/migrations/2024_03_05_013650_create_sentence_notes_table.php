@@ -21,6 +21,7 @@ return new class extends Migration
     });
   }
 
+<<<<<<< HEAD
   /**
    * Reverse the migrations.
    */
@@ -28,4 +29,13 @@ return new class extends Migration
   {
     Schema::dropIfExists('sentences_notes');
   }
+=======
+	/**
+	 * Reverse the migrations.
+	 */
+	public function down(): void
+	{
+		Schema::dropIfExists('sentence_notes');
+	}
+>>>>>>> 3e1c17e2024c7bbe90b692796fc690f6fea1e299
 };

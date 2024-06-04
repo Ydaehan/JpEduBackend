@@ -69,7 +69,6 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/export', [VocabularyNoteController::class, 'export']);
     Route::post('/ocr', [VocabularyNoteController::class, 'textOcr']);
     Route::get('/public/notes', [VocabularyNoteController::class, 'publicIndex']);
-    Route::get('/notes/{levelId}', [VocabularyNoteController::class, 'levelShow']);
     Route::post('/copy/{noteId}', [VocabularyNoteController::class, 'noteCopy']);
     Route::post('/progress/{noteId}', [VocabularyNoteController::class, 'progressUpdate']);
   });
@@ -135,3 +134,6 @@ Route::prefix('/jlpt')->group(function () {
 // s3 test
 Route::post('/s3', [S3Controller::class, 'store']);
 Route::get('/s3-files', [S3Controller::class, 'getS3Files']);
+
+// sentenceNoteOcrTest
+Route::post('/sentenceNotes/image', [SentenceNoteController::class, 'imageOcr']);
