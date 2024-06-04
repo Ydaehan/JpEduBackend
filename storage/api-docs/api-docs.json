@@ -790,48 +790,6 @@
                 }
             }
         },
-        "\/api\/vocabularyNote\/notes\/{levelId}": {
-            "get": {
-                "tags": [
-                    "VocabularyNote"
-                ],
-                "summary": "관리자 단어장 레벨별 리스트",
-                "description": "레벨별 관리장 단어장 리스트 리턴",
-                "parameters": [
-                    {
-                        "name": "AccessToken",
-                        "in": "header",
-                        "description": "Access Token",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "Bearer {access_token}"
-                    },
-                    {
-                        "name": "levelId",
-                        "in": "path",
-                        "description": "단어장 급수",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "1"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#\/components\/responses\/Success"
-                    },
-                    "400": {
-                        "$ref": "#\/components\/responses\/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#\/components\/responses\/Unauthorized"
-                    }
-                }
-            }
-        },
         "\/api\/vocabularyNote\/copy\/{noteId}": {
             "post": {
                 "tags": [
@@ -861,6 +819,58 @@
                         "example": "1"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "$ref": "#\/components\/responses\/Success"
+                    },
+                    "400": {
+                        "$ref": "#\/components\/responses\/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/Unauthorized"
+                    }
+                }
+            }
+        },
+        "\/api\/vocabularyNote\/progress\/{noteId}": {
+            "patch": {
+                "tags": [
+                    "VocabularyNote"
+                ],
+                "summary": "단어장 암기 진척도 기록",
+                "description": "단어장 암기 진척도 수정",
+                "parameters": [
+                    {
+                        "name": "AccessToken",
+                        "in": "header",
+                        "description": "Access Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Bearer {access_token}"
+                    },
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "단어장 아이디",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "학습 진행도를 저장합니다.",
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/Progress"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "$ref": "#\/components\/responses\/Success"
@@ -2075,6 +2085,333 @@
     },
     "components": {
         "schemas": {
+            "Sentence": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "sentences",
+                    "situation"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "제목",
+                        "type": "string",
+                        "example": "おはようございます"
+                    },
+                    "sentences": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "문장": {
+                                    "title": "문장",
+                                    "type": "string",
+                                    "example": "おはようございます"
+                                },
+                                "의미": {
+                                    "title": "의미",
+                                    "type": "string",
+                                    "example": "안녕하세요"
+                                }
+                            }
+                        }
+                    },
+                    "situation": {
+                        "title": "상황",
+                        "type": "string",
+                        "example": "출근"
+                    }
+                }
+            },
+            "File": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "Text 파일",
+                        "type": "file",
+                        "example": "test.txt"
+                    }
+                }
+            },
+            "ApplyToManager": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "content"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "매니저 지원할 유저 이메일",
+                        "type": "string",
+                        "example": "testuser123@naver.com"
+                    },
+                    "content": {
+                        "title": "신청 내용",
+                        "type": "string",
+                        "example": "매니저 지원 글"
+                    }
+                }
+            },
+            "S3Upload": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "파일명",
+                        "type": "string",
+                        "example": "file-name"
+                    },
+                    "path": {
+                        "title": "경로",
+                        "type": "string",
+                        "example": "achievements"
+                    }
+                }
+            },
+            "PronunciationResultSchema": {
+                "type": "object",
+                "properties": {
+                    "audio": {
+                        "title": "녹음된 음성 파일",
+                        "type": "file",
+                        "example": "testAudio.wav"
+                    }
+                }
+            },
+            "Email": {
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "회원 이메일",
+                        "type": "string",
+                        "example": "asdf1234@gmail.com"
+                    }
+                }
+            },
+            "StoreGrammar": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "title": "문법 파일",
+                        "type": "file",
+                        "example": "grammar.json"
+                    }
+                }
+            },
+            "Progress": {
+                "type": "object",
+                "required": [
+                    "progress"
+                ],
+                "properties": {
+                    "progress": {
+                        "title": "학습도",
+                        "type": "string",
+                        "example": "50%"
+                    }
+                }
+            },
+            "translateResult": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "title": "번역할 텍스트",
+                        "type": "string",
+                        "example": "안녕하세요"
+                    }
+                }
+            },
+            "UpdateSentenceNote": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "제목",
+                        "type": "string",
+                        "example": "おはようございます"
+                    },
+                    "sentences": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "문장": {
+                                    "title": "문장",
+                                    "type": "string",
+                                    "example": "おはようございます"
+                                },
+                                "의미": {
+                                    "title": "의미",
+                                    "type": "string",
+                                    "example": "안녕하세요"
+                                }
+                            }
+                        }
+                    },
+                    "situation": {
+                        "title": "상황",
+                        "type": "string",
+                        "example": "출근"
+                    }
+                }
+            },
+            "UserUpdate": {
+                "type": "object",
+                "properties": {
+                    "nickname": {
+                        "title": "유저 닉네임",
+                        "type": "string",
+                        "example": "testUser"
+                    },
+                    "email": {
+                        "title": "유저 이메일",
+                        "type": "string",
+                        "example": "testuser123@naver.com"
+                    },
+                    "password": {
+                        "title": "유저 비밀번호",
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "title": "유저 비밀번호 확인",
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "phone": {
+                        "title": "유저 전화번호",
+                        "type": "string",
+                        "example": "01012345678"
+                    },
+                    "birthday": {
+                        "title": "유저 생년월일",
+                        "type": "string",
+                        "example": "1999-01-01"
+                    }
+                }
+            },
+            "Image": {
+                "type": "object",
+                "properties": {
+                    "image": {
+                        "title": "이미지 파일",
+                        "type": "file",
+                        "example": ".png, .jpg, .jpeg"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "required": [
+                    "nickname",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "phone",
+                    "birthday"
+                ],
+                "properties": {
+                    "nickname": {
+                        "title": "유저 닉네임",
+                        "type": "string",
+                        "example": "testUser"
+                    },
+                    "email": {
+                        "title": "유저 이메일",
+                        "type": "string",
+                        "example": "testuser123@naver.com"
+                    },
+                    "password": {
+                        "title": "유저 비밀번호",
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "title": "유저 비밀번호 확인",
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "phone": {
+                        "title": "유저 전화번호",
+                        "type": "string",
+                        "example": "01012345678"
+                    },
+                    "birthday": {
+                        "title": "유저 생년월일",
+                        "type": "string",
+                        "example": "1999-01-01"
+                    },
+                    "role": {
+                        "title": "유저 역할",
+                        "type": "string",
+                        "example": "manager"
+                    }
+                }
+            },
+            "TTS": {
+                "type": "object",
+                "properties": {
+                    "referenceText": {
+                        "title": "TTS로 변환할 일본어 문장",
+                        "type": "text",
+                        "example": "일본어"
+                    }
+                }
+            },
+            "UpdateVocabularyNote": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "kanji",
+                    "gana",
+                    "meaning",
+                    "level_id"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "단어장 제목",
+                        "type": "string",
+                        "example": "title"
+                    },
+                    "kanji": {
+                        "title": "단어장 한자",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "한자1,한자2, ..."
+                        ]
+                    },
+                    "gana": {
+                        "title": "단어장 가나",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "가나1,가나2, ..."
+                        ]
+                    },
+                    "meaning": {
+                        "title": "단어장 의미",
+                        "description": "Json array형태로 저장합니다.",
+                        "type": "array",
+                        "example": [
+                            "의미1,의미2, ..."
+                        ]
+                    },
+                    "level_id": {
+                        "title": "등급",
+                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "is_public": {
+                        "title": "단어장 공개 여부",
+                        "description": "단어장 공개 여부를 boolean 형태로 저장합니다.",
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
             "VocabularyNote": {
                 "type": "object",
                 "required": [
@@ -2122,129 +2459,22 @@
                     }
                 }
             },
-            "ApplyToManager": {
+            "Login": {
                 "type": "object",
                 "required": [
                     "email",
-                    "content"
+                    "password"
                 ],
                 "properties": {
                     "email": {
-                        "title": "매니저 지원할 유저 이메일",
+                        "title": "유저 이메일",
                         "type": "string",
                         "example": "testuser123@naver.com"
                     },
-                    "content": {
-                        "title": "신청 내용",
+                    "password": {
+                        "title": "유저 비밀번호",
                         "type": "string",
-                        "example": "매니저 지원 글"
-                    }
-                }
-            },
-            "StoreExcelVoca": {
-                "type": "object",
-                "properties": {
-                    "excel": {
-                        "title": "엑셀 파일",
-                        "description": "엑셀 파일을 첨부합니다.",
-                        "type": "file",
-                        "example": "excel.xlsx"
-                    }
-                }
-            },
-            "S3Upload": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "파일명",
-                        "type": "string",
-                        "example": "file-name"
-                    },
-                    "path": {
-                        "title": "경로",
-                        "type": "string",
-                        "example": "achievements"
-                    }
-                }
-            },
-            "PronunciationResultSchema": {
-                "type": "object",
-                "properties": {
-                    "audio": {
-                        "title": "녹음된 음성 파일",
-                        "type": "file",
-                        "example": "testAudio.wav"
-                    }
-                }
-            },
-            "StoreGrammar": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "문법 파일",
-                        "type": "file",
-                        "example": "grammar.json"
-                    }
-                }
-            },
-            "Progress": {
-                "type": "object",
-                "required": [
-                    "progress"
-                ],
-                "properties": {
-                    "progress": {
-                        "title": "학습도",
-                        "type": "string",
-                        "example": "50%"
-                    }
-                }
-            },
-            "Image": {
-                "type": "object",
-                "properties": {
-                    "image": {
-                        "title": "이미지 파일",
-                        "type": "file",
-                        "example": ".png, .jpg, .jpeg"
-                    }
-                }
-            },
-            "Sentence": {
-                "type": "object",
-                "required": [
-                    "title",
-                    "sentences",
-                    "situation"
-                ],
-                "properties": {
-                    "title": {
-                        "title": "제목",
-                        "type": "string",
-                        "example": "おはようございます"
-                    },
-                    "sentences": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "문장": {
-                                    "title": "문장",
-                                    "type": "string",
-                                    "example": "おはようございます"
-                                },
-                                "의미": {
-                                    "title": "의미",
-                                    "type": "string",
-                                    "example": "안녕하세요"
-                                }
-                            }
-                        }
-                    },
-                    "situation": {
-                        "title": "상황",
-                        "type": "string",
-                        "example": "출근"
+                        "example": "password123"
                     }
                 }
             },
@@ -2311,241 +2541,21 @@
                     }
                 }
             },
-            "Login": {
-                "type": "object",
-                "required": [
-                    "email",
-                    "password"
-                ],
-                "properties": {
-                    "email": {
-                        "title": "유저 이메일",
-                        "type": "string",
-                        "example": "testuser123@naver.com"
-                    },
-                    "password": {
-                        "title": "유저 비밀번호",
-                        "type": "string",
-                        "example": "password123"
-                    }
-                }
-            },
-            "UserUpdate": {
+            "StoreExcelVoca": {
                 "type": "object",
                 "properties": {
-                    "nickname": {
-                        "title": "유저 닉네임",
-                        "type": "string",
-                        "example": "testUser"
-                    },
-                    "email": {
-                        "title": "유저 이메일",
-                        "type": "string",
-                        "example": "testuser123@naver.com"
-                    },
-                    "password": {
-                        "title": "유저 비밀번호",
-                        "type": "string",
-                        "example": "password123"
-                    },
-                    "password_confirmation": {
-                        "title": "유저 비밀번호 확인",
-                        "type": "string",
-                        "example": "password123"
-                    },
-                    "phone": {
-                        "title": "유저 전화번호",
-                        "type": "string",
-                        "example": "01012345678"
-                    },
-                    "birthday": {
-                        "title": "유저 생년월일",
-                        "type": "string",
-                        "example": "1999-01-01"
-                    }
-                }
-            },
-            "translateResult": {
-                "type": "object",
-                "properties": {
-                    "text": {
-                        "title": "번역할 텍스트",
-                        "type": "string",
-                        "example": "안녕하세요"
-                    }
-                }
-            },
-            "UpdateVocabularyNote": {
-                "type": "object",
-                "required": [
-                    "title",
-                    "kanji",
-                    "gana",
-                    "meaning",
-                    "level_id"
-                ],
-                "properties": {
-                    "title": {
-                        "title": "단어장 제목",
-                        "type": "string",
-                        "example": "title"
-                    },
-                    "kanji": {
-                        "title": "단어장 한자",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": [
-                            "한자1,한자2, ..."
-                        ]
-                    },
-                    "gana": {
-                        "title": "단어장 가나",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": [
-                            "가나1,가나2, ..."
-                        ]
-                    },
-                    "meaning": {
-                        "title": "단어장 의미",
-                        "description": "Json array형태로 저장합니다.",
-                        "type": "array",
-                        "example": [
-                            "의미1,의미2, ..."
-                        ]
-                    },
-                    "level_id": {
-                        "title": "등급",
-                        "description": "1:N1, 2:N2, 3:N3, 4:N4, 5:N5, 6:종합, 7:전체, 8:오답노트",
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "is_public": {
-                        "title": "단어장 공개 여부",
-                        "description": "단어장 공개 여부를 boolean 형태로 저장합니다.",
-                        "type": "boolean",
-                        "example": true
-                    }
-                }
-            },
-            "UpdateSentenceNote": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "title": "제목",
-                        "type": "string",
-                        "example": "おはようございます"
-                    },
-                    "sentences": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "문장": {
-                                    "title": "문장",
-                                    "type": "string",
-                                    "example": "おはようございます"
-                                },
-                                "의미": {
-                                    "title": "의미",
-                                    "type": "string",
-                                    "example": "안녕하세요"
-                                }
-                            }
-                        }
-                    },
-                    "situation": {
-                        "title": "상황",
-                        "type": "string",
-                        "example": "출근"
-                    }
-                }
-            },
-            "TTS": {
-                "type": "object",
-                "properties": {
-                    "referenceText": {
-                        "title": "TTS로 변환할 일본어 문장",
-                        "type": "text",
-                        "example": "일본어"
-                    }
-                }
-            },
-            "Email": {
-                "type": "object",
-                "required": [
-                    "email"
-                ],
-                "properties": {
-                    "email": {
-                        "title": "회원 이메일",
-                        "type": "string",
-                        "example": "asdf1234@gmail.com"
-                    }
-                }
-            },
-            "File": {
-                "type": "object",
-                "properties": {
-                    "file": {
-                        "title": "Text 파일",
+                    "excel": {
+                        "title": "엑셀 파일",
+                        "description": "엑셀 파일을 첨부합니다.",
                         "type": "file",
-                        "example": "test.txt"
-                    }
-                }
-            },
-            "User": {
-                "type": "object",
-                "required": [
-                    "nickname",
-                    "email",
-                    "password",
-                    "password_confirmation",
-                    "phone",
-                    "birthday"
-                ],
-                "properties": {
-                    "nickname": {
-                        "title": "유저 닉네임",
-                        "type": "string",
-                        "example": "testUser"
-                    },
-                    "email": {
-                        "title": "유저 이메일",
-                        "type": "string",
-                        "example": "testuser123@naver.com"
-                    },
-                    "password": {
-                        "title": "유저 비밀번호",
-                        "type": "string",
-                        "example": "password123"
-                    },
-                    "password_confirmation": {
-                        "title": "유저 비밀번호 확인",
-                        "type": "string",
-                        "example": "password123"
-                    },
-                    "phone": {
-                        "title": "유저 전화번호",
-                        "type": "string",
-                        "example": "01012345678"
-                    },
-                    "birthday": {
-                        "title": "유저 생년월일",
-                        "type": "string",
-                        "example": "1999-01-01"
-                    },
-                    "role": {
-                        "title": "유저 역할",
-                        "type": "string",
-                        "example": "manager"
+                        "example": "excel.xlsx"
                     }
                 }
             }
         },
         "responses": {
-            "Login": {
-                "description": "로그인",
+            "Logout": {
+                "description": "로그아웃",
                 "content": {
                     "application\/json": {
                         "schema": {
@@ -2553,11 +2563,11 @@
                             "properties": {
                                 "status_code": {
                                     "type": "integer",
-                                    "example": 201
+                                    "example": 200
                                 },
                                 "message": {
                                     "type": "string",
-                                    "example": "로그인 성공"
+                                    "example": "로그아웃 성공"
                                 }
                             }
                         }
@@ -2598,8 +2608,48 @@
                     }
                 }
             },
-            "Logout": {
-                "description": "로그아웃",
+            "Login": {
+                "description": "로그인",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 201
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "로그인 성공"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "올바르지 않은 요청으로 유저가 인증 받지 못했음을 나타냅니다.",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 401
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "401: Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Success": {
+                "description": "요청 성공",
                 "content": {
                     "application\/json": {
                         "schema": {
@@ -2611,7 +2661,27 @@
                                 },
                                 "message": {
                                     "type": "string",
-                                    "example": "로그아웃 성공"
+                                    "example": "요청 성공"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "App\\OpenApi\\Responses\\UserResponse": {
+                "description": "회원가입 성공",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_code": {
+                                    "type": "integer",
+                                    "example": 201
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "회원가입 성공"
                                 }
                             }
                         }
@@ -2646,66 +2716,6 @@
                                             "요청은 잘 만들어졌지만, 문법 오류로 인하여 따를 수 없습니다."
                                         ]
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Success": {
-                "description": "요청 성공",
-                "content": {
-                    "application\/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 200
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "요청 성공"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Unauthorized": {
-                "description": "올바르지 않은 요청으로 유저가 인증 받지 못했음을 나타냅니다.",
-                "content": {
-                    "application\/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 401
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "401: Unauthorized"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "App\\OpenApi\\Responses\\UserResponse": {
-                "description": "회원가입 성공",
-                "content": {
-                    "application\/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status_code": {
-                                    "type": "integer",
-                                    "example": 201
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "회원가입 성공"
                                 }
                             }
                         }
