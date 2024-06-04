@@ -340,33 +340,6 @@ class VocabularyNoteController extends Controller
     ], 200);
   }
 
-
-  /**
-   * 관리자 단어장 레벨별 리스트
-   *
-   * 레벨별 관리장 단어장 리스트 리턴
-   */
-  #[OpenApi\Operation(tags: ['VocabularyNote'], method: 'GET')]
-  #[OpenApi\Parameters(factory: VocabularyLevelParameters::class)]
-  #[OpenApi\Response(factory: SuccessResponse::class, description: '레벨별 관리자 단어장 조회 성공', statusCode: 200)]
-  #[OpenApi\Response(factory: BadRequestResponse::class, description: '요청 실패', statusCode: 400)]
-  #[OpenApi\Response(factory: UnauthorizedResponse::class, description: '인증 실패', statusCode: 401)]
-  public function levelShow(string $level)
-  {
-    $level = (int)$level;
-    $notes = VocabularyNote::where('level_id', $level)
-      ->whereHas('user', function ($query) {
-        $query->select('id', 'nickname')->where('role', 'admin');
-      })->with([
-        'level:id,level'
-      ])->get();
-
-    return response()->json([
-      "status" => "Success",
-      "notes" => $notes
-    ], 200);
-  }
-
   /**
    * 단어장 복사 생성
    *
