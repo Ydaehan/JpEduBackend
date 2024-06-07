@@ -117,7 +117,6 @@ class SentenceNoteController extends Controller
 				$sentence = Str::of($sentence)->append($value['inferText'])->__toString();
 			}
 
-
 			if (preg_match('/[。！？]/u', $value['inferText'])) {
 				$gooResult = gooHiragana($sentence);
 
