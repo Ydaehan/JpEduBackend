@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\VocabularyNote;
 use App\OpenApi\Parameters\AccessTokenParameters;
 use App\OpenApi\Parameters\TokenAndIdParameters;
-use App\OpenApi\Parameters\VocabularyLevelParameters;
 use App\OpenApi\Parameters\VocabularyProgressParameters;
 use App\OpenApi\RequestBodies\ImageRequestBody;
 use App\OpenApi\RequestBodies\ProgressRequestBody;
