@@ -359,9 +359,9 @@ class VocabularyNoteController extends Controller
       'title' => $note->title,
       'user_id' => $user->id,
       'level_id' => $note->level_id,
-      'kanji' => json_encode($note->kanji),
-      'gana' => json_encode($note->gana),
-      'meaning' => json_encode($note->meaning),
+      'kanji' => $note->kanji,
+      'gana' => $note->gana,
+      'meaning' => $note->meaning,
       'is_public' => false,
       'is_creator' => false
     ]);
