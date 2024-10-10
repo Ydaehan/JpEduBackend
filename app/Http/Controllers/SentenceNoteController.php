@@ -165,11 +165,14 @@ class SentenceNoteController extends Controller
 	{
 		$user = auth('sanctum')->user();
 		$sentenceNotes = SentenceNote::where('user_id', $user->id)
-			->orWhere('situation', 'AdminExample')
+			->orWhere('user_id', 1)
 			->get()
 			->map(function ($note) {
-				$note->sentences = json_decode($note->sentences);
-				return $note;
+				return [
+					'id' => $note->id,
+					'title' => $note->title,
+					'situation' => $note->situation,
+				];
 			});
 
 		return response()->json($sentenceNotes);
@@ -247,7 +250,7 @@ class SentenceNoteController extends Controller
 	{
 		try {
 			$sentenceNote = SentenceNote::find($id);
-			if ($sentenceNote->situation !== 'AdminExample') {
+			if ($sentenceNote->user_id != 1) {
 				$sentenceNote->delete();
 				return response()->json(['message' => '문장 노트 삭제에 성공했습니다.'], 200);
 			} else {

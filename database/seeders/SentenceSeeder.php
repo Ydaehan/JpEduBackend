@@ -21,6 +21,14 @@ class SentenceSeeder extends Seeder
 			$tempPath = tempnam(sys_get_temp_dir(), 'txt') . '.' . $extension;
 			// S3에서 파일 내용 가져오기
 			$fileContent = Storage::disk('s3')->get($fileName);
+			// 파일 이름을 추출하여 문장 노트 제목으로 사용
+			$sentenceNoteName = pathinfo($fileName, PATHINFO_FILENAME);
+
+			$existingNote = SentenceNote::where('title', $sentenceNoteName)->first();
+			// DB에 이미 있는 문장노트의 경우 스킵
+			if ($existingNote) {
+				continue;
+			}
 			// 파일 내용을 임시 파일에 저장
 			file_put_contents($tempPath, $fileContent);
 			$contents = file_get_contents($tempPath); // 파일의 내용을 가져옴
@@ -47,7 +55,6 @@ class SentenceSeeder extends Seeder
 					'의미' => $translateResult[$index],
 				];
 			}
-
 			foreach ($result as $index => $text) {
 				$gooResult = gooHiragana($text['문장']);
 				$text['히라가나'] = $gooResult;
@@ -58,9 +65,9 @@ class SentenceSeeder extends Seeder
 			// 문장 데이터 생성
 			$sentence = new SentenceNote();
 			$sentence->user_id = 1;
-			$sentence->title = "TypingExample";
+			$sentence->title = $sentenceNoteName;
 			$sentence->sentences = $encodedResult;
-			$sentence->situation = "AdminExample";
+			$sentence->situation = $sentenceNoteName;
 			$sentence->save();
 		}
 	}
